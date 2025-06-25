@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>CHIIRP Demo – Calculator</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -21,30 +20,21 @@
       color:#fff
     }
 
-    /* generic slide block */
-    .slide{
-      width:min(90vw,800px);
-      text-align:center;
-      padding:2rem
-    }
-
+    .slide{width:min(90vw,800px);text-align:center;padding:2rem}
     h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:2px}
     h2{margin-top:.75rem;font-size:clamp(1.2rem,2.5vw,1.5rem);font-weight:400}
 
-    /* four inputs */
-    .input-row{
-      margin-top:2rem;
-      display:flex;
-      gap:1rem;
-      flex-wrap:wrap
-    }
+    /* inputs */
+    .input-row{margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap}
     .input-row input{
-      flex:1 1 150px;
+      flex:1 1 165px;
       padding:.8rem;
       border:none;
-      border-radius:6px
+      border-radius:6px;
+      text-align:center
     }
 
+    /* next button */
     #nextBtn{
       margin-top:1.5rem;
       padding:.9rem 1.6rem;
@@ -58,6 +48,17 @@
       transition:opacity .25s
     }
     #nextBtn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* slide-in animation for each value */
+    .valItem{
+      opacity:0;
+      transform:translateX(-60px);
+      transition:transform .6s ease,opacity .6s ease
+    }
+    .valItem.show{
+      opacity:1;
+      transform:translateX(0)
+    }
   </style>
 </head>
 <body>
@@ -68,61 +69,90 @@
     <h2>How much can CHIIRP save you?</h2>
 
     <div class="input-row">
-      <input type="text" placeholder="Field 1">
-      <input type="text" placeholder="Field 2">
-      <input type="text" placeholder="Field 3">
-      <input type="text" placeholder="Field 4">
+      <input id="formLeads"   type="number" placeholder="Monthly form leads">
+      <input id="missedCalls" type="number" placeholder="Monthly missed calls">
+      <input id="closeRate"   type="number" step="0.1" placeholder="Current close rate %">
+      <input id="avgRevenue"  type="number" step="0.01" placeholder="Avg revenue per customer $">
     </div>
 
     <button id="nextBtn" disabled>Next ➔</button>
   </section>
 
-  <!-- slide 2 (hidden initially) -->
+  <!-- slide 2 -->
   <section class="slide" id="resultSlide" style="display:none;opacity:0;transition:opacity .6s">
     <h1 style="font-size:2.5rem">Estimation Follow-up</h1>
     <h2 id="introText" style="margin-top:1rem;opacity:0">Anticipated savings</h2>
 
-    <div id="valueList" style="margin:2rem 0;font-size:1.4rem;line-height:2;opacity:0"></div>
+    <div id="valueList" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
     <div id="totalBox" style="font-size:2.4rem;font-weight:700;opacity:0"></div>
   </section>
 
   <script>
-  (()=>{                    // isolate our variables
-    const inputs=document.querySelectorAll('.input-row input');
-    const next=document.getElementById('nextBtn');
-    const inputSlide=document.getElementById('inputSlide');
-    const resultSlide=document.getElementById('resultSlide');
-    const introText=document.getElementById('introText');
-    const valueList=document.getElementById('valueList');
-    const totalBox=document.getElementById('totalBox');
+  (()=>{
 
-    /* enable the button when every field has a number */
+    /* --------- DOM short-cuts --------- */
+    const q   = id => document.getElementById(id);
+    const btn = q('nextBtn');
+    const inputs = ['formLeads','missedCalls','closeRate','avgRevenue'].map(q);
+    const inputSlide = q('inputSlide');
+    const resultSlide = q('resultSlide');
+    const introText = q('introText');
+    const valueList = q('valueList');
+    const totalBox  = q('totalBox');
+
+    /* --------- constants --------- */
+    const FORM_UPLIFT   = 3;   // 3× more likely to convert
+    const MISSED_UPLIFT = 4;   // 4× recovery for missed calls
+
+    /* --------- enable Next when all filled --------- */
     inputs.forEach(inp=>{
       inp.addEventListener('input',()=>{
-        next.disabled=[...inputs].some(i=>!i.value.trim());
+        btn.disabled = inputs.some(i=>!i.value.trim());
       });
     });
 
-    /* handle transition and calculation */
-    next.addEventListener('click',()=>{
-      const vals=[...inputs].map(i=>Number(i.value)||0);
-      const annual=vals.reduce((a,b)=>a+b,0)*12;   // exaggerate as requested
+    /* --------- main click handler --------- */
+    btn.addEventListener('click',()=>{
+      /* collect numbers */
+      const formLeads   = +q('formLeads').value   || 0;
+      const missedCalls = +q('missedCalls').value || 0;
+      const closeRate   = (+q('closeRate').value || 0) / 100; // to decimal
+      const avgRevenue  = +q('avgRevenue').value || 0;
 
-      valueList.innerHTML=vals
-        .map((v,idx)=>`Value ${idx+1}: ${v.toLocaleString()}`)
-        .join('<br>');
+      /* baseline & uplift calculations */
+      const baseConversions      = (formLeads + missedCalls) * closeRate;
+      const improvedFormConv     = formLeads   * FORM_UPLIFT   * closeRate;
+      const improvedMissedConv   = missedCalls * MISSED_UPLIFT * closeRate;
+      const incrementalConv      = (improvedFormConv + improvedMissedConv) - baseConversions;
+      const monthlyIncremental$$ = incrementalConv * avgRevenue;
+      const annualSavings        = monthlyIncremental$$ * 12;
 
+      /* build list items */
+      const itemsHTML = [
+        `Extra form conversions: ${Math.round(improvedFormConv - formLeads*closeRate)}`,
+        `Extra missed-call conversions: ${Math.round(improvedMissedConv - missedCalls*closeRate)}`,
+        `Monthly incremental revenue: $${monthlyIncremental$$.toLocaleString(undefined,{maximumFractionDigits:0})}`,
+        `Annual anticipated savings: $${annualSavings.toLocaleString(undefined,{maximumFractionDigits:0})}`
+      ].map(txt=>`<div class="valItem">${txt}</div>`).join('');
+      valueList.innerHTML = itemsHTML;
+
+      /* swap slides */
       inputSlide.style.display='none';
       resultSlide.style.display='block';
-      setTimeout(()=>resultSlide.style.opacity=1,20);
+      requestAnimationFrame(()=>resultSlide.style.opacity=1); // fade in smoothly
 
+      /* staggered reveal */
       setTimeout(()=>introText.style.opacity=1,400);
-      setTimeout(()=>valueList.style.opacity=1,800);
+      document.querySelectorAll('.valItem').forEach((el,i)=>{
+        setTimeout(()=>el.classList.add('show'), 800 + i*300);
+      });
+      const lastDelay = 800 + 3*300 + 200;
       setTimeout(()=>{
-        totalBox.textContent=`≈ ${annual.toLocaleString()}`;
-        totalBox.style.opacity=1;
-      },1400);
+        totalBox.textContent = `≈ $${annualSavings.toLocaleString(undefined,{maximumFractionDigits:0})}`;
+        totalBox.style.opacity = 1;
+      }, lastDelay);
     });
+
   })();
   </script>
 </body>
