@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CHIIRP Demo – Calculator</title>
+
+  <!-- Mobile-friendly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* --- Basic reset --- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #bfd3e6 0%, #002844 100%);
+      color: #fff;
+    }
+
+    /* --- Focus/slide container --- */
+    .slide {
+      width: min(90vw, 800px);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 { font-size: clamp(2rem, 5vw, 3rem); letter-spacing: 2px; }
+    h2 { margin-top: 0.75rem; font-size: clamp(1.2rem, 2.5vw, 1.5rem); font-weight: 400; }
+
+    /* --- Four inputs side by side --- */
+    .input-row {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;           /* allows wrapping on narrow screens */
+    }
+    .input-row input {
+      flex: 1 1 150px;           /* grows, shrinks, min width */
+      padding: 0.8rem;
+      border: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slide 1 -->
+  <section class="slide">
+    <h1>CHIIRP DEMO</h1>
+    <h2>How much can CHIIRP save you?</h2>
+
+    <div class="input-row">
+      <input type="text" placeholder="Field 1">
+      <input type="text" placeholder="Field 2">
+      <input type="text" placeholder="Field 3">
+      <input type="text" placeholder="Field 4">
+    </div>
+  </section>
+
+</body>
+</html>
