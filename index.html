@@ -110,7 +110,7 @@
 
 <!-- ────────────────  SLIDE 5 – SUMMARY ──────────────── -->
 <section class="slide" id="slideSum" style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Total Annual Gain</h1>
+  <h1>Total monthly Gain</h1>
   <div id="sumValues" style="margin:2rem 0;font-size:1.6rem;line-height:2"></div>
   <button onclick="location.reload()">Restart ↻</button>
 </section>
@@ -160,7 +160,7 @@ calcBtn.addEventListener('click',()=>{
     `Closed now: ${estBw.toFixed(1)}`,
     `With Chiirp (low): ${estSwLow.toFixed(1)}`,
     `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
-    `Annual gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
+    `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
   ].map(t=>`<div class="valItem">${t}</div>`).join('');
   revealSlide('slideEst');
 
@@ -179,7 +179,7 @@ calcBtn.addEventListener('click',()=>{
       `Closed now: ${s2lBw.toFixed(1)}`,
       `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
       `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
-      `Annual gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
+      `monthly gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
     ].map(t=>`<div class="valItem">${t}</div>`).join('');
     revealSlide('slideS2L');
 
@@ -198,7 +198,7 @@ calcBtn.addEventListener('click',()=>{
         `Closed now: ${missBw.toFixed(1)}`,
         `With Chiirp (low): ${missSwLow.toFixed(1)}`,
         `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
-        `Annual gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
+        `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
       ].map(t=>`<div class="valItem">${t}</div>`).join('');
       revealSlide('slideMissed');
 
@@ -209,7 +209,7 @@ calcBtn.addEventListener('click',()=>{
         const roiLow   = (lowGain / MONTHLY_COST).toFixed(1);
         const roiHigh  = (highGain / MONTHLY_COST).toFixed(1);
         g('sumValues').innerHTML = [
-          `Total annual revenue lift:`,
+          `Total monthly revenue lift:`,
           `$${lowGain.toLocaleString()} – $${highGain.toLocaleString()}`,
           `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
         ].map(t=>`<div class="valItem show">${t}</div>`).join('');
