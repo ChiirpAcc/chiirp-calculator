@@ -4,53 +4,66 @@
   <meta charset="UTF-8">
   <title>CHIIRP Demo – Calculator</title>
 
-  <!-- Mobile-friendly -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    /* --- Basic reset --- */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* reset */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-    body {
-      font-family: system-ui, sans-serif;
-      height: 100vh;
-      overflow-x: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: radial-gradient(circle at top, #bfd3e6 0%, #002844 100%);
-      color: #fff;
+    body{
+      font-family:system-ui,sans-serif;
+      height:100vh;
+      overflow-x:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:radial-gradient(circle at top,#bfd3e6 0%,#002844 100%);
+      color:#fff
     }
 
-    /* --- Focus/slide container --- */
-    .slide {
-      width: min(90vw, 800px);
-      text-align: center;
-      padding: 2rem;
+    /* generic slide block */
+    .slide{
+      width:min(90vw,800px);
+      text-align:center;
+      padding:2rem
     }
 
-    h1 { font-size: clamp(2rem, 5vw, 3rem); letter-spacing: 2px; }
-    h2 { margin-top: 0.75rem; font-size: clamp(1.2rem, 2.5vw, 1.5rem); font-weight: 400; }
+    h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:2px}
+    h2{margin-top:.75rem;font-size:clamp(1.2rem,2.5vw,1.5rem);font-weight:400}
 
-    /* --- Four inputs side by side --- */
-    .input-row {
-      margin-top: 2rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;           /* allows wrapping on narrow screens */
+    /* four inputs */
+    .input-row{
+      margin-top:2rem;
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap
     }
-    .input-row input {
-      flex: 1 1 150px;           /* grows, shrinks, min width */
-      padding: 0.8rem;
-      border: none;
-      border-radius: 6px;
+    .input-row input{
+      flex:1 1 150px;
+      padding:.8rem;
+      border:none;
+      border-radius:6px
     }
+
+    #nextBtn{
+      margin-top:1.5rem;
+      padding:.9rem 1.6rem;
+      font-size:1rem;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      background:#ffb703;
+      color:#002844;
+      font-weight:700;
+      transition:opacity .25s
+    }
+    #nextBtn:disabled{opacity:.4;cursor:not-allowed}
   </style>
 </head>
 <body>
 
-  <!-- Slide 1 -->
-  <section class="slide">
+  <!-- slide 1 -->
+  <section class="slide" id="inputSlide">
     <h1>CHIIRP DEMO</h1>
     <h2>How much can CHIIRP save you?</h2>
 
@@ -60,7 +73,57 @@
       <input type="text" placeholder="Field 3">
       <input type="text" placeholder="Field 4">
     </div>
+
+    <button id="nextBtn" disabled>Next ➔</button>
   </section>
 
+  <!-- slide 2 (hidden initially) -->
+  <section class="slide" id="resultSlide" style="display:none;opacity:0;transition:opacity .6s">
+    <h1 style="font-size:2.5rem">Estimation Follow-up</h1>
+    <h2 id="introText" style="margin-top:1rem;opacity:0">Anticipated savings</h2>
+
+    <div id="valueList" style="margin:2rem 0;font-size:1.4rem;line-height:2;opacity:0"></div>
+    <div id="totalBox" style="font-size:2.4rem;font-weight:700;opacity:0"></div>
+  </section>
+
+  <script>
+  (()=>{                    // isolate our variables
+    const inputs=document.querySelectorAll('.input-row input');
+    const next=document.getElementById('nextBtn');
+    const inputSlide=document.getElementById('inputSlide');
+    const resultSlide=document.getElementById('resultSlide');
+    const introText=document.getElementById('introText');
+    const valueList=document.getElementById('valueList');
+    const totalBox=document.getElementById('totalBox');
+
+    /* enable the button when every field has a number */
+    inputs.forEach(inp=>{
+      inp.addEventListener('input',()=>{
+        next.disabled=[...inputs].some(i=>!i.value.trim());
+      });
+    });
+
+    /* handle transition and calculation */
+    next.addEventListener('click',()=>{
+      const vals=[...inputs].map(i=>Number(i.value)||0);
+      const annual=vals.reduce((a,b)=>a+b,0)*12;   // exaggerate as requested
+
+      valueList.innerHTML=vals
+        .map((v,idx)=>`Value ${idx+1}: ${v.toLocaleString()}`)
+        .join('<br>');
+
+      inputSlide.style.display='none';
+      resultSlide.style.display='block';
+      setTimeout(()=>resultSlide.style.opacity=1,20);
+
+      setTimeout(()=>introText.style.opacity=1,400);
+      setTimeout(()=>valueList.style.opacity=1,800);
+      setTimeout(()=>{
+        totalBox.textContent=`≈ ${annual.toLocaleString()}`;
+        totalBox.style.opacity=1;
+      },1400);
+    });
+  })();
+  </script>
 </body>
 </html>
