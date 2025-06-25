@@ -154,8 +154,8 @@ calcBtn.addEventListener('click',()=>{
   const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
   const estΔLow   = estSwLow  - estBw;
   const estΔHigh  = estSwHigh - estBw;
-  const est$Low   = estΔLow  * AR * 12;
-  const est$High  = estΔHigh * AR * 12;
+  const est$Low   = estΔLow  * AR;
+  const est$High  = estΔHigh * AR;
   g('estValues').innerHTML = [
     `Closed now: ${estBw.toFixed(1)}`,
     `With Chiirp (low): ${estSwLow.toFixed(1)}`,
@@ -171,8 +171,8 @@ calcBtn.addEventListener('click',()=>{
     const s2lSwHigh = Reached * UPLIFT.s2lHigh;
     const s2lΔLow   = s2lSwLow  - s2lBw;
     const s2lΔHigh  = s2lSwHigh - s2lBw;
-    const s2l$Low   = s2lΔLow  * AR * 12;
-    const s2l$High  = s2lΔHigh * AR * 12;
+    const s2l$Low   = s2lΔLow  * AR;
+    const s2l$High  = s2lΔHigh * AR;
 
     g('s2lValues').innerHTML = [
       `Reached leads / mo: ${Reached}`,
@@ -190,8 +190,8 @@ calcBtn.addEventListener('click',()=>{
       const missSwHigh = Missed * UPLIFT.missHigh;
       const missΔLow   = missSwLow  - missBw;
       const missΔHigh  = missSwHigh - missBw;
-      const miss$Low   = missΔLow  * AR * 12;
-      const miss$High  = missΔHigh * AR * 12;
+      const miss$Low   = missΔLow  * AR;
+      const miss$High  = missΔHigh * AR;
 
       g('missValues').innerHTML = [
         `Missed contacts / mo: ${Missed.toFixed(1)}`,
