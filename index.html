@@ -4,156 +4,188 @@
   <meta charset="UTF-8">
   <title>CHIIRP Demo – Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
-    /* reset */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
     body{
-      font-family:system-ui,sans-serif;
-      height:100vh;
-      overflow-x:hidden;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:radial-gradient(circle at top,#bfd3e6 0%,#002844 100%);
+      font-family:system-ui,sans-serif;min-height:100vh;overflow-x:hidden;
+      display:flex;justify-content:center;align-items:center;
+      background:linear-gradient(130deg,#00b7ff 0%,#ffe05f 100%);
       color:#fff
     }
-
-    .slide{width:min(90vw,800px);text-align:center;padding:2rem}
-    h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:2px}
-    h2{margin-top:.75rem;font-size:clamp(1.2rem,2.5vw,1.5rem);font-weight:400}
-
-    /* inputs */
-    .input-row{margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap}
+    .slide{width:min(94vw,900px);text-align:center;padding:2rem}
+    h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:2px;text-shadow:0 2px 6px #0006}
+    h2{margin-top:.8rem;font-size:clamp(1.1rem,2.4vw,1.4rem);font-weight:400;letter-spacing:.2rem}
+    .input-row{margin-top:2.3rem;display:flex;gap:1rem;flex-wrap:wrap}
     .input-row input{
-      flex:1 1 165px;
-      padding:.8rem;
-      border:none;
-      border-radius:6px;
-      text-align:center
+      flex:1 1 180px;padding:.9rem;border:none;border-radius:6px;text-align:center
     }
-
-    /* next button */
-    #nextBtn{
-      margin-top:1.5rem;
-      padding:.9rem 1.6rem;
-      font-size:1rem;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-      background:#ffb703;
-      color:#002844;
-      font-weight:700;
-      transition:opacity .25s
+    button{
+      margin-top:2rem;padding:.9rem 1.8rem;font-size:1rem;border:none;border-radius:6px;
+      cursor:pointer;background:#ffb703;color:#002844;font-weight:700;transition:opacity .25s
     }
-    #nextBtn:disabled{opacity:.4;cursor:not-allowed}
-
-    /* slide-in animation for each value */
-    .valItem{
-      opacity:0;
-      transform:translateX(-60px);
-      transition:transform .6s ease,opacity .6s ease
-    }
-    .valItem.show{
-      opacity:1;
-      transform:translateX(0)
-    }
+    button:disabled{opacity:.4;cursor:not-allowed}
+    .valItem{opacity:0;transform:translateX(-60px);transition:transform .6s ease,opacity .6s ease}
+    .valItem.show{opacity:1;transform:translateX(0)}
   </style>
 </head>
 <body>
 
-  <!-- slide 1 -->
-  <section class="slide" id="inputSlide">
-    <h1>CHIIRP DEMO</h1>
-    <h2>How much can CHIIRP save you?</h2>
+<!-- ────────────────  SLIDE 1 – INPUTS ──────────────── -->
+<section class="slide" id="slideInputs">
+  <h1>CHIIRP DEMO</h1>
+  <h2>SEE&nbsp;YOUR&nbsp;SAVINGS&nbsp;WITH&nbsp;CHIIRP</h2>
 
-    <div class="input-row">
-      <input id="formLeads"   type="number" placeholder="Monthly form leads">
-      <input id="missedCalls" type="number" placeholder="Monthly missed calls">
-      <input id="closeRate"   type="number" step="0.1" placeholder="Current close rate %">
-      <input id="avgRevenue"  type="number" step="0.01" placeholder="Avg revenue per customer $">
-    </div>
+  <div class="input-row">
+    <input id="leads"  type="number" placeholder="Monthly leads (all sources)">
+    <input id="missPct" type="number" step="0.1" placeholder="Missed lead %">
+    <input id="quotes" type="number" placeholder="Quotes sent / month">
+    <input id="closeRate" type="number" step="0.1" placeholder="Current close % on reached">
+    <input id="avgRev" type="number" step="0.01" placeholder="Avg revenue / sale $">
+  </div>
 
-    <button id="nextBtn" disabled>Next ➔</button>
-  </section>
+  <button id="calcBtn" disabled>Next ➔</button>
+</section>
 
-  <!-- slide 2 -->
-  <section class="slide" id="resultSlide" style="display:none;opacity:0;transition:opacity .6s">
-    <h1 style="font-size:2.5rem">Estimation Follow-up</h1>
-    <h2 id="introText" style="margin-top:1rem;opacity:0">Anticipated savings</h2>
+<!-- ────────────────  SLIDE 2 – ESTIMATION  ──────────────── -->
+<section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
+  <h1>Estimation Follow-Up</h1>
+  <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+  <button id="toS2L">Next ➔</button>
+</section>
 
-    <div id="valueList" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-    <div id="totalBox" style="font-size:2.4rem;font-weight:700;opacity:0"></div>
-  </section>
+<!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
+<section class="slide" id="slideS2L" style="display:none;opacity:0;transition:opacity .6s">
+  <h1>Speed-to-Lead</h1>
+  <div id="s2lValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+  <button id="toMissed">Next ➔</button>
+</section>
 
-  <script>
-  (()=>{
+<!-- ────────────────  SLIDE 4 – MISSED CALLS ──────────────── -->
+<section class="slide" id="slideMissed" style="display:none;opacity:0;transition:opacity .6s">
+  <h1>Abandoned-Call Recovery</h1>
+  <div id="missValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+  <button id="toSum">Next ➔</button>
+</section>
 
-    /* --------- DOM short-cuts --------- */
-    const q   = id => document.getElementById(id);
-    const btn = q('nextBtn');
-    const inputs = ['formLeads','missedCalls','closeRate','avgRevenue'].map(q);
-    const inputSlide = q('inputSlide');
-    const resultSlide = q('resultSlide');
-    const introText = q('introText');
-    const valueList = q('valueList');
-    const totalBox  = q('totalBox');
+<!-- ────────────────  SLIDE 5 – SUMMARY ──────────────── -->
+<section class="slide" id="slideSum" style="display:none;opacity:0;transition:opacity .6s">
+  <h1>Total Annual Gain</h1>
+  <div id="sumValues" style="margin:2rem 0;font-size:1.6rem;line-height:2"></div>
+  <button onclick="location.reload()">Restart ↻</button>
+</section>
 
-    /* --------- constants --------- */
-    const FORM_UPLIFT   = 3;   // 3× more likely to convert
-    const MISSED_UPLIFT = 4;   // 4× recovery for missed calls
+<script>
+(()=>{
 
-    /* --------- enable Next when all filled --------- */
-    inputs.forEach(inp=>{
-      inp.addEventListener('input',()=>{
-        btn.disabled = inputs.some(i=>!i.value.trim());
-      });
-    });
+/* ── CONSTANTS ───────────────────────────────────────── */
+const UPLIFT = {
+  estLow:1.5, estHigh:2.0,
+  s2lLow:0.15, s2lHigh:0.35,      // close-rates on reached leads
+  missLow:0.20, missHigh:0.40     // close-rates on missed leads
+};
+const MONTHLY_COST = 500;
 
-    /* --------- main click handler --------- */
-    btn.addEventListener('click',()=>{
-      /* collect numbers */
-      const formLeads   = +q('formLeads').value   || 0;
-      const missedCalls = +q('missedCalls').value || 0;
-      const closeRate   = (+q('closeRate').value || 0) / 100; // to decimal
-      const avgRevenue  = +q('avgRevenue').value || 0;
+/* ── DOM SHORTCUTS ───────────────────────────────────── */
+const g   = id=>document.getElementById(id);
+const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
 
-      /* baseline & uplift calculations */
-      const baseConversions      = (formLeads + missedCalls) * closeRate;
-      const improvedFormConv     = formLeads   * FORM_UPLIFT   * closeRate;
-      const improvedMissedConv   = missedCalls * MISSED_UPLIFT * closeRate;
-      const incrementalConv      = (improvedFormConv + improvedMissedConv) - baseConversions;
-      const monthlyIncremental$$ = incrementalConv * avgRevenue;
-      const annualSavings        = monthlyIncremental$$ * 12;
+/* enable calc button when all inputs filled */
+const calcBtn=g('calcBtn');
+inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=>!e.value.trim())));
 
-      /* build list items */
-      const itemsHTML = [
-        `Extra form conversions: ${Math.round(improvedFormConv - formLeads*closeRate)}`,
-        `Extra missed-call conversions: ${Math.round(improvedMissedConv - missedCalls*closeRate)}`,
-        `Monthly incremental revenue: $${monthlyIncremental$$.toLocaleString(undefined,{maximumFractionDigits:0})}`,
-        `Annual anticipated savings: $${annualSavings.toLocaleString(undefined,{maximumFractionDigits:0})}`
-      ].map(txt=>`<div class="valItem">${txt}</div>`).join('');
-      valueList.innerHTML = itemsHTML;
- 
-      /* swap slides */
-      inputSlide.style.display='none';
-      resultSlide.style.display='block';
-      requestAnimationFrame(()=>resultSlide.style.opacity=1); // fade in smoothly
+/* ── MAIN CALCULATION ────────────────────────────────── */
+calcBtn.addEventListener('click',()=>{
 
-      /* staggered reveal */
-      setTimeout(()=>introText.style.opacity=1,400);
-      document.querySelectorAll('.valItem').forEach((el,i)=>{
-        setTimeout(()=>el.classList.add('show'), 800 + i*300);
-      });
-      const lastDelay = 800 + 3*300 + 200;
-      setTimeout(()=>{
-        totalBox.textContent = `≈ $${annualSavings.toLocaleString(undefined,{maximumFractionDigits:0})}`;
-        totalBox.style.opacity = 1;
-      }, lastDelay);
-    });
+  /* CLIENT INPUTS */
+  const Leads   = +g('leads').value;
+  const MissPct = (+g('missPct').value)/100;
+  const Quotes  = +g('quotes').value;
+  const CR0     = (+g('closeRate').value)/100;
+  const AR      = +g('avgRev').value;
 
-  })();
-  </script>
+  /* DERIVED COUNTS */
+  const Missed  = Leads * MissPct;
+  const Reached = Leads - Missed;
+
+  /* ------- 1. ESTIMATION FOLLOW-UP ------- */
+  const estBw = Quotes * CR0;
+  const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
+  const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
+  const estΔLow   = estSwLow  - estBw;
+  const estΔHigh  = estSwHigh - estBw;
+  const est$Low   = estΔLow  * AR * 12;
+  const est$High  = estΔHigh * AR * 12;
+  g('estValues').innerHTML = [
+    `Closed now: ${estBw.toFixed(1)}`,
+    `With Chiirp (low): ${estSwLow.toFixed(1)}`,
+    `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
+    `Annual gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
+  ].map(t=>`<div class="valItem">${t}</div>`).join('');
+  revealSlide('slideEst');
+
+  /* ------- 2. SPEED-TO-LEAD ------- */
+  g('toS2L').onclick=()=>{
+    const s2lBw = Reached * CR0;
+    const s2lSwLow  = Reached * UPLIFT.s2lLow;
+    const s2lSwHigh = Reached * UPLIFT.s2lHigh;
+    const s2lΔLow   = s2lSwLow  - s2lBw;
+    const s2lΔHigh  = s2lSwHigh - s2lBw;
+    const s2l$Low   = s2lΔLow  * AR * 12;
+    const s2l$High  = s2lΔHigh * AR * 12;
+
+    g('s2lValues').innerHTML = [
+      `Reached leads / mo: ${Reached}`,
+      `Closed now: ${s2lBw.toFixed(1)}`,
+      `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
+      `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
+      `Annual gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
+    ].map(t=>`<div class="valItem">${t}</div>`).join('');
+    revealSlide('slideS2L');
+
+    /* ------- 3. ABANDONED CALL ------- */
+    g('toMissed').onclick=()=>{
+      const missBw = Missed * CR0;
+      const missSwLow  = Missed * UPLIFT.missLow;
+      const missSwHigh = Missed * UPLIFT.missHigh;
+      const missΔLow   = missSwLow  - missBw;
+      const missΔHigh  = missSwHigh - missBw;
+      const miss$Low   = missΔLow  * AR * 12;
+      const miss$High  = missΔHigh * AR * 12;
+
+      g('missValues').innerHTML = [
+        `Missed contacts / mo: ${Missed.toFixed(1)}`,
+        `Closed now: ${missBw.toFixed(1)}`,
+        `With Chiirp (low): ${missSwLow.toFixed(1)}`,
+        `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
+        `Annual gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
+      ].map(t=>`<div class="valItem">${t}</div>`).join('');
+      revealSlide('slideMissed');
+
+      /* ------- 4. SUMMARY ------- */
+      g('toSum').onclick=()=>{
+        const lowGain  = est$Low + s2l$Low + miss$Low;
+        const highGain = est$High + s2l$High + miss$High;
+        const roiLow   = (lowGain / MONTHLY_COST).toFixed(1);
+        const roiHigh  = (highGain / MONTHLY_COST).toFixed(1);
+        g('sumValues').innerHTML = [
+          `Total annual revenue lift:`,
+          `$${lowGain.toLocaleString()} – $${highGain.toLocaleString()}`,
+          `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
+        ].map(t=>`<div class="valItem show">${t}</div>`).join('');
+        revealSlide('slideSum');
+      };
+    };
+  };
+});
+
+/* ── helper to fade-in slide and animate items ── */
+function revealSlide(id){
+  document.querySelectorAll('.slide').forEach(s=>s.style.display='none');
+  const el=g(id); el.style.display='block'; requestAnimationFrame(()=>el.style.opacity=1);
+  setTimeout(()=>el.querySelectorAll('.valItem').forEach((v,i)=>setTimeout(()=>v.classList.add('show'),200+i*250)),400);
+}
+
+})();
+</script>
 </body>
 </html>
