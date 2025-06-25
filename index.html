@@ -26,6 +26,29 @@
     button:disabled{opacity:.4;cursor:not-allowed}
     .valItem{opacity:0;transform:translateX(-60px);transition:transform .6s ease,opacity .6s ease}
     .valItem.show{opacity:1;transform:translateX(0)}
+        /* quick legend panel */
+    .guide{
+      margin-top:2.5rem;
+      width:100%;
+      background:rgba(255,255,255,.12);
+      border-radius:10px;
+      padding:1.4rem 1.2rem;
+      backdrop-filter:blur(6px);
+    }
+    .guide h3{
+      font-size:1.05rem;
+      margin-bottom:1rem;
+      letter-spacing:.08rem;
+    }
+    .guide table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.9rem;
+    }
+    .guide th,.guide td{padding:.45rem .55rem;text-align:left}
+    .guide th{border-bottom:1px solid #ffffff55;font-weight:600}
+    .guide td:first-child{font-weight:600;white-space:nowrap}
+    
   </style>
 </head>
 <body>
@@ -35,58 +58,33 @@
   <h1>CHIIRP DEMO</h1>
   <h2>SEE&nbsp;YOUR&nbsp;SAVINGS&nbsp;WITH&nbsp;CHIIRP</h2>
 
+  <!-- field inputs -->
   <div class="input-row">
-    <input id="leads"  type="number" placeholder="Monthly leads (all sources)">
-    <input id="missPct" type="number" step="0.1" placeholder="Missed lead %">
-    <input id="quotes" type="number" placeholder="Quotes sent / month">
-    <input id="closeRate" type="number" step="0.1" placeholder="Current close % on reached">
-    <input id="avgRev" type="number" step="0.01" placeholder="Avg revenue / sale $">
+    <input id="leads"      type="number" step="1"     placeholder="Monthly leads (all sources)">
+    <input id="missPct"    type="number" step="0.1"   placeholder="Missed lead %">
+    <input id="quotes"     type="number" step="1"     placeholder="Quotes sent / month">
+    <input id="closeRate"  type="number" step="0.1"   placeholder="Current close %">
+    <input id="avgRev"     type="number" step="0.01"  placeholder="Avg revenue / sale $">
+  </div>
+
+  <!-- explanatory key -->
+  <div class="guide">
+    <h3>What each field means</h3>
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Plain-English prompt</th><th>How we reuse it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Leads</td><td>How many new prospects you get per month (all sources)</td><td>Feeds Speed-to-Lead and sets the base for Missed-Call math</td></tr>
+        <tr><td>Missed %</td><td>About what % of those prospects you never reach live</td><td>Calculates Missed = Leads × Missed % ; Reached = Leads − Missed</td></tr>
+        <tr><td>Quotes</td><td>How many price quotes / estimates you send per month</td><td>Drives Estimation Follow-Up</td></tr>
+        <tr><td>Close %</td><td>% of reached prospects (or quoted jobs) that turn into sales today</td><td>Baseline close rate for all three modules</td></tr>
+        <tr><td>AvgRev $</td><td>Average revenue per new customer ($)</td><td>Converts extra deals to dollars everywhere</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <button id="calcBtn" disabled>Next ➔</button>
-      <button id="calcBtn" disabled>Next ➔</button>
-
-    <!-- Input field guide -->
-    <div style="margin-top:2.5rem;font-size:.9rem;line-height:1.6">
-      <table style="width:100%;border-collapse:collapse">
-        <thead>
-          <tr>
-            <th style="text-align:left">Variable</th>
-            <th style="text-align:left">Plain-English prompt</th>
-            <th style="text-align:left">How we reuse it</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Leads</td>
-            <td>How many new prospects do you get per month (all sources)?</td>
-            <td>Feeds Speed-to-Lead and sets the base for Missed-Call math.</td>
-          </tr>
-          <tr>
-            <td>Missed&nbsp;%</td>
-            <td>About what % of those prospects you never reach live?</td>
-            <td>Calculates Missed = Leads × Missed %. Reached = Leads − Missed.</td>
-          </tr>
-          <tr>
-            <td>Quotes</td>
-            <td>How many price quotes / estimates do you send per month?</td>
-            <td>Drives Estimation Follow-Up.</td>
-          </tr>
-          <tr>
-            <td>Close&nbsp;%</td>
-            <td>What percent of reached prospects (or quoted jobs) turn into sales today?</td>
-            <td>Baseline close rate for all three modules.</td>
-          </tr>
-          <tr>
-            <td>AvgRev&nbsp;$</td>
-            <td>Average revenue per new customer ($)</td>
-            <td>Converts extra deals to dollars everywhere.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>  <!-- end #slideInputs -->
-
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION  ──────────────── -->
