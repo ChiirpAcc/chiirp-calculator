@@ -37,7 +37,7 @@
   border-radius: 12px;
   padding: 2rem;
   /* let it grow/shrink with viewport */
-  width: 100%;
+  width: 90vw;
   max-width: none;
   margin: auto;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
@@ -48,7 +48,6 @@
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 2rem;
-  justify-content: center;
   width: 100%;
 }
 
@@ -74,13 +73,12 @@
 
 /* right-hand highlight panel */
 .slide#slideEst .highlight-table {
-  /* size to its contents and center */
-  display: inline-block;
-  justify-self: center;
+  /* back to a normal block inside the grid */
+  display: block;
+  justify-self: stretch;  /* fill the 1fr column */
   text-align: center;
-  overflow-x: hidden;
-  white-space: nowrap;
-  max-width: 600px; /* optional cap */
+  white-space: nowrap;    /* keep the big numbers on one line */
+  /* **no** max-width, no overflow hidden */
 }
 .slide#slideEst .highlight-table h3 {
   color: #fff;
@@ -133,7 +131,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #00b7ff 0%, #00b7ff 100%);
+    background: linear-gradient(130deg, #00b7ff 0%, #000000 100%);
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
