@@ -87,33 +87,106 @@
   <button id="calcBtn" disabled>Next ➔</button>
 </section>
 
-<!-- ────────────────  SLIDE 2 – ESTIMATION  ──────────────── -->
+<!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
 <section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
   <h1>Estimation Follow-Up</h1>
+
+  <!-- dynamic results injected by JS -->
   <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+
+  <!-- optional: show the exact formulas driving the numbers -->
+  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
+    <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
+    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+Baseline wins      = Quotes × Close %
+Wins with Chiirp   = Quotes × Close % × Uplift
+Incremental wins   = Wins with Chiirp − Baseline wins
+Monthly revenue    = Incremental wins × Avg Revenue
+        </pre>
+  </details>
+
   <button id="toS2L">Next ➔</button>
 </section>
+
 
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
 <section class="slide" id="slideS2L" style="display:none;opacity:0;transition:opacity .6s">
   <h1>Speed-to-Lead</h1>
+
+  <!-- dynamic results injected by JS -->
   <div id="s2lValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+
+  <!-- optional transparency panel -->
+  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
+    <summary style="cursor:pointer;font-weight:600">
+      How these numbers are calculated
+    </summary>
+    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+Reached leads        = Total leads − Missed leads
+Baseline wins        = Reached × Close %
+Wins with Chiirp     = Reached × Uplift close %
+Incremental wins     = Wins with Chiirp − Baseline wins
+Monthly revenue gain = Incremental wins × Avg Revenue
+    </pre>
+  </details>
+
   <button id="toMissed">Next ➔</button>
 </section>
 
+
 <!-- ────────────────  SLIDE 4 – MISSED CALLS ──────────────── -->
-<section class="slide" id="slideMissed" style="display:none;opacity:0;transition:opacity .6s">
+<section class="slide" id="slideMissed"
+         style="display:none;opacity:0;transition:opacity .6s">
   <h1>Abandoned-Call Recovery</h1>
-  <div id="missValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+
+  <!-- dynamic results from JS -->
+  <div id="missValues"
+       style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+
+  <!-- transparency panel (optional) -->
+  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
+    <summary style="cursor:pointer;font-weight:600">
+      How these numbers are calculated
+    </summary>
+    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+Missed contacts       = Total leads × Missed %
+Baseline wins         = Missed × Close %
+Wins with Chiirp      = Missed × Uplift close %
+Incremental wins      = Wins with Chiirp − Baseline wins
+Monthly revenue gain  = Incremental wins × Avg Revenue
+    </pre>
+  </details>
+
   <button id="toSum">Next ➔</button>
 </section>
 
+
 <!-- ────────────────  SLIDE 5 – SUMMARY ──────────────── -->
-<section class="slide" id="slideSum" style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Total monthly Gain</h1>
-  <div id="sumValues" style="margin:2rem 0;font-size:1.6rem;line-height:2"></div>
+<section class="slide" id="slideSum"
+         style="display:none;opacity:0;transition:opacity .6s">
+  <h1>Total Monthly Gain</h1>
+
+  <!-- populated by JS -->
+  <div id="sumValues"
+       style="margin:2rem 0;font-size:1.6rem;line-height:2"></div>
+
+  <!-- optional: reveal the math behind the totals -->
+  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
+    <summary style="cursor:pointer;font-weight:600">
+      How these numbers are calculated
+    </summary>
+    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+Low monthly gain   = Est_Low  + S2L_Low  + Miss_Low
+High monthly gain  = Est_High + S2L_High + Miss_High
+
+ROI (low)          = Low gain  ÷ Monthly cost
+ROI (high)         = High gain ÷ Monthly cost
+    </pre>
+  </details>
+
   <button onclick="location.reload()">Restart ↻</button>
 </section>
+
 
 <script>
 (()=>{
