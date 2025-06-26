@@ -32,36 +32,6 @@ body::before {
 }
 
 
-  /* ─────────────────────────────────────────────────────────────────────────────
-     BODY & ROTATING BACKDROP
-  ───────────────────────────────────────────────────────────────────────────── */
-  body {
-    position: relative;      /* for the pseudo-element */
-    overflow: hidden;
-    font-family: system-ui, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;      /* no horizontal scroll */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-  }
-  body::before {
-    content: "";
-    position: fixed;
-    top: 50%; left: 50%;
-    /* make it exactly big enough so its diagonal ≥ viewport diagonal */
-    width:  calc(100vw + 100vh);
-    height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #00b7ff 0%, #ffe05f 100%);
-    transform: translate(-50%, -50%) rotate(0deg);
-    transform-origin: center center;
-    z-index: -1;
-    animation: spin-bg 5s linear infinite;
-  }
-  @keyframes spin-bg {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-  }
 
 
   /* ─────────────────────────────────────────────────────────────────────────────
