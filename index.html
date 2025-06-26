@@ -32,24 +32,25 @@
   }
 
 /* ────────── SLIDE 2 “ESTIMATION” CARD ────────── */
-
-/* 1) Parent becomes a flex container */
+/* 1) Make the parent a grid and center everything */
 .slide#slideEst {
-  display: flex;
-  justify-content: center; /* horizontal centering */
-  /* optionally: align-items: center;  vertical centering if you need it */
+  display: grid;
+  place-items: center;   /* centers both horizontally and vertically */
+  /* ensure it spans the full width of its wrapper */
+  width: 100%;
 }
 
-/* 2) Child can keep its shrink-to-fit width */
+/* 2) Keep your existing shrink-to-fit card styles */
 .slide#slideEst .slide-content.estimation {
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
-  width: max-content;   /* let it size to its content */
+  width: max-content;   /* grow/shrink with your text */
   max-width: none;
-  /* margin: 0 auto;   <-- no longer needed */
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  /* no margin or position tweaks needed */
 }
+
 
 
 /* two-column: left fixed 360px, right flexible & centered */
@@ -141,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #00b7ff 0%, #00b7ff 100%);
+    background: linear-gradient(130deg, #00b7ff 0%, #000000 100%);
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
