@@ -15,9 +15,10 @@
   }
 
   /* ─────────────────────────────────────────────────────────────────────────────
-     BODY & ROTATING BACKGROUND
+     BODY & ROTATING BACKDROP
   ───────────────────────────────────────────────────────────────────────────── */
   body {
+    position: relative;          /* for the pseudo-element */
     font-family: system-ui, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
@@ -25,16 +26,22 @@
     justify-content: center;
     align-items: center;
     color: #fff;
-
-    /* custom‐prop angle + animated gradient */
-    --angle: 0deg;
-    background: linear-gradient(var(--angle), #00b7ff 0%, #ffe05f 100%);
-    animation: rotateGradient 30s linear infinite;
   }
 
-  @keyframes rotateGradient {
-    from { --angle: 0deg; }
-    to   { --angle: 360deg; }
+  /* this sits behind everything and spins */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(130deg, #00b7ff 0%, #ffe05f 100%);
+    transform-origin: center center;
+    z-index: -1;
+    animation: spin-bg 60s linear infinite;
+  }
+
+  @keyframes spin-bg {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
   }
 
   /* ─────────────────────────────────────────────────────────────────────────────
