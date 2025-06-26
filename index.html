@@ -31,6 +31,63 @@
     border-radius: 8px;
   }
 
+    /* ────────── SLIDE 2 “ESTIMATION” CARD ────────── */
+  .slide-content.estimation {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    margin: auto;
+  }
+  
+  /* two-column grid */
+  .est-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  /* left column styling */
+  .est-left h1 {
+    margin-bottom: 0.25em;
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+  .est-left .subhead {
+    margin-bottom: 1rem;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+  }
+  .est-left .results {
+    margin: 1.5rem 0;
+    font-size: 1.4rem;
+    line-height: 2;
+  }
+  
+  /* right column styling */
+  .est-right h3 {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    margin-bottom: 0.5rem;
+  }
+  .highlight-number {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+  }
+  
+  /* responsive stack on small screens */
+  @media (max-width: 640px) {
+    .est-grid {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .est-right {
+      margin-top: 2rem;
+    }
+  }
+
 
   /* ─────────────────────────────────────────────────────────────────────────────
      BODY & ROTATING BACKDROP
@@ -226,25 +283,38 @@
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
-<section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Estimation Follow-Up</h1>
+<section class="slide" id="slideEst">
+  <div class="slide-content estimation">
+    <div class="est-grid">
+      <!-- LEFT COL: summary + details -->
+      <div class="est-left">
+        <h1>Estimation Follow-Up</h1>
+        <p class="subhead">Based on your business numbers</p>
 
-  <!-- dynamic results injected by JS -->
-  <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+        <div id="estValues" class="results"></div>
 
-  <!-- optional: show the exact formulas driving the numbers -->
-  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
-    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+        <details class="calc-formula">
+          <summary>How these numbers are calculated</summary>
+          <pre>
 Baseline wins      = Quotes × Close %
 Wins with Chiirp   = Quotes × Close % × Uplift
 Incremental wins   = Wins with Chiirp − Baseline wins
 Monthly revenue    = Incremental wins × Avg Revenue
-        </pre>
-  </details>
+          </pre>
+        </details>
+      </div>
 
-  <button id="toS2L">Next ➔</button>
+      <!-- RIGHT COL: big highlight -->
+      <div class="est-right">
+        <h3>Annual range savings</h3>
+        <p id="estGain" class="highlight-number">Annual # range</p>
+      </div>
+    </div>
+
+    <button id="toS2L">Next ➔</button>
+  </div>
 </section>
+
 
 
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
