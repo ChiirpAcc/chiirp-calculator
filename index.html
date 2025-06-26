@@ -419,76 +419,57 @@ ROI (high)         = High gain ÷ Monthly cost
 </section>
 
 <script>
-(() => {
-  /* ── CONSTANTS ───────────────────────────────────────── */
-  const UPLIFT = {
-    estLow:1.5, estHigh:2.0,
-    s2lLow:0.15, s2lHigh:0.35,
-    missLow:0.20, missHigh:0.40
-  };
-  const MONTHLY_COST = 500;
+(()=>{
 
-  /* ── DOM SHORTCUTS ───────────────────────────────────── */
-  const g = id => document.getElementById(id);
-  const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
-  const calcBtn = g('calcBtn');
+/* ── CONSTANTS ───────────────────────────────────────── */
+const UPLIFT = {
+  estLow:1.5, estHigh:2.0,
+  s2lLow:0.15, s2lHigh:0.35,      // close-rates on reached leads
+  missLow:0.20, missHigh:0.40     // close-rates on missed leads
+};
+const MONTHLY_COST = 500;
 
-  /* ── ENABLE “NEXT” WHEN ALL FILLED (optional) ── */
+/* ── DOM SHORTCUTS ───────────────────────────────────── */
+const g   = id=>document.getElementById(id);
+const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
 
+/* enable calc button when all inputs filled */
+const calcBtn=g('calcBtn');
+inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=>!e.value.trim())));
 
-  /* ── SLIDE 1 ⇒ SLIDE 2 (ESTIMATION) ────────────────────────────────── */
-  calcBtn.addEventListener('click', () => {
-    // read inputs
-    const Leads   = +g('leads').value;
-    const MissPct = +g('missPct').value / 100;
-    const Quotes  = +g('quotes').value;
-    const CR0     = +g('closeRate').value / 100;
-    const AR      = +g('avgRev').value;
+/* ── MAIN CALCULATION ────────────────────────────────── */
+calcBtn.addEventListener('click',()=>{
 
-    // derived
-    const Missed  = Leads * MissPct;
-    const Reached = Leads - Missed;
+  /* CLIENT INPUTS */
+  const Leads   = +g('leads').value;
+  const MissPct = (+g('missPct').value)/100;
+  const Quotes  = +g('quotes').value;
+  const CR0     = (+g('closeRate').value)/100;
+  const AR      = +g('avgRev').value;
 
-    /* 1. ESTIMATION FOLLOW-UP */
-    const estBw     = Quotes * CR0;
-    const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
-    const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
-    const estΔLow   = estSwLow  - estBw;
-    const estΔHigh  = estSwHigh - estBw;
-    const est$Low   = estΔLow  * AR;
-    const est$High  = estΔHigh * AR;
+  /* DERIVED COUNTS */
+  const Missed  = Leads * MissPct;
+  const Reached = Leads - Missed;
 
-    // inject list
-    g('estValues').innerHTML = [
-      `Closed now: ${estBw.toFixed(1)}`,
-      `With Chiirp (low): ${estSwLow.toFixed(1)}`,
-      `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
-      `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
-    ].map(t => `<div class="valItem">${t}</div>`).join('');
+  /* ------- 1. ESTIMATION FOLLOW-UP ------- */
+  const estBw = Quotes * CR0;
+  const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
+  const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
+  const estΔLow   = estSwLow  - estBw;
+  const estΔHigh  = estSwHigh - estBw;
+  const est$Low   = estΔLow  * AR;
+  const est$High  = estΔHigh * AR;
+  g('estValues').innerHTML = [
+    `Closed now: ${estBw.toFixed(1)}`,
+    `With Chiirp (low): ${estSwLow.toFixed(1)}`,
+    `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
+    `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
+  ].map(t=>`<div class="valItem">${t}</div>`).join('');
+  revealSlide('slideEst');
 
-    // monthly highlight
-    g('estGainMonthly').textContent =
-      `$${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`;
-
-    // annual highlight
-    const annLow  = est$Low * 12;
-    const annHigh = est$High * 12;
-    g('estGainAnnual').textContent =
-      `$${annLow.toLocaleString()} – $${annHigh.toLocaleString()}`;
-
-    // show Slide 2
-    revealSlide('slideEst');
-  });
-
-  /* ── SLIDE 2 ⇒ SLIDE 3 (SPEED-TO-LEAD) ───────────────────────────────── */
-  g('toS2L').addEventListener('click', () => {
-    const Leads   = +g('leads').value;
-    const MissPct = +g('missPct').value / 100;
-    const Reached = Leads - (Leads * MissPct);
-    const CR0     = +g('closeRate').value / 100;
-    const AR      = +g('avgRev').value;
-
-    const s2lBw     = Reached * CR0;
+  /* ------- 2. SPEED-TO-LEAD ------- */
+  g('toS2L').onclick=()=>{
+    const s2lBw = Reached * CR0;
     const s2lSwLow  = Reached * UPLIFT.s2lLow;
     const s2lSwHigh = Reached * UPLIFT.s2lHigh;
     const s2lΔLow   = s2lSwLow  - s2lBw;
@@ -502,70 +483,54 @@ ROI (high)         = High gain ÷ Monthly cost
       `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
       `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
       `monthly gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
-    ].map(t => `<div class="valItem">${t}</div>`).join('');
-
+    ].map(t=>`<div class="valItem">${t}</div>`).join('');
     revealSlide('slideS2L');
-  });
 
-  /* ── SLIDE 3 ⇒ SLIDE 4 (ABANDONED CALL) ─────────────────────────────── */
-  g('toMissed').addEventListener('click', () => {
-    const Leads   = +g('leads').value;
-    const MissPct = +g('missPct').value / 100;
-    const AR      = +g('avgRev').value;
-    const Missed  = Leads * MissPct;
-    const CR0     = +g('closeRate').value / 100;
+    /* ------- 3. ABANDONED CALL ------- */
+    g('toMissed').onclick=()=>{
+      const missBw = Missed * CR0;
+      const missSwLow  = Missed * UPLIFT.missLow;
+      const missSwHigh = Missed * UPLIFT.missHigh;
+      const missΔLow   = missSwLow  - missBw;
+      const missΔHigh  = missSwHigh - missBw;
+      const miss$Low   = missΔLow  * AR;
+      const miss$High  = missΔHigh * AR;
 
-    const missBw     = Missed * CR0;
-    const missSwLow  = Missed * UPLIFT.missLow;
-    const missSwHigh = Missed * UPLIFT.missHigh;
-    const missΔLow   = missSwLow  - missBw;
-    const missΔHigh  = missSwHigh - missBw;
-    const miss$Low   = missΔLow  * AR;
-    const miss$High  = missΔHigh * AR;
+      g('missValues').innerHTML = [
+        `Missed contacts / mo: ${Missed.toFixed(1)}`,
+        `Closed now: ${missBw.toFixed(1)}`,
+        `With Chiirp (low): ${missSwLow.toFixed(1)}`,
+        `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
+        `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
+      ].map(t=>`<div class="valItem">${t}</div>`).join('');
+      revealSlide('slideMissed');
 
-    g('missValues').innerHTML = [
-      `Missed contacts / mo: ${Missed.toFixed(1)}`,
-      `Closed now: ${missBw.toFixed(1)}`,
-      `With Chiirp (low): ${missSwLow.toFixed(1)}`,
-      `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
-      `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
-    ].map(t => `<div class="valItem">${t}</div>`).join('');
+      /* ------- 4. SUMMARY ------- */
+      g('toSum').onclick=()=>{
+        const lowGain  = est$Low + s2l$Low + miss$Low;
+        const highGain = est$High + s2l$High + miss$High;
+        const roiLow   = (lowGain / MONTHLY_COST).toFixed(1);
+        const roiHigh  = (highGain / MONTHLY_COST).toFixed(1);
+        g('sumValues').innerHTML = [
+          `Total monthly revenue lift:`,
+          `$${lowGain.toLocaleString()} – $${highGain.toLocaleString()}`,
+          `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
+        ].map(t=>`<div class="valItem show">${t}</div>`).join('');
+        revealSlide('slideSum');
+      };
+    };
+  };
+});
 
-    revealSlide('slideMissed');
-  });
+/* ── helper to fade-in slide and animate items ── */
+function revealSlide(id){
+  document.querySelectorAll('.slide').forEach(s=>s.style.display='none');
+  const el=g(id); el.style.display='block'; requestAnimationFrame(()=>el.style.opacity=1);
+  setTimeout(()=>el.querySelectorAll('.valItem').forEach((v,i)=>setTimeout(()=>v.classList.add('show'),200+i*250)),400);
+}
 
-  /* ── SLIDE 4 ⇒ SLIDE 5 (SUMMARY) ─────────────────────────────────────── */
-  g('toSum').addEventListener('click', () => {
-    // You can reconstruct est$Low, s2l$Low, miss$Low here or store them upstream
-    // For brevity, assume you re-calc or store them:
-    // const lowGain  = est$Low + s2l$Low + miss$Low;
-    // const highGain = est$High + s2l$High + miss$High;
-    const lowGain = /* recalc */;
-    const highGain = /* recalc */;
-
-    const roiLow  = (lowGain  / MONTHLY_COST).toFixed(1);
-    const roiHigh = (highGain / MONTHLY_COST).toFixed(1);
-
-    g('sumValues').innerHTML = [
-      `Total monthly revenue lift:`,
-      `$${lowGain.toLocaleString()} – $${highGain.toLocaleString()}`,
-      `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
-    ].map(t => `<div class="valItem show">${t}</div>`).join('');
-
-    revealSlide('slideSum');
-  });
-
-  /* ── HELPER: fade in + animate ───────────────────────────────────── */
-  function revealSlide(id) {
-    document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
-    const el = g(id);
-    el.style.display = 'block';
-    requestAnimationFrame(() => el.style.opacity = 1);
-    setTimeout(
-      () => el.querySelectorAll('.valItem')
-            .forEach((v,i) => setTimeout(() => v.classList.add('show'), 200 + i * 250)),
-      400
-    );
-  }
 })();
 </script>
+</body>
+</html>
+  
