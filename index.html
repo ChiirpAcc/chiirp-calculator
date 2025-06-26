@@ -126,7 +126,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #00b7ff 0%, #00b7ff 100%);
+    background: linear-gradient(130deg, #00b7ff 0%, #000000 100%);
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -498,7 +498,15 @@ calcBtn.addEventListener('click',()=>{
       `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
       `monthly gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
     ].map(t=>`<div class="valItem">${t}</div>`).join('');
-    revealSlide('slideS2L');
+
+    // fill the right-hand highlights
+    g('estGainMonthly').textContent =
+      `$${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`;
+    const annLow  = est$Low * 12;
+    const annHigh = est$High * 12;
+    g('estGainAnnual').textContent =
+      `$${annLow.toLocaleString()} – $${annHigh.toLocaleString()}`;
+        revealSlide('slideS2L');
 
     /* ------- 3. ABANDONED CALL ------- */
     g('toMissed').onclick=()=>{
@@ -509,7 +517,7 @@ calcBtn.addEventListener('click',()=>{
       const missΔHigh  = missSwHigh - missBw;
       const miss$Low   = missΔLow  * AR;
       const miss$High  = missΔHigh * AR;
-/*
+
       g('missValues').innerHTML = [
         `Missed contacts / mo: ${Missed.toFixed(1)}`,
         `Closed now: ${missBw.toFixed(1)}`,
@@ -518,18 +526,7 @@ calcBtn.addEventListener('click',()=>{
         `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
       ].map(t=>`<div class="valItem">${t}</div>`).join('');
       revealSlide('slideMissed');
-*/
-      const rows = [
-      ['Missed contacts / mo', Missed.toFixed(1)],
-      ['Closed now',          missBw.toFixed(1)],
-      ['With Chiirp (low)',   missSwLow.toFixed(1)],
-      ['With Chiirp (high)',  missSwHigh.toFixed(1)],
-      ['Monthly gain',        `$${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`]
-    ];
-    g('missValues').innerHTML = rows
-      .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
-      .join('');
-    revealSlide('slideMissed');
+
       /* ------- 4. SUMMARY ------- */
       g('toSum').onclick=()=>{
         const lowGain  = est$Low + s2l$Low + miss$Low;
