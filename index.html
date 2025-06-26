@@ -1,22 +1,17 @@
-check this: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>CHIIRP Demo – Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-style>
+  <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body {
-      /* replace your current background line with these three */
-      --angle: 0deg;
-      background: linear-gradient(var(--angle), #00b7ff 0%, #ffe05f 100%);
-      animation: rotateGradient 30s linear infinite;
+    body{
+      font-family:system-ui,sans-serif;min-height:100vh;overflow-x:hidden;
+      display:flex;justify-content:center;align-items:center;
+      background:linear-gradient(130deg,#00b7ff 0%,#ffe05f 100%);
+      color:#fff
     }
-    @keyframes rotateGradient {
-      from { --angle: 0deg; }
-      to   { --angle: 360deg; }
-    }
-
     .slide{width:min(94vw,900px);text-align:center;padding:2rem}
     h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:2px;text-shadow:0 2px 6px #0006}
     h2{margin-top:.8rem;font-size:clamp(1.1rem,2.4vw,1.4rem);font-weight:400;letter-spacing:.2rem}
@@ -53,8 +48,6 @@ style>
     .guide th,.guide td{padding:.45rem .55rem;text-align:left}
     .guide th{border-bottom:1px solid #ffffff55;font-weight:600}
     .guide td:first-child{font-weight:600;white-space:nowrap}
-
-    
     
   </style>
 </head>
@@ -65,21 +58,16 @@ style>
   <h1>CHIIRP DEMO</h1>
   <h2>SEE&nbsp;YOUR&nbsp;SAVINGS&nbsp;WITH&nbsp;CHIIRP</h2>
 
-  <!-- field inputs (pattern removed) -->
+  <!-- field inputs -->
   <div class="input-row">
-    <input id="leads"      type="number" min="0" step="1"    inputmode="numeric"
-           placeholder="Monthly leads (e.g. 250)" required>
-    <input id="missPct"    type="number" min="0" max="100" step="0.1" inputmode="numeric"
-           placeholder="Missed lead % (e.g. 25)" required>
-    <input id="quotes"     type="number" min="0" step="1"    inputmode="numeric"
-           placeholder="Quotes / month (e.g. 120)" required>
-    <input id="closeRate"  type="number" min="0" max="100" step="0.1" inputmode="numeric"
-           placeholder="Close % (e.g. 8)" required>
-    <input id="avgRev"     type="number" min="0" step="0.01" inputmode="numeric"
-           placeholder="Avg revenue $ (e.g. 750)" required>
+    <input id="leads"      type="number" step="1"     placeholder="Monthly leads (all sources)">
+    <input id="missPct"    type="number" step="0.1"   placeholder="Missed lead %">
+    <input id="quotes"     type="number" step="1"     placeholder="Quotes sent / month">
+    <input id="closeRate"  type="number" step="0.1"   placeholder="Current close %">
+    <input id="avgRev"     type="number" step="0.01"  placeholder="Avg revenue / sale $">
   </div>
 
-  <!-- explanatory key (unchanged) -->
+  <!-- explanatory key -->
   <div class="guide">
     <h3>What each field means</h3>
     <table>
@@ -96,8 +84,7 @@ style>
     </table>
   </div>
 
-  <!-- non-submit button -->
-    <button id="calcBtn" type="button" disabled>Next ➔</button>
+  <button id="calcBtn" disabled>Next ➔</button>
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
@@ -106,15 +93,6 @@ style>
 
   <!-- dynamic results injected by JS -->
   <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-    <pre id="estExplain"
-         style="font-size:.9rem;
-                text-align:left;
-                background:rgba(255,255,255,.10);
-                padding:1rem;
-                border-radius:8px;
-                white-space:pre-wrap;
-                line-height:1.45">
-    </pre>
 
   <!-- optional: show the exact formulas driving the numbers -->
   <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
@@ -137,15 +115,6 @@ Monthly revenue    = Incremental wins × Avg Revenue
 
   <!-- dynamic results injected by JS -->
   <div id="s2lValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-    <pre id="s2lExplain"
-       style="font-size:.9rem;
-              text-align:left;
-              background:rgba(255,255,255,.10);
-              padding:1rem;
-              border-radius:8px;
-              white-space:pre-wrap;
-              line-height:1.45">
-  </pre>
 
   <!-- optional transparency panel -->
   <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
@@ -173,15 +142,6 @@ Monthly revenue gain = Incremental wins × Avg Revenue
   <!-- dynamic results from JS -->
   <div id="missValues"
        style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-    <pre id="missExplain"
-       style="font-size:.9rem;
-              text-align:left;
-              background:rgba(255,255,255,.10);
-              padding:1rem;
-              border-radius:8px;
-              white-space:pre-wrap;
-              line-height:1.45">
-  </pre>
 
   <!-- transparency panel (optional) -->
   <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
@@ -250,13 +210,6 @@ inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=
 /* ── MAIN CALCULATION ────────────────────────────────── */
 calcBtn.addEventListener('click',()=>{
 
-    // ---- basic validation ----
-  if (!inputs.every(inp => inp.value.trim())) { return; }          // shouldn't happen, but safe-guard
-  if (+g('quotes').value > +g('leads').value) {
-    alert('Quotes can’t exceed total leads.'); 
-    return;
-  }
-
   /* CLIENT INPUTS */
   const Leads   = +g('leads').value;
   const MissPct = (+g('missPct').value)/100;
@@ -269,107 +222,58 @@ calcBtn.addEventListener('click',()=>{
   const Reached = Leads - Missed;
 
   /* ------- 1. ESTIMATION FOLLOW-UP ------- */
-  const estBw     = Quotes * CR0;
+  const estBw = Quotes * CR0;
   const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
   const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
   const estΔLow   = estSwLow  - estBw;
   const estΔHigh  = estSwHigh - estBw;
   const est$Low   = estΔLow  * AR;
   const est$High  = estΔHigh * AR;
-  
   g('estValues').innerHTML = [
     `Closed now: ${estBw.toFixed(1)}`,
     `With Chiirp (low): ${estSwLow.toFixed(1)}`,
     `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
     `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
-  ].map(t => `<div class="valItem">${t}</div>`).join('');
-  
-  /* ↓  ADD THIS EXPLANATION LINE HERE ↓ */
-  g('estExplain').textContent =
-  `Quotes × Close %               = ${Quotes} × ${(CR0*100).toFixed(1)} %  =  ${estBw.toFixed(1)} closed
-  Quotes × Close % × ${UPLIFT.estLow}   = ${Quotes} × ${(CR0*100).toFixed(1)} % × ${UPLIFT.estLow}  =  ${estSwLow.toFixed(1)} (low)
-  Quotes × Close % × ${UPLIFT.estHigh}  = ${Quotes} × ${(CR0*100).toFixed(1)} % × ${UPLIFT.estHigh} =  ${estSwHigh.toFixed(1)} (high)
-  
-  Incremental wins (low)         = ${estSwLow.toFixed(1)} − ${estBw.toFixed(1)}  =  ${estΔLow.toFixed(1)}
-  Incremental wins (high)        = ${estSwHigh.toFixed(1)} − ${estBw.toFixed(1)}  =  ${estΔHigh.toFixed(1)}
-  
-  Monthly $ gain (low)           = ${estΔLow.toFixed(1)} × $${AR}  =  $${est$Low.toLocaleString()}
-  Monthly $ gain (high)          = ${estΔHigh.toFixed(1)} × $${AR}  =  $${est$High.toLocaleString()}`;
-  
-  /* existing line */
+  ].map(t=>`<div class="valItem">${t}</div>`).join('');
   revealSlide('slideEst');
 
-
   /* ------- 2. SPEED-TO-LEAD ------- */
-  g('toS2L').onclick = () => {
-    /* baseline and Chiirp wins */
-    const s2lBw      = Reached * CR0;
-    const s2lSwLow   = Reached * UPLIFT.s2lLow;
-    const s2lSwHigh  = Reached * UPLIFT.s2lHigh;
-    const s2lΔLow    = s2lSwLow  - s2lBw;
-    const s2lΔHigh   = s2lSwHigh - s2lBw;
-    const s2l$Low    = s2lΔLow   * AR;
-    const s2l$High   = s2lΔHigh  * AR;
-  
-    /* headline numbers */
+  g('toS2L').onclick=()=>{
+    const s2lBw = Reached * CR0;
+    const s2lSwLow  = Reached * UPLIFT.s2lLow;
+    const s2lSwHigh = Reached * UPLIFT.s2lHigh;
+    const s2lΔLow   = s2lSwLow  - s2lBw;
+    const s2lΔHigh  = s2lSwHigh - s2lBw;
+    const s2l$Low   = s2lΔLow  * AR;
+    const s2l$High  = s2lΔHigh * AR;
+
     g('s2lValues').innerHTML = [
-      `Reached leads / mo: ${Reached.toLocaleString()}`,
+      `Reached leads / mo: ${Reached}`,
       `Closed now: ${s2lBw.toFixed(1)}`,
       `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
       `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
       `monthly gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
-    ].map(t => `<div class="valItem">${t}</div>`).join('');
-  
-    /* line-by-line walkthrough */
-    g('s2lExplain').textContent =
-  `Reached × Close %               = ${Reached} × ${(CR0*100).toFixed(1)} %  =  ${s2lBw.toFixed(1)}
-  Reached × ${(UPLIFT.s2lLow*100).toFixed(0)} %     = ${Reached} × ${(UPLIFT.s2lLow*100).toFixed(0)} %  =  ${s2lSwLow.toFixed(1)}  (low)
-  Reached × ${(UPLIFT.s2lHigh*100).toFixed(0)} %    = ${Reached} × ${(UPLIFT.s2lHigh*100).toFixed(0)} %  =  ${s2lSwHigh.toFixed(1)}  (high)
-  
-  Incremental wins (low)          = ${s2lSwLow.toFixed(1)} − ${s2lBw.toFixed(1)}  =  ${s2lΔLow.toFixed(1)}
-  Incremental wins (high)         = ${s2lSwHigh.toFixed(1)} − ${s2lBw.toFixed(1)}  =  ${s2lΔHigh.toFixed(1)}
-  
-  Monthly $ gain (low)            = ${s2lΔLow.toFixed(1)} × $${AR}  =  $${s2l$Low.toLocaleString()}
-  Monthly $ gain (high)           = ${s2lΔHigh.toFixed(1)} × $${AR}  =  $${s2l$High.toLocaleString()}`;
-  
+    ].map(t=>`<div class="valItem">${t}</div>`).join('');
     revealSlide('slideS2L');
-  };
 
-  /* ------- 3. ABANDONED CALL ------- */
-  g('toMissed').onclick = () => {
-    /* baseline and Chiirp wins on missed contacts */
-    const missBw      = Missed * CR0;
-    const missSwLow   = Missed * UPLIFT.missLow;
-    const missSwHigh  = Missed * UPLIFT.missHigh;
-    const missΔLow    = missSwLow  - missBw;
-    const missΔHigh   = missSwHigh - missBw;
-    const miss$Low    = missΔLow   * AR;
-    const miss$High   = missΔHigh  * AR;
-  
-    /* headline numbers */
-    g('missValues').innerHTML = [
-      `Missed contacts / mo: ${Missed.toFixed(1)}`,
-      `Closed now: ${missBw.toFixed(1)}`,
-      `With Chiirp (low): ${missSwLow.toFixed(1)}`,
-      `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
-      `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
-    ].map(t => `<div class="valItem">${t}</div>`).join('');
-  
-    /* step-by-step explanation */
-    g('missExplain').textContent =
-  `Missed × Close %             = ${Missed.toFixed(1)} × ${(CR0*100).toFixed(1)} %  =  ${missBw.toFixed(1)}
-  Missed × ${(UPLIFT.missLow*100).toFixed(0)} %   = ${Missed.toFixed(1)} × ${(UPLIFT.missLow*100).toFixed(0)} %  =  ${missSwLow.toFixed(1)}  (low)
-  Missed × ${(UPLIFT.missHigh*100).toFixed(0)} %  = ${Missed.toFixed(1)} × ${(UPLIFT.missHigh*100).toFixed(0)} %  =  ${missSwHigh.toFixed(1)}  (high)
-  
-  Incremental wins (low)       = ${missSwLow.toFixed(1)} − ${missBw.toFixed(1)}  =  ${missΔLow.toFixed(1)}
-  Incremental wins (high)      = ${missSwHigh.toFixed(1)} − ${missBw.toFixed(1)}  =  ${missΔHigh.toFixed(1)}
-  
-  Monthly $ gain (low)         = ${missΔLow.toFixed(1)} × $${AR}  =  $${miss$Low.toLocaleString()}
-  Monthly $ gain (high)        = ${missΔHigh.toFixed(1)} × $${AR}  =  $${miss$High.toLocaleString()}`;
-  
-    revealSlide('slideMissed');
-  };
+    /* ------- 3. ABANDONED CALL ------- */
+    g('toMissed').onclick=()=>{
+      const missBw = Missed * CR0;
+      const missSwLow  = Missed * UPLIFT.missLow;
+      const missSwHigh = Missed * UPLIFT.missHigh;
+      const missΔLow   = missSwLow  - missBw;
+      const missΔHigh  = missSwHigh - missBw;
+      const miss$Low   = missΔLow  * AR;
+      const miss$High  = missΔHigh * AR;
 
+      g('missValues').innerHTML = [
+        `Missed contacts / mo: ${Missed.toFixed(1)}`,
+        `Closed now: ${missBw.toFixed(1)}`,
+        `With Chiirp (low): ${missSwLow.toFixed(1)}`,
+        `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
+        `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
+      ].map(t=>`<div class="valItem">${t}</div>`).join('');
+      revealSlide('slideMissed');
 
       /* ------- 4. SUMMARY ------- */
       g('toSum').onclick=()=>{
