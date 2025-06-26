@@ -156,6 +156,58 @@
   input::-webkit-outer-spin-button {
     display: none;
   }
+  /* ─────────── SHOW/HIDE SLIDES ─────────── */
+  .slide {
+    display: none;
+    opacity: 0;
+    transition: opacity .6s;
+  }
+  .slide.show {
+    display: block;
+    opacity: 1;
+  }
+  
+  /* ────────── TWO-COLUMN LAYOUT ────────── */
+  .slide-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2rem;
+  }
+  
+  /* ───────── LEFT COLUMN (DETAILS) ───────── */
+  .details {
+    text-align: left;
+  }
+  .results {
+    margin: 2rem 0;
+    font-size: 1.4rem;
+    line-height: 2;
+  }
+  .calc-formula {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
+  .calc-formula summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .calc-formula pre {
+    white-space: pre-wrap;
+    line-height: 1.5;
+    margin-top: 0.8rem;
+  }
+  
+  /* ───────── RIGHT COLUMN (HIGHLIGHT) ───────── */
+  .savings {
+    text-align: right;
+  }
+  .highlight-number {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
 
   
 </style>
@@ -199,24 +251,31 @@
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
-<section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Estimation Follow-Up</h1>
-
-  <!-- dynamic results injected by JS -->
-  <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-
-  <!-- optional: show the exact formulas driving the numbers -->
-  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
-    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+<section class="slide" id="slideEst">
+  <div class="slide-grid">
+    <!-- left column: details + formulas -->
+    <div class="details">
+      <h1>Estimation Follow-Up</h1>
+      <div id="estValues" class="results"></div>
+      <details class="calc-formula">
+        <summary>How these numbers are calculated</summary>
+        <pre>
 Baseline wins      = Quotes × Close %
 Wins with Chiirp   = Quotes × Close % × Uplift
 Incremental wins   = Wins with Chiirp − Baseline wins
 Monthly revenue    = Incremental wins × Avg Revenue
         </pre>
-  </details>
-
+      </details>
+    </div>
+    <!-- right column: big highlight -->
+    <aside class="savings">
+      <h3>Monthly gain</h3>
+      <p id="estGain" class="highlight-number"></p>
+    </aside>
+  </div>
   <button id="toS2L">Next ➔</button>
+</section>
+
 </section>
 
 
@@ -314,39 +373,37 @@ const MONTHLY_COST = 500;
 const g   = id=>document.getElementById(id);
 const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
 
-/* enable calc button when all inputs filled */
-const calcBtn=g('calcBtn');
-inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=>!e.value.trim())));
+// ── 1. Enable the “Next” button when all inputs are non-empty ──
+const calcBtn = g('calcBtn');
+inputs.forEach(inputEl =>
+  inputEl.addEventListener('input', () => {
+    calcBtn.disabled = inputs.some(el => !el.value.trim());
+  })
+);
 
-/* ── MAIN CALCULATION ────────────────────────────────── */
-calcBtn.addEventListener('click',()=>{
-
-  /* CLIENT INPUTS */
+// ── 2. Main “Calculate Estimation” handler ──
+calcBtn.addEventListener('click', () => {
+  // read your fields
   const Leads   = +g('leads').value;
-  const MissPct = (+g('missPct').value)/100;
+  const MissPct = (+g('missPct').value) / 100;
   const Quotes  = +g('quotes').value;
-  const CR0     = (+g('closeRate').value)/100;
+  const CR0     = (+g('closeRate').value) / 100;
   const AR      = +g('avgRev').value;
 
-  /* DERIVED COUNTS */
-  const Missed  = Leads * MissPct;
-  const Reached = Leads - Missed;
+  // math
+  const estBw    = Quotes * CR0;
+  const estSwLow = Quotes * CR0 * UPLIFT.estLow;
+  const estSwHi  = Quotes * CR0 * UPLIFT.estHigh;
+  const estΔLow  = estSwLow - estBw;
+  const estΔHi   = estSwHi  - estBw;
+  const est$Low  = estΔLow * AR;
+  const est$Hi   =
 
-  /* ------- 1. ESTIMATION FOLLOW-UP ------- */
-  const estBw = Quotes * CR0;
-  const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
-  const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
-  const estΔLow   = estSwLow  - estBw;
-  const estΔHigh  = estSwHigh - estBw;
-  const est$Low   = estΔLow  * AR;
-  const est$High  = estΔHigh * AR;
-  g('estValues').innerHTML = [
-    `Closed now: ${estBw.toFixed(1)}`,
-    `With Chiirp (low): ${estSwLow.toFixed(1)}`,
-    `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
-    `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
-  ].map(t=>`<div class="valItem">${t}</div>`).join('');
-  revealSlide('slideEst');
+  // ── 3. show the Estimation slide ──
+  const slide = g('slideEst');
+  slide.classList.add('show');    // makes display:block + opacity:1
+  revealSlide('slideEst');       // still triggers the .valItem animations
+
 
   /* ------- 2. SPEED-TO-LEAD ------- */
   g('toS2L').onclick=()=>{
