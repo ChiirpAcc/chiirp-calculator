@@ -37,54 +37,63 @@
     border-radius: 12px;
     padding: 2rem;
     max-width: 800px;
-    width: 100%;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     margin: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   }
   
-  /* two-column grid */
   .est-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
   
-  /* left column styling */
-  .est-left h1 {
-    margin-bottom: 0.25em;
-    font-size: clamp(2rem, 5vw, 3rem);
-  }
-  .est-left .subhead {
-    margin-bottom: 1rem;
-    font-size: clamp(1rem, 2.5vw, 1.4rem);
-    font-weight: 300;
-  }
-  .est-left .results {
-    margin: 1.5rem 0;
-    font-size: 1.4rem;
-    line-height: 2;
+  .est-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 1.5rem;
   }
   
-  /* right column styling */
-  .est-right h3 {
-    font-size: clamp(1.2rem, 3vw, 1.6rem);
-    margin-bottom: 0.5rem;
+  /* Left “details” card */
+  .details-table h3 {
+    margin-bottom: 1rem;
+    color: #fff;
+    font-size: 1.25rem;
+  }
+  .details-table table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+  }
+  .details-table th,
+  .details-table td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    text-align: left;
+  }
+  
+  /* Right “highlight” card */
+  .highlight-table {
+    text-align: center;
+  }
+  .highlight-table h3 {
+    margin-bottom: 1rem;
+    color: #fff;
+    font-size: 1.25rem;
   }
   .highlight-number {
     font-size: clamp(3rem, 8vw, 5rem);
     font-weight: 700;
+    color: #ffeb3b;
     line-height: 1;
-    color: #fff;
   }
   
-  /* responsive stack on small screens */
+  /* Optional: stack on small screens */
   @media (max-width: 640px) {
     .est-grid {
       grid-template-columns: 1fr;
-      text-align: center;
     }
-    .est-right {
-      margin-top: 2rem;
+    .est-card {
+      margin-bottom: 2rem;
     }
   }
 
@@ -283,16 +292,18 @@
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
-<section class="slide" id="slideEst">
+<section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
-      <!-- LEFT COL: summary + details -->
-      <div class="est-left">
+      <!-- LEFT CARD: detailed estimates -->
+      <div class="est-card details-table">
         <h1>Estimation Follow-Up</h1>
         <p class="subhead">Based on your business numbers</p>
-
-        <div id="estValues" class="results"></div>
-
+        <table>
+          <tbody id="estValues">
+            <!-- JS will inject rows here -->
+          </tbody>
+        </table>
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
           <pre>
@@ -304,8 +315,8 @@ Monthly revenue    = Incremental wins × Avg Revenue
         </details>
       </div>
 
-      <!-- RIGHT COL: big highlight -->
-      <div class="est-right">
+      <!-- RIGHT CARD: annual savings -->
+      <div class="est-card highlight-table">
         <h3>Annual range savings</h3>
         <p id="estGain" class="highlight-number">Annual # range</p>
       </div>
@@ -314,6 +325,7 @@ Monthly revenue    = Incremental wins × Avg Revenue
     <button id="toS2L">Next ➔</button>
   </div>
 </section>
+
 
 
 
