@@ -86,8 +86,15 @@
     color: #ffeb3b;
     line-height: 1;
   }
-  
-  /* Optional: stack on small screens */
+      /* monthly vs annual highlight */
+  .highlight-table .subtext {
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #fff;
+  }
+
+    /* Optional: stack on small screens */
   @media (max-width: 640px) {
     .est-grid {
       grid-template-columns: 1fr;
@@ -295,13 +302,13 @@
 <section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
-      <!-- LEFT CARD: detailed estimates -->
+      <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Estimation Follow-Up</h1>
         <p class="subhead">Based on your business numbers</p>
         <table>
           <tbody id="estValues">
-            <!-- JS will inject rows here -->
+            <!-- JS injects rows here -->
           </tbody>
         </table>
         <details class="calc-formula">
@@ -315,16 +322,20 @@ Monthly revenue    = Incremental wins × Avg Revenue
         </details>
       </div>
 
-      <!-- RIGHT CARD: annual savings -->
+      <!-- RIGHT CARD: monthly & annual highlight -->
       <div class="est-card highlight-table">
-        <h3>Annual range savings</h3>
-        <p id="estGain" class="highlight-number">Annual # range</p>
+        <h3>Additional Revenue</h3>
+        <p id="estGainMonthly" class="highlight-number">—</p>
+        <p class="subtext">per month</p>
+        <p id="estGainAnnual" class="highlight-number">—</p>
+        <p class="subtext">per year</p>
       </div>
     </div>
 
     <button id="toS2L">Next ➔</button>
   </div>
 </section>
+
 
 
 
@@ -441,40 +452,58 @@ calcBtn.addEventListener('click',()=>{
   const Missed  = Leads * MissPct;
   const Reached = Leads - Missed;
 
-  /* ------- 1. ESTIMATION FOLLOW-UP ------- */
-  const estBw = Quotes * CR0;
+  /* ── 1. ESTIMATION FOLLOW-UP ─────────────────────────────────── */
+  const estBw     = Quotes * CR0;
   const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
   const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
   const estΔLow   = estSwLow  - estBw;
   const estΔHigh  = estSwHigh - estBw;
   const est$Low   = estΔLow  * AR;
   const est$High  = estΔHigh * AR;
+  
+  // 1a. populate the left‐hand list
   g('estValues').innerHTML = [
     `Closed now: ${estBw.toFixed(1)}`,
     `With Chiirp (low): ${estSwLow.toFixed(1)}`,
     `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
     `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
-  ].map(t=>`<div class="valItem">${t}</div>`).join('');
+  ]
+    .map(t => `<div class="valItem">${t}</div>`)
+    .join('');
+  
+  // 1b. fill the monthly highlight
+  g('estGainMonthly').textContent =
+    `$${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`;
+  
+  // 1c. compute & fill the annual highlight
+  const annLow  = est$Low * 12;
+  const annHigh = est$High * 12;
+  g('estGainAnnual').textContent =
+    `$${annLow.toLocaleString()} – $${annHigh.toLocaleString()}`;
+  
+  // 1d. show the Estimation slide
   revealSlide('slideEst');
-
-  /* ------- 2. SPEED-TO-LEAD ------- */
-  g('toS2L').onclick=()=>{
-    const s2lBw = Reached * CR0;
+  
+  /* ── 2. SPEED-TO-LEAD ──────────────────────────────────────── */
+  g('toS2L').onclick = () => {
+    const s2lBw     = Reached * CR0;
     const s2lSwLow  = Reached * UPLIFT.s2lLow;
     const s2lSwHigh = Reached * UPLIFT.s2lHigh;
     const s2lΔLow   = s2lSwLow  - s2lBw;
     const s2lΔHigh  = s2lSwHigh - s2lBw;
     const s2l$Low   = s2lΔLow  * AR;
     const s2l$High  = s2lΔHigh * AR;
-
+  
     g('s2lValues').innerHTML = [
       `Reached leads / mo: ${Reached}`,
       `Closed now: ${s2lBw.toFixed(1)}`,
       `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
       `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
       `monthly gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
-    ].map(t=>`<div class="valItem">${t}</div>`).join('');
+    ].map(t => `<div class="valItem">${t}</div>`).join('');
+  
     revealSlide('slideS2L');
+  };
 
     /* ------- 3. ABANDONED CALL ------- */
     g('toMissed').onclick=()=>{
