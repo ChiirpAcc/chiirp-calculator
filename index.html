@@ -37,6 +37,7 @@ body::before {
   ───────────────────────────────────────────────────────────────────────────── */
   body {
     position: relative;      /* for the pseudo-element */
+    overflow: hidden;
     font-family: system-ui, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;      /* no horizontal scroll */
@@ -56,7 +57,7 @@ body::before {
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
-    animation: spin-bg 60s linear infinite;
+    animation: spin-bg 5s linear infinite;
   }
   @keyframes spin-bg {
     to { transform: translate(-50%, -50%) rotate(360deg); }
