@@ -354,13 +354,6 @@ const MONTHLY_COST = 500;
 const g   = id=>document.getElementById(id);
 const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
 
-// ── 1. Enable the “Next” button when all inputs are non-empty ──
-const calcBtn = g('calcBtn');
-inputs.forEach(inputEl =>
-  inputEl.addEventListener('input', () => {
-    calcBtn.disabled = inputs.some(el => !el.value.trim());
-  })
-);
 
 // ── 2. Main “Calculate Estimation” handler ──
 calcBtn.addEventListener('click', () => {
