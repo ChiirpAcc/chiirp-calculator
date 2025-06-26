@@ -495,7 +495,7 @@ calcBtn.addEventListener('click',()=>{
       const missΔHigh  = missSwHigh - missBw;
       const miss$Low   = missΔLow  * AR;
       const miss$High  = missΔHigh * AR;
-
+/*
       g('missValues').innerHTML = [
         `Missed contacts / mo: ${Missed.toFixed(1)}`,
         `Closed now: ${missBw.toFixed(1)}`,
@@ -504,7 +504,18 @@ calcBtn.addEventListener('click',()=>{
         `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
       ].map(t=>`<div class="valItem">${t}</div>`).join('');
       revealSlide('slideMissed');
-
+*/
+      const rows = [
+      ['Missed contacts / mo', Missed.toFixed(1)],
+      ['Closed now',          missBw.toFixed(1)],
+      ['With Chiirp (low)',   missSwLow.toFixed(1)],
+      ['With Chiirp (high)',  missSwHigh.toFixed(1)],
+      ['Monthly gain',        `$${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`]
+    ];
+    g('missValues').innerHTML = rows
+      .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
+      .join('');
+    revealSlide('slideMissed');
       /* ------- 4. SUMMARY ------- */
       g('toSum').onclick=()=>{
         const lowGain  = est$Low + s2l$Low + miss$Low;
