@@ -13,10 +13,7 @@
       background: linear-gradient(var(--angle), #00b7ff 0%, #ffe05f 100%);
       animation: rotateGradient 30s linear infinite;
     }
-    @keyframes rotateGradient {
-    from { --angle: 0deg; }
-    to   { --angle: 360deg; }
-    }
+
     .slide{width:min(94vw,900px);text-align:center;padding:2rem}
     h1{font-size:clamp(2.2rem,5vw,3.6rem);letter-spacing:2px;text-shadow:0 2px 6px #0006}
     h2{margin-top:.8rem;font-size:clamp(1.1rem,2.4vw,1.4rem);font-weight:400;letter-spacing:.2rem}
@@ -54,6 +51,10 @@
     .guide th{border-bottom:1px solid #ffffff55;font-weight:600}
     .guide td:first-child{font-weight:600;white-space:nowrap}
     
+    @keyframes rotateGradient {
+    from { --angle: 0deg; }
+    to   { --angle: 360deg; }
+    }
   </style>
 </head>
 <body>
