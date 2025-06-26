@@ -37,18 +37,19 @@
   border-radius: 12px;
   padding: 2rem;
   /* let it grow/shrink with viewport */
-  width: 90vw;
+  width: max-content;
   max-width: none;
-  margin: auto;
+  margin: 0 auto;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
 
-/* two‐column: left fixed 360px, right flexible */
+/* two-column: left fixed 360px, right flexible & centered */
 .slide#slideEst .est-grid {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 360px max-content;
   gap: 2rem;
-  justify-content: center;   
+  width: max-content;
+  margin: 0 auto;
 }
 
 /* cards styling unchanged */
@@ -58,7 +59,7 @@
   padding: 1.5rem;
 }
 
-/* left‐hand table */
+/* left-hand table */
 .slide#slideEst .details-table table {
   width: 100%;
   border-collapse: collapse;
@@ -71,10 +72,14 @@
   text-align: left;
 }
 
-/* right‐hand highlight panel */
+/* right-hand highlight panel */
 .slide#slideEst .highlight-table {
+  /* back to a normal block inside the grid */
+  display: block;
+  justify-self: stretch;  /* fill the 1fr column */
   text-align: center;
-  overflow-x: hidden; /* don’t allow overflow */
+  white-space: nowrap;    /* keep the big numbers on one line */
+  /* **no** max-width, no overflow hidden */
 }
 .slide#slideEst .highlight-table h3 {
   color: #fff;
@@ -86,7 +91,6 @@
   font-weight: 700;
   color: #ffeb3b;
   line-height: 1;
-  white-space: nowrap; /* never wrap the ranges */
 }
 .slide#slideEst .highlight-table .subtext {
   margin-top: 0.25rem;
