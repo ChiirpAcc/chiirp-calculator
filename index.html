@@ -49,9 +49,21 @@ check this: <!DOCTYPE html>
     .guide th{border-bottom:1px solid #ffffff55;font-weight:600}
     .guide td:first-child{font-weight:600;white-space:nowrap}
 
+    
+
       /* hide numeric spin-buttons */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {display:none}
+
+          --angle: 0deg;
+      background: linear-gradient(var(--angle), #00b7ff 0%, #ffe05f 100%);
+      animation: rotateGradient 30s linear infinite;
+    }
+    
+    @keyframes rotateGradient {
+      from { --angle:   0deg; }
+      to   { --angle: 360deg; }
+    }
 
     
   </style>
