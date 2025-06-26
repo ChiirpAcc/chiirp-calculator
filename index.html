@@ -241,12 +241,12 @@
   <button id="calcBtn" disabled>Next ➔</button>
 </section>
 
-<!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
+<!-- ───────── SLIDE 2 – ESTIMATION FOLLOW-UP ───────── -->
 <section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
   <h1>Estimation Follow-Up</h1>
 
   <div class="columns">
-    <!-- left: key metrics -->
+    <!-- left: key monthly metrics -->
     <div class="metric-card">
       <ul>
         <li><strong>Closed now:</strong> <span id="estBw">0.0</span> /mo</li>
@@ -255,18 +255,17 @@
         <li><strong>Monthly lift:</strong> <span id="estLift">$0</span></li>
       </ul>
     </div>
-    <!-- right: annual savings call-out -->
+
+    <!-- right: annual savings -->
     <div class="savings-cta">
-      <div class="label">Annual Savings Range</div>
+      <div class="label">Estimated Annual Savings</div>
       <div class="value" id="estAnnual">$0</div>
     </div>
   </div>
 
-  <!-- your existing “How these numbers are calculated” box -->
+  <!-- exact-formula box (unchanged) -->
   <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">
-      How these numbers are calculated
-    </summary>
+    <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
     <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
 Baseline wins      = Quotes × Close %
 Wins with Chiirp   = Quotes × Close % × Uplift
@@ -277,7 +276,6 @@ Monthly revenue    = Incremental wins × Avg Revenue
 
   <button id="toS2L">Next ➔</button>
 </section>
-
 
 
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
