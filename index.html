@@ -157,7 +157,60 @@
     display: none;
   }
 
+  /* ── slide show/hide ── */
+.slide {
+  display: none;
+  opacity: 0;
+  transition: opacity .6s;
+  }
+  /* when JS calls revealSlide(), it sets display:block + opacity:1 */
+  .slide.show {
+    display: block;
+    opacity: 1;
+  }
   
+  /* ── two-column wrapper ── */
+  .slide-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;  /* top-align both columns */
+    margin-bottom: 2rem; /* space before the “Next” button */
+  }
+  
+  /* ── left column ── */
+  .details {
+    text-align: left;
+  }
+  .results {
+    margin: 2rem 0;
+    font-size: 1.4rem;
+    line-height: 2;
+  }
+  .calc-formula {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
+  .calc-formula summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .calc-formula pre {
+    white-space: pre-wrap;
+    line-height: 1.5;
+    margin-top: 0.8rem;
+  }
+  
+  /* ── right column ── */
+  .savings {
+    text-align: right;
+  }
+  .highlight-number {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
+
 </style>
 
 
@@ -356,7 +409,9 @@ calcBtn.addEventListener('click',()=>{
     `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
   ].map(t=>`<div class="valItem">${t}</div>`).join('');
   revealSlide('slideEst');
-
+  g('estGain').textContent = 
+  `$${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`;
+  
   /* ------- 2. SPEED-TO-LEAD ------- */
   g('toS2L').onclick=()=>{
     const s2lBw = Reached * CR0;
