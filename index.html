@@ -5,7 +5,7 @@
   <title>CHIIRP Demo – Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  /* STYLE SLIDE 1 AS A CARD */
+  /* ────────── SLIDE 1 “CARD” LAYOUT ────────── */
   .slide-content.inputs {
     background: rgba(255,255,255,0.1);
     border-radius: 12px;
@@ -13,17 +13,8 @@
     max-width: 600px;
     width: 100%;
     box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    margin: auto;
   }
-  
-  /* TIGHTEN UP THE GUIDE PANEL */
-  .slide-content.inputs .guide {
-    margin-top: 1.5rem;
-    background: rgba(255,255,255,0.08);
-    padding: 1rem;
-    border-radius: 8px;
-  }
-  
-  /* LARGER, SPACED HEADING */
   .slide-content.inputs h1 {
     margin-bottom: 0.5rem;
     font-size: clamp(2.4rem, 6vw, 4rem);
@@ -33,6 +24,13 @@
     font-size: clamp(1.2rem, 3vw, 1.6rem);
     font-weight: 300;
   }
+  .slide-content.inputs .guide {
+    margin-top: 1.5rem;
+    background: rgba(255,255,255,0.08);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
 
   /* ─────────────────────────────────────────────────────────────────────────────
      BODY & ROTATING BACKDROP
@@ -194,17 +192,18 @@
 
 <!-- ────────────────  SLIDE 1 – INPUTS ──────────────── -->
 <section class="slide" id="slideInputs">
-  <h1>CHIIRP DEMO</h1>
-  <h2>SEE&nbsp;YOUR&nbsp;SAVINGS&nbsp;WITH&nbsp;CHIIRP</h2>
+  <div class="slide-content inputs">
+    <h1>CHIIRP DEMO</h1>
+    <h2>SEE YOUR SAVINGS WITH CHIIRP</h2>
 
-  <!-- field inputs -->
-  <div class="input-row">
-    <input id="leads"      type="number" step="1"     placeholder="Monthly leads (all sources)">
-    <input id="missPct"    type="number" step="0.1"   placeholder="Missed lead %">
-    <input id="quotes"     type="number" step="1"     placeholder="Quotes sent / month">
-    <input id="closeRate"  type="number" step="0.1"   placeholder="Current close %">
-    <input id="avgRev"     type="number" step="0.01"  placeholder="Avg revenue / sale $">
-  </div>
+    <div class="input-row">
+      <input id="leads"      type="number" step="1"    placeholder="Monthly leads (all sources)">
+      <input id="missPct"    type="number" step="0.1"  placeholder="Missed lead %">
+      <input id="quotes"     type="number" step="1"    placeholder="Quotes sent / month">
+      <input id="closeRate"  type="number" step="0.1"  placeholder="Current close %">
+      <input id="avgRev"     type="number" step="0.01" placeholder="Avg revenue / sale $">
+    </div>
+
 
   <!-- explanatory key -->
   <div class="guide">
@@ -223,7 +222,7 @@
     </table>
   </div>
 
-  <button id="calcBtn" disabled>Next ➔</button>
+  <button id="calcBtn">Next ➔</button>
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
