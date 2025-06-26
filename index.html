@@ -457,41 +457,42 @@ calcBtn.addEventListener('click',()=>{
   const Missed  = Leads * MissPct;
   const Reached = Leads - Missed;
 
-  /* ------- 1. ESTIMATION FOLLOW-UP ------- */
-  const estBw     = Quotes * CR0;
-  const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
-  const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
-  const estΔLow   = estSwLow  - estBw;
-  const estΔHigh  = estSwHigh - estBw;
-  const est$Low   = estΔLow  * AR;
-  const est$High  = estΔHigh * AR;
-  
-  // build the left‐hand table
-  const rows = [
-    ['Closed now',         estBw.toFixed(1)],
-    ['With Chiirp (low)',  estSwLow.toFixed(1)],
-    ['With Chiirp (high)', estSwHigh.toFixed(1)],
-    ['Monthly gain',       `$${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`]
-  ];
-  g('estValues').innerHTML = rows
-    .map(([label, val]) => `
-      <tr>
-        <td>${label}</td>
-        <td>${val}</td>
-      </tr>
-    `).join('');
-  
-  // **populate the right‐hand highlights**
-  g('estGainMonthly').textContent = 
-    `$${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`;
-  
-  const annLow  = est$Low * 12;
-  const annHigh = est$High * 12;
-  g('estGainAnnual').textContent =
-    `$${annLow.toLocaleString()} – $${annHigh.toLocaleString()}`;
-  
-  // now reveal slide 2
-  revealSlide('slideEst');
+/* ──── 1. ESTIMATION FOLLOW-UP ──── */
+const estBw     = Quotes * CR0;
+const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
+const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
+const estΔLow   = estSwLow  - estBw;
+const estΔHigh  = estSwHigh - estBw;
+const est$Low   = estΔLow  * AR;
+const est$High  = estΔHigh * AR;
+
+// build the left-hand table, rounded to the nearest dollar
+const rows = [
+  ['Closed now',         Math.round(estBw).toLocaleString()],
+  ['With Chiirp (low)',  Math.round(estSwLow).toLocaleString()],
+  ['With Chiirp (high)', Math.round(estSwHigh).toLocaleString()],
+  ['Monthly gain',       `$${Math.round(est$Low).toLocaleString()} – $${Math.round(est$High).toLocaleString()}`]
+];
+g('estValues').innerHTML = rows
+  .map(([label, val]) => `
+    <tr>
+      <td>${label}</td>
+      <td>${val}</td>
+    </tr>
+  `).join('');
+
+// populate the right-hand highlights, also rounded
+g('estGainMonthly').textContent =
+  `$${Math.round(est$Low).toLocaleString()} – $${Math.round(est$High).toLocaleString()}`;
+
+const annLow  = est$Low * 12;
+const annHigh = est$High * 12;
+g('estGainAnnual').textContent =
+  `$${Math.round(annLow).toLocaleString()} – $${Math.round(annHigh).toLocaleString()}`;
+
+// now reveal slide 2
+revealSlide('slideEst');
+
 
 
 
