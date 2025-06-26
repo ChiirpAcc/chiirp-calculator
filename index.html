@@ -8,11 +8,29 @@
   /* ─────────────────────────────────────────────────────────────────────────────
      RESET
   ───────────────────────────────────────────────────────────────────────────── */
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+body {
+  position: relative;
+  overflow: hidden; /* hide overflow of the oversized pseudo-element */
+}
+
+body::before {
+  content: "";
+  position: fixed;      /* stay put as you scroll */
+  top: 50%;             /* center the element */
+  left: 50%;
+  width: 150vw;         /* much larger than the viewport */
+  height: 150vh;
+  background: linear-gradient(130deg, #00b7ff 0%, #ffe05f 100%);
+  transform-origin: center center;
+  transform: translate(-50%, -50%) rotate(0deg);
+  z-index: -1;          /* behind your content */
+  animation: spin-bg 60s linear infinite;
+}
+
+@keyframes spin-bg {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 
   /* ─────────────────────────────────────────────────────────────────────────────
      BODY & ROTATING BACKDROP
@@ -32,7 +50,8 @@
   body::before {
     content: "";
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 50%; left: 50%; right: 50%; bottom: 50%;
+    width: 150vw; height: 150vh;
     background: linear-gradient(130deg, #00b7ff 0%, #ffe05f 100%);
     transform-origin: center center;
     z-index: -1;
