@@ -48,6 +48,11 @@
     .guide th,.guide td{padding:.45rem .55rem;text-align:left}
     .guide th{border-bottom:1px solid #ffffff55;font-weight:600}
     .guide td:first-child{font-weight:600;white-space:nowrap}
+
+      /* hide numeric spin-buttons */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {display:none}
+
     
   </style>
 </head>
@@ -58,14 +63,19 @@
   <h1>CHIIRP DEMO</h1>
   <h2>SEE&nbsp;YOUR&nbsp;SAVINGS&nbsp;WITH&nbsp;CHIIRP</h2>
 
-  <!-- field inputs -->
-  <div class="input-row">
-    <input id="leads"      type="number" step="1"     placeholder="Monthly leads (all sources)">
-    <input id="missPct"    type="number" step="0.1"   placeholder="Missed lead %">
-    <input id="quotes"     type="number" step="1"     placeholder="Quotes sent / month">
-    <input id="closeRate"  type="number" step="0.1"   placeholder="Current close %">
-    <input id="avgRev"     type="number" step="0.01"  placeholder="Avg revenue / sale $">
-  </div>
+<div class="input-row">
+  <input id="leads"   type="number" min="0" step="1"  inputmode="numeric" pattern="\d*"
+         placeholder="Monthly leads (e.g. 250)" required>
+  <input id="missPct" type="number" min="0" max="100" step="0.1" inputmode="numeric" pattern="\d*"
+         placeholder="Missed lead % (e.g. 25)" required>
+  <input id="quotes"  type="number" min="0" step="1"  inputmode="numeric" pattern="\d*"
+         placeholder="Quotes / month (e.g. 120)" required>
+  <input id="closeRate" type="number" min="0" max="100" step="0.1" inputmode="numeric" pattern="\d*"
+         placeholder="Close % (e.g. 8)" required>
+  <input id="avgRev"  type="number" min="0" step="0.01" inputmode="numeric" pattern="\d*"
+         placeholder="Avg revenue $ (e.g. 750)" required>
+</div>
+
 
   <!-- explanatory key -->
   <div class="guide">
@@ -209,6 +219,13 @@ inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=
 
 /* ── MAIN CALCULATION ────────────────────────────────── */
 calcBtn.addEventListener('click',()=>{
+
+    // ---- basic validation ----
+  if (!inputs.every(inp => inp.value.trim())) { return; }          // shouldn't happen, but safe-guard
+  if (+g('quotes').value > +g('leads').value) {
+    alert('Quotes can’t exceed total leads.'); 
+    return;
+  }
 
   /* CLIENT INPUTS */
   const Leads   = +g('leads').value;
