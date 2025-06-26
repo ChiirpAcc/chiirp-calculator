@@ -31,20 +31,20 @@
     border-radius: 8px;
   }
 
- /* ────────── SLIDE 2 “ESTIMATION” CARD ────────── */
+/* ────────── SLIDE 2 “ESTIMATION” CARD ────────── */
 .slide-content.estimation {
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
-  max-width: 900px;         /* a bit more width overall */
+  max-width: 900px;             /* bump up overall width */
   margin: auto;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
 
 .est-grid {
   display: grid;
-  /* shift more space to the right column */
-  grid-template-columns: minmax(240px, 1fr) minmax(480px, 1.6fr);
+  /* give right column more room: 60% for highlights, 40% for details */
+  grid-template-columns: 40% 60%;
   gap: 2rem;
 }
 
@@ -54,41 +54,30 @@
   padding: 1.5rem;
 }
 
-/* Left “details” card stays the same */
-.details-table table {
-  width: 100%;
-  border-collapse: collapse;
-  color: #fff;
-  table-layout: fixed;
-}
-.details-table th,
-.details-table td {
-  padding: 0.6rem 0.8rem;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-.details-table th:first-child,
-.details-table td:first-child { width: 60%; }
-.details-table th:last-child,
-.details-table td:last-child { width: 40%; text-align: right; }
+/* Left “details” card stays the same… */
 
-/* Right “highlight” card adjustments */
+/* Right “highlight” card */
 .highlight-table {
   text-align: center;
+  /* ensure the numbers don’t wrap */
+  white-space: nowrap;
 }
+
 .highlight-table h3 {
   margin-bottom: 1rem;
   color: #fff;
   font-size: 1.25rem;
 }
+
+/* bump the font-size clamp slightly so large numbers remain on one line */
 .highlight-number {
-  font-size: clamp(3rem, 8vw, 5rem);
+  font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 700;
   color: #ffeb3b;
   line-height: 1;
-  white-space: nowrap;       /* never wrap the big range */
 }
 
-/* monthly vs annual label */
+/* monthly vs annual subtext */
 .highlight-table .subtext {
   margin-top: 0.25rem;
   font-size: 1rem;
@@ -96,15 +85,13 @@
   color: #fff;
 }
 
-/* stack on small screens */
+/* Optional: on small screens, stack as full‐width */
 @media (max-width: 640px) {
   .est-grid {
     grid-template-columns: 1fr;
   }
-  .est-card {
-    margin-bottom: 2rem;
-  }
 }
+
 
   
 
@@ -129,7 +116,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #00b7ff 0%, #00b7ff 100%);
+    background: linear-gradient(130deg, #00b7ff 0%, #000000 100%);
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
