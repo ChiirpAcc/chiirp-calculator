@@ -26,7 +26,7 @@
     /* diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #0693e3 0%, #fa6900 100%); /* cf2e2e, 0693e3  */
+    background: linear-gradient(130deg, #cf2e2e 0%, #fa6900 100%); /* cf2e2e, 0693e3  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;                 /* behind your content */
@@ -241,29 +241,16 @@
   <button id="calcBtn" disabled>Next ➔</button>
 </section>
 
-<!-- ───────── SLIDE 2 – ESTIMATION FOLLOW-UP ───────── -->
+</section>
+
+<!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
 <section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
   <h1>Estimation Follow-Up</h1>
 
-  <div class="columns">
-    <!-- left: key monthly metrics -->
-    <div class="metric-card">
-      <ul>
-        <li><strong>Closed now:</strong> <span id="estBw">0.0</span> /mo</li>
-        <li><strong>With Chiirp (low):</strong> <span id="estSwLow">0.0</span> /mo</li>
-        <li><strong>With Chiirp (high):</strong> <span id="estSwHigh">0.0</span> /mo</li>
-        <li><strong>Monthly lift:</strong> <span id="estLift">$0</span></li>
-      </ul>
-    </div>
+  <!-- dynamic results injected by JS -->
+  <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
 
-    <!-- right: annual savings -->
-    <div class="savings-cta">
-      <div class="label">Estimated Annual Savings</div>
-      <div class="value" id="estAnnual">$0</div>
-    </div>
-  </div>
-
-  <!-- exact-formula box (unchanged) -->
+  <!-- optional: show the exact formulas driving the numbers -->
   <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
     <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
     <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
@@ -271,7 +258,7 @@ Baseline wins      = Quotes × Close %
 Wins with Chiirp   = Quotes × Close % × Uplift
 Incremental wins   = Wins with Chiirp − Baseline wins
 Monthly revenue    = Incremental wins × Avg Revenue
-    </pre>
+        </pre>
   </details>
 
   <button id="toS2L">Next ➔</button>
