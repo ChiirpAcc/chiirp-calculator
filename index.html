@@ -32,16 +32,25 @@
   }
 
 /* ────────── SLIDE 2 “ESTIMATION” CARD ────────── */
+
+/* 1) Parent becomes a flex container */
+.slide#slideEst {
+  display: flex;
+  justify-content: center; /* horizontal centering */
+  /* optionally: align-items: center;  vertical centering if you need it */
+}
+
+/* 2) Child can keep its shrink-to-fit width */
 .slide#slideEst .slide-content.estimation {
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
-  /* let it grow/shrink with viewport */
-  width: max-content;
+  width: max-content;   /* let it size to its content */
   max-width: none;
-  margin: 0 auto;
+  /* margin: 0 auto;   <-- no longer needed */
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
+
 
 /* two-column: left fixed 360px, right flexible & centered */
 .slide#slideEst .est-grid {
