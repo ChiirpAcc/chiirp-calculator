@@ -31,89 +31,81 @@
     border-radius: 8px;
   }
 
-  /* ────────── SLIDE 2 “ESTIMATION” CARD ────────── */
-  .slide-content.estimation {
-    background: rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 2rem;
-    max-width: 800px;
-    margin: auto;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  }
-  
+ /* ────────── SLIDE 2 “ESTIMATION” CARD ────────── */
+.slide-content.estimation {
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 900px;         /* a bit more width overall */
+  margin: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.est-grid {
+  display: grid;
+  /* shift more space to the right column */
+  grid-template-columns: minmax(240px, 1fr) minmax(480px, 1.6fr);
+  gap: 2rem;
+}
+
+.est-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+/* Left “details” card stays the same */
+.details-table table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+  table-layout: fixed;
+}
+.details-table th,
+.details-table td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.details-table th:first-child,
+.details-table td:first-child { width: 60%; }
+.details-table th:last-child,
+.details-table td:last-child { width: 40%; text-align: right; }
+
+/* Right “highlight” card adjustments */
+.highlight-table {
+  text-align: center;
+}
+.highlight-table h3 {
+  margin-bottom: 1rem;
+  color: #fff;
+  font-size: 1.25rem;
+}
+.highlight-number {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 700;
+  color: #ffeb3b;
+  line-height: 1;
+  white-space: nowrap;       /* never wrap the big range */
+}
+
+/* monthly vs annual label */
+.highlight-table .subtext {
+  margin-top: 0.25rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+/* stack on small screens */
+@media (max-width: 640px) {
   .est-grid {
-    display: grid;
-    /* left (table) narrower, right (highlight) wider */
-    grid-template-columns: minmax(220px, 1fr) minmax(400px, 1.4fr);
-    gap: 2rem;
+    grid-template-columns: 1fr;
   }
-  
   .est-card {
-    background: rgba(255,255,255,0.08);
-    border-radius: 8px;
-    padding: 1.5rem;
+    margin-bottom: 2rem;
   }
-  
-  /* Left “details” card */
-  .details-table h3 {
-    margin-bottom: 1rem;
-    color: #fff;
-    font-size: 1.25rem;
-  }
-  .details-table table {
-    width: 100%;
-    table-layout: fixed;       /* enforce column widths */
-    border-collapse: collapse;
-    color: #fff;
-  }
-  .details-table th,
-  .details-table td {
-    padding: 0.6rem 0.8rem;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-  }
-  .details-table th:first-child,
-  .details-table td:first-child {
-    width: 60%;
-    text-align: left;
-  }
-  .details-table th:last-child,
-  .details-table td:last-child {
-    width: 40%;
-    text-align: right;
-  }
-  
-  /* Right “highlight” card */
-  .highlight-table {
-    text-align: center;
-  }
-  .highlight-table h3 {
-    margin-bottom: 1rem;
-    color: #fff;
-    font-size: 1.25rem;
-  }
-  .highlight-number {
-    font-size: clamp(3rem, 8vw, 5rem);
-    font-weight: 700;
-    color: #ffeb3b;
-    line-height: 1;
-  }
-  /* monthly vs annual highlight */
-  .highlight-table .subtext {
-    margin-top: 0.25rem;
-    font-size: 1rem;
-    font-weight: 400;
-    color: #fff;
-  }
-  
-  /* Optional: stack on small screens */
-  @media (max-width: 640px) {
-    .est-grid {
-      grid-template-columns: 1fr;
-    }
-    .est-card {
-      margin-bottom: 2rem;
-    }
-  }
+}
+
   
 
   /* ─────────────────────────────────────────────────────────────────────────────
@@ -137,7 +129,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #00b7ff 0%, #000000 100%);
+    background: linear-gradient(130deg, #00b7ff 0%, #00b7ff 100%);
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
