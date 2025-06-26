@@ -179,6 +179,53 @@ body::before {
   input::-webkit-outer-spin-button {
     display: none;
   }
+/* ─── Two-column layout ─────────────────────────────────────── */
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ─── Metric Card (left) ───────────────────────────────────── */
+    .metric-card {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: #fff;
+    }
+    .metric-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .metric-card li {
+      margin: .75rem 0;
+      line-height: 1.4;
+      font-size: 1rem;
+    }
+
+    /* ─── Savings Call-out (right) ─────────────────────────────── */
+    .savings-cta {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .savings-cta .label {
+      font-size: 1rem;
+      opacity: .8;
+      margin-bottom: .5rem;
+    }
+    .savings-cta .value {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #ffb703; /* highlight color */
+      line-height: 1;
+    }
+
+  
 </style>
 
 
@@ -223,22 +270,39 @@ body::before {
 <section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
   <h1>Estimation Follow-Up</h1>
 
-  <!-- dynamic results injected by JS -->
-  <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+  <div class="columns">
+    <!-- left: key metrics -->
+    <div class="metric-card">
+      <ul>
+        <li><strong>Closed now:</strong> <span id="estBw">0.0</span> /mo</li>
+        <li><strong>With Chiirp (low):</strong> <span id="estSwLow">0.0</span> /mo</li>
+        <li><strong>With Chiirp (high):</strong> <span id="estSwHigh">0.0</span> /mo</li>
+        <li><strong>Monthly lift:</strong> <span id="estLift">$0</span></li>
+      </ul>
+    </div>
+    <!-- right: annual savings call-out -->
+    <div class="savings-cta">
+      <div class="label">Annual Savings Range</div>
+      <div class="value" id="estAnnual">$0</div>
+    </div>
+  </div>
 
-  <!-- optional: show the exact formulas driving the numbers -->
+  <!-- your existing “How these numbers are calculated” box -->
   <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
+    <summary style="cursor:pointer;font-weight:600">
+      How these numbers are calculated
+    </summary>
     <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
 Baseline wins      = Quotes × Close %
 Wins with Chiirp   = Quotes × Close % × Uplift
 Incremental wins   = Wins with Chiirp − Baseline wins
 Monthly revenue    = Incremental wins × Avg Revenue
-        </pre>
+    </pre>
   </details>
 
   <button id="toS2L">Next ➔</button>
 </section>
+
 
 
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
