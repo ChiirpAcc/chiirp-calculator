@@ -4,203 +4,196 @@
   <meta charset="UTF-8">
   <title>CHIIRP Demo – Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      /* ─────────────────────────────────────────────────────────────────────────────
-         BODY & ROTATING BACKDROP
-      ───────────────────────────────────────────────────────────────────────────── */
-      body {
-        position: relative;      /* for the pseudo-element */
-        overflow: hidden;
-        font-family: system-ui, sans-serif;
-        min-height: 100vh;
-        overflow-x: hidden;      /* no horizontal scroll */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #fff;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        top: 50%; left: 50%;
-        /* make it exactly big enough so its diagonal ≥ viewport diagonal */
-        width:  calc(100vw + 100vh);
-        height: calc(100vw + 100vh);
-        background: linear-gradient(130deg, #00b7ff 0%, #00e05f 100%);
-        transform: translate(-50%, -50%) rotate(0deg);
-        transform-origin: center center;
-        z-index: -1;
-        animation: spin-bg 5s linear infinite;
-      }
-      @keyframes spin-bg {
-        to { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-    
-      /* ─────────────────────────────────────────────────────────────────────────────
-         SLIDE WRAPPER
-      ───────────────────────────────────────────────────────────────────────────── */
-      .slide {
-        width: min(94vw, 900px);
-        text-align: center;
-        padding: 2rem;
-        display: none;
-        opacity: 0;
-        transition: opacity .6s;
-      }
-      .slide.show {
-        display: block;
-        opacity: 1;
-      }
-    
-      /* ─────────────────────────────────────────────────────────────────────────────
-         HEADINGS
-      ───────────────────────────────────────────────────────────────────────────── */
-      h1 {
-        font-size: clamp(2.2rem, 5vw, 3.6rem);
-        letter-spacing: 2px;
-        text-shadow: 0 2px 6px #0006;
-      }
-      h2 {
-        margin-top: .8rem;
-        font-size: clamp(1.1rem, 2.4vw, 1.4rem);
-        font-weight: 400;
-        letter-spacing: .2rem;
-      }
-    
-      /* ─────────────────────────────────────────────────────────────────────────────
-         INPUT ROW
-      ───────────────────────────────────────────────────────────────────────────── */
-      .input-row {
-        margin-top: 2.3rem;
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-      .input-row input {
-        flex: 1 1 180px;
-        padding: .9rem;
-        border: none;
-        border-radius: 6px;
-        text-align: center;
-      }
-    
-      /* ─────────────────────────────────────────────────────────────────────────────
-         BUTTONS
-      ───────────────────────────────────────────────────────────────────────────── */
-      button {
-        margin-top: 2rem;
-        padding: .9rem 1.8rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        background: #ffb703;
-        color: #002844;
-        font-weight: 700;
-        transition: opacity .25s;
-      }
-      button:disabled {
-        opacity: .4;
-        cursor: not-allowed;
-      }
-    
-      /* ─────────────────────────────────────────────────────────────────────────────
-         RESULT ITEMS ANIMATION
-      ───────────────────────────────────────────────────────────────────────────── */
-      .valItem {
-        opacity: 0;
-        transform: translateX(-60px);
-        transition: transform .6s ease, opacity .6s ease;
-      }
-      .valItem.show {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    
-      /* ─────────────────────────────────────────────────────────────────────────────
-         GUIDE PANEL
-      ───────────────────────────────────────────────────────────────────────────── */
-      .guide {
-        margin-top: 2.5rem;
-        width: 100%;
-        background: rgba(255,255,255,.12);
-        border-radius: 10px;
-        padding: 1.4rem 1.2rem;
-        backdrop-filter: blur(6px);
-      }
-      .guide h3 {
-        font-size: 1.05rem;
-        margin-bottom: 1rem;
-        letter-spacing: .08rem;
-      }
-      .guide table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: .9rem;
-      }
-      .guide th, .guide td {
-        padding: .45rem .55rem;
-        text-align: left;
-      }
-      .guide th {
-        border-bottom: 1px solid #ffffff55;
-        font-weight: 600;
-      }
-      .guide td:first-child {
-        font-weight: 600;
-        white-space: nowrap;
-      }
-    
-      /* ─────────────────────────────────────────────────────────────────────────────
-         HIDE NUMBER-INPUT SPINNERS
-      ───────────────────────────────────────────────────────────────────────────── */
-      input::-webkit-inner-spin-button,
-      input::-webkit-outer-spin-button {
-        display: none;
-      }
-    
-      /* ────────── TWO-COLUMN LAYOUT ────────── */
-      .slide-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        align-items: start;
-        margin-bottom: 2rem;
-      }
-      .results {
-        margin: 2rem 0;
-        font-size: 1.4rem;
-        line-height: 2;
-      }
-      .calc-formula {
-        font-size: .9rem;
-      }
-      .calc-formula summary {
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .calc-formula pre {
-        white-space: pre-wrap;
-        line-height: 1.5;
-        margin-top: .8rem;
-      }
-      .savings {
-        text-align: right;
-      }
-      .highlight-number {
-        font-size: clamp(2rem, 6vw, 4rem);
-        font-weight: 700;
-        margin-top: 0.5rem;
-      }
-    </style>
+<style>
+  /* STYLE SLIDE 1 AS A CARD */
+  .slide-content.inputs {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  
+  /* TIGHTEN UP THE GUIDE PANEL */
+  .slide-content.inputs .guide {
+    margin-top: 1.5rem;
+    background: rgba(255,255,255,0.08);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  /* LARGER, SPACED HEADING */
+  .slide-content.inputs h1 {
+    margin-bottom: 0.5rem;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+  }
+  .slide-content.inputs h2 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    font-weight: 300;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     BODY & ROTATING BACKDROP
+  ───────────────────────────────────────────────────────────────────────────── */
+  body {
+    position: relative;      /* for the pseudo-element */
+    overflow: hidden;
+    font-family: system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;      /* no horizontal scroll */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    top: 50%; left: 50%;
+    /* make it exactly big enough so its diagonal ≥ viewport diagonal */
+    width:  calc(100vw + 100vh);
+    height: calc(100vw + 100vh);
+    background: linear-gradient(130deg, #00b7ff 0%, #00e05f 100%);
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: center center;
+    z-index: -1;
+    animation: spin-bg 5s linear infinite;
+  }
+  @keyframes spin-bg {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
 
 
 
-  </head>
+
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     SLIDE WRAPPER
+  ───────────────────────────────────────────────────────────────────────────── */
+  .slide {
+    width: min(94vw, 900px);
+    text-align: center;
+    padding: 2rem;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     HEADINGS
+  ───────────────────────────────────────────────────────────────────────────── */
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 6px #0006;
+  }
+  h2 {
+    margin-top: .8rem;
+    font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+    font-weight: 400;
+    letter-spacing: .2rem;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     INPUT ROW
+  ───────────────────────────────────────────────────────────────────────────── */
+  .input-row {
+    margin-top: 2.3rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .input-row input {
+    flex: 1 1 180px;
+    padding: .9rem;
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     BUTTONS
+  ───────────────────────────────────────────────────────────────────────────── */
+  button {
+    margin-top: 2rem;
+    padding: .9rem 1.8rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #ffb703;
+    color: #002844;
+    font-weight: 700;
+    transition: opacity .25s;
+  }
+  button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     RESULT ITEMS ANIMATION
+  ───────────────────────────────────────────────────────────────────────────── */
+  .valItem {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: transform .6s ease, opacity .6s ease;
+  }
+  .valItem.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     GUIDE PANEL
+  ───────────────────────────────────────────────────────────────────────────── */
+  .guide {
+    margin-top: 2.5rem;
+    width: 100%;
+    background: rgba(255,255,255,.12);
+    border-radius: 10px;
+    padding: 1.4rem 1.2rem;
+    backdrop-filter: blur(6px);
+  }
+  .guide h3 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    letter-spacing: .08rem;
+  }
+  .guide table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9rem;
+  }
+  .guide th, .guide td {
+    padding: .45rem .55rem;
+    text-align: left;
+  }
+  .guide th {
+    border-bottom: 1px solid #ffffff55;
+    font-weight: 600;
+  }
+  .guide td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     HIDE NUMBER-INPUT SPINNERS
+  ───────────────────────────────────────────────────────────────────────────── */
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    display: none;
+  }
+
+  
+</style>
+
+
+</head>
 <body>
 
 <!-- ────────────────  SLIDE 1 – INPUTS ──────────────── -->
-<section class="slide show" id="slideInputs">
+<section class="slide" id="slideInputs">
   <h1>CHIIRP DEMO</h1>
   <h2>SEE&nbsp;YOUR&nbsp;SAVINGS&nbsp;WITH&nbsp;CHIIRP</h2>
 
@@ -230,33 +223,28 @@
     </table>
   </div>
 
-  <button id="calcBtn">Next ➔</button>
+  <button id="calcBtn" disabled>Next ➔</button>
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
-<section class="slide" id="slideEst">
-  <div class="slide-grid">
-    <!-- left column -->
-    <div class="details">
-      <h1>Estimation Follow-Up</h1>
-      <div id="estValues" class="results"></div>
-      <details class="calc-formula">
-        <summary>How these numbers are calculated</summary>
-        <pre>
+<section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
+  <h1>Estimation Follow-Up</h1>
+
+  <!-- dynamic results injected by JS -->
+  <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+
+  <!-- optional: show the exact formulas driving the numbers -->
+  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
+    <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
+    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
 Baseline wins      = Quotes × Close %
 Wins with Chiirp   = Quotes × Close % × Uplift
 Incremental wins   = Wins with Chiirp − Baseline wins
 Monthly revenue    = Incremental wins × Avg Revenue
         </pre>
-      </details>
-    </div>
-    <!-- right column -->
-    <aside class="savings">
-      <h3>Monthly gain</h3>
-      <p id="estGain" class="highlight-number"></p>
-    </aside>
-  </div>
-  <button id="toS2L" >Next ➔</button>
+  </details>
+
+  <button id="toS2L">Next ➔</button>
 </section>
 
 
@@ -357,48 +345,36 @@ const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
 /* enable calc button when all inputs filled */
 const calcBtn=g('calcBtn');
 inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=>!e.value.trim())));
-// ── 2. Main “Calculate Estimation” handler ──
-calcBtn.addEventListener('click', () => {
-  // 2a. Read inputs
+
+/* ── MAIN CALCULATION ────────────────────────────────── */
+calcBtn.addEventListener('click',()=>{
+
+  /* CLIENT INPUTS */
   const Leads   = +g('leads').value;
-  const MissPct = (+g('missPct').value) / 100;
+  const MissPct = (+g('missPct').value)/100;
   const Quotes  = +g('quotes').value;
-  const CR0     = (+g('closeRate').value) / 100;
+  const CR0     = (+g('closeRate').value)/100;
   const AR      = +g('avgRev').value;
 
-  // 2b. Compute Estimation
-  const estBw    = Quotes * CR0;
-  const estSwLow = Quotes * CR0 * UPLIFT.estLow;
-  const estSwHi  = Quotes * CR0 * UPLIFT.estHigh;
-  const estΔLow  = estSwLow - estBw;
-  const estΔHi   = estSwHi  - estBw;
-  const est$Low  = estΔLow * AR;
-  const est$Hi   = estΔHi  * AR;
+  /* DERIVED COUNTS */
+  const Missed  = Leads * MissPct;
+  const Reached = Leads - Missed;
 
-  // 2c. Populate left column (#estValues)
+  /* ------- 1. ESTIMATION FOLLOW-UP ------- */
+  const estBw = Quotes * CR0;
+  const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
+  const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
+  const estΔLow   = estSwLow  - estBw;
+  const estΔHigh  = estSwHigh - estBw;
+  const est$Low   = estΔLow  * AR;
+  const est$High  = estΔHigh * AR;
   g('estValues').innerHTML = [
     `Closed now: ${estBw.toFixed(1)}`,
     `With Chiirp (low): ${estSwLow.toFixed(1)}`,
-    `With Chiirp (high): ${estSwHi.toFixed(1)}`,
-    `monthly gain: $${est$Low.toLocaleString()} – $${est$Hi.toLocaleString()}`
-  ].map(line => `<div class="valItem">${line}</div>`).join('');
-
-  // 2d. Populate right column (#estGain)
-  g('estGain').textContent =
-    `$${est$Low.toLocaleString()} – $${est$Hi.toLocaleString()}`;
-
-  // 2e. Show and animate Slide 2
-  const slideEl = g('slideEst');
-  slideEl.classList.add('show');
+    `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
+    `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
+  ].map(t=>`<div class="valItem">${t}</div>`).join('');
   revealSlide('slideEst');
-});
-
-
-  // ── 3. show the Estimation slide ──
-  const slide = g('slideEst');
-  slide.classList.add('show');    // makes display:block + opacity:1
-  revealSlide('slideEst');       // still triggers the .valItem animations
-
 
   /* ------- 2. SPEED-TO-LEAD ------- */
   g('toS2L').onclick=()=>{
