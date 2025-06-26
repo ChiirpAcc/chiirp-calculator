@@ -69,21 +69,21 @@
   <h1>CHIIRP DEMO</h1>
   <h2>SEE&nbsp;YOUR&nbsp;SAVINGS&nbsp;WITH&nbsp;CHIIRP</h2>
 
-<div class="input-row">
-  <input id="leads"   type="number" min="0" step="1"  inputmode="numeric" pattern="\d*"
-         placeholder="Monthly leads (e.g. 250)" required>
-  <input id="missPct" type="number" min="0" max="100" step="0.1" inputmode="numeric" pattern="\d*"
-         placeholder="Missed lead % (e.g. 25)" required>
-  <input id="quotes"  type="number" min="0" step="1"  inputmode="numeric" pattern="\d*"
-         placeholder="Quotes / month (e.g. 120)" required>
-  <input id="closeRate" type="number" min="0" max="100" step="0.1" inputmode="numeric" pattern="\d*"
-         placeholder="Close % (e.g. 8)" required>
-  <input id="avgRev"  type="number" min="0" step="0.01" inputmode="numeric" pattern="\d*"
-         placeholder="Avg revenue $ (e.g. 750)" required>
-</div>
+  <!-- field inputs (pattern removed) -->
+  <div class="input-row">
+    <input id="leads"      type="number" min="0" step="1"    inputmode="numeric"
+           placeholder="Monthly leads (e.g. 250)" required>
+    <input id="missPct"    type="number" min="0" max="100" step="0.1" inputmode="numeric"
+           placeholder="Missed lead % (e.g. 25)" required>
+    <input id="quotes"     type="number" min="0" step="1"    inputmode="numeric"
+           placeholder="Quotes / month (e.g. 120)" required>
+    <input id="closeRate"  type="number" min="0" max="100" step="0.1" inputmode="numeric"
+           placeholder="Close % (e.g. 8)" required>
+    <input id="avgRev"     type="number" min="0" step="0.01" inputmode="numeric"
+           placeholder="Avg revenue $ (e.g. 750)" required>
+  </div>
 
-
-  <!-- explanatory key -->
+  <!-- explanatory key (unchanged) -->
   <div class="guide">
     <h3>What each field means</h3>
     <table>
@@ -100,8 +100,10 @@
     </table>
   </div>
 
-
+  <!-- non-submit button -->
   <button id="calcBtn" type="button" disabled>Next ➔</button>
+</section>
+
 
 </section>
 
