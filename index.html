@@ -6,37 +6,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   /* ─────────────────────────────────────────────────────────────────────────────
-     ROTATING GRADIENT BACKDROP
+     RESET
+  ───────────────────────────────────────────────────────────────────────────── */
+body {
+  position: relative;
+  overflow: hidden; /* hide overflow of the oversized pseudo-element */
+}
+
+body::before {
+  content: "";
+  position: fixed;      /* stay put as you scroll */
+  top: -50vh;
+  left: -50vw;
+  width: 200vw;
+  height: 200vh;
+  background: linear-gradient(130deg, #0693e3 0%, #fcb900 100%);
+  transform-origin: center center;
+  transform: translate(-50%, -50%) rotate(0deg);
+  z-index: -1;          /* behind your content */
+  animation: spin-bg 60s linear infinite;
+}
+
+@keyframes spin-bg {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     BODY & ROTATING BACKDROP
   ───────────────────────────────────────────────────────────────────────────── */
   body {
-    position: relative;
-    overflow: hidden;            /* hide overflow of the oversized pseudo-element */
+    position: relative;      /* for the pseudo-element */
+    overflow: hidden;
     font-family: system-ui, sans-serif;
     min-height: 100vh;
+    overflow-x: hidden;      /* no horizontal scroll */
     display: flex;
     justify-content: center;
     align-items: center;
     color: #fff;
   }
-  
   body::before {
     content: "";
-    position: fixed;             /* stays put as you scroll */
+    position: fixed;
     top: 50%; left: 50%;
-    /* diagonal ≥ viewport diagonal */
+    /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #cf2e2e 0%, #fa6900 100%); /* cf2e2e, 0693e3  */
+    background: linear-gradient(130deg, #00b7ff 0%, #ffe05f 100%);
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
-    z-index: -1;                 /* behind your content */
-    animation: spin-bg 60s linear infinite;
+    z-index: -1;
+    animation: spin-bg 5s linear infinite;
   }
-  
   @keyframes spin-bg {
     to { transform: translate(-50%, -50%) rotate(360deg); }
   }
-
 
 
   /* ─────────────────────────────────────────────────────────────────────────────
@@ -154,51 +179,6 @@
   input::-webkit-outer-spin-button {
     display: none;
   }
-/* ─── Two-column layout ─────────────────────────────────────── */
-    .columns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-
-    /* ─── Metric Card (left) ───────────────────────────────────── */
-    .metric-card {
-      background: rgba(255,255,255,0.15);
-      border-radius: 12px;
-      padding: 1.5rem;
-      color: #fff;
-    }
-    .metric-card ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .metric-card li {
-      margin: .75rem 0;
-      line-height: 1.4;
-      font-size: 1rem;
-    }
-
-    /* ─── Savings Call-out (right) ─────────────────────────────── */
-    .savings-cta {
-      background: rgba(255,255,255,0.1);
-      border: 2px solid rgba(255,255,255,0.25);
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-    }
-    .savings-cta .label {
-      font-size: 1rem;
-      opacity: .8;
-      margin-bottom: .5rem;
-    }
-    .savings-cta .value {
-      font-size: 3.5rem;
-      font-weight: 700;
-      color: #ffb703; /* highlight color */
-      line-height: 1;
-    }
 
   
 </style>
@@ -239,8 +219,6 @@
   </div>
 
   <button id="calcBtn" disabled>Next ➔</button>
-</section>
-
 </section>
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
@@ -359,12 +337,10 @@ const MONTHLY_COST = 500;
 const g   = id=>document.getElementById(id);
 const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
 
-  /* ── ENABLE “NEXT” WHEN ALL FIELDS HAVE A VALUE ── */
-  const calcBtn = g('calcBtn');
-  inputs.forEach(i => i.addEventListener('input', () => {
-    calcBtn.disabled = inputs.some(e => !e.value.trim());
-  }));
-  
+/* enable calc button when all inputs filled */
+const calcBtn=g('calcBtn');
+inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=>!e.value.trim())));
+
 /* ── MAIN CALCULATION ────────────────────────────────── */
 calcBtn.addEventListener('click',()=>{
 
