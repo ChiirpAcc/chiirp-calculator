@@ -222,58 +222,107 @@ calcBtn.addEventListener('click',()=>{
   const Reached = Leads - Missed;
 
   /* ------- 1. ESTIMATION FOLLOW-UP ------- */
-  const estBw = Quotes * CR0;
+  const estBw     = Quotes * CR0;
   const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
   const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
   const estΔLow   = estSwLow  - estBw;
   const estΔHigh  = estSwHigh - estBw;
   const est$Low   = estΔLow  * AR;
   const est$High  = estΔHigh * AR;
+  
   g('estValues').innerHTML = [
     `Closed now: ${estBw.toFixed(1)}`,
     `With Chiirp (low): ${estSwLow.toFixed(1)}`,
     `With Chiirp (high): ${estSwHigh.toFixed(1)}`,
     `monthly gain: $${est$Low.toLocaleString()} – $${est$High.toLocaleString()}`
-  ].map(t=>`<div class="valItem">${t}</div>`).join('');
+  ].map(t => `<div class="valItem">${t}</div>`).join('');
+  
+  /* ↓  ADD THIS EXPLANATION LINE HERE ↓ */
+  g('estExplain').textContent =
+  `Quotes × Close %               = ${Quotes} × ${(CR0*100).toFixed(1)} %  =  ${estBw.toFixed(1)} closed
+  Quotes × Close % × ${UPLIFT.estLow}   = ${Quotes} × ${(CR0*100).toFixed(1)} % × ${UPLIFT.estLow}  =  ${estSwLow.toFixed(1)} (low)
+  Quotes × Close % × ${UPLIFT.estHigh}  = ${Quotes} × ${(CR0*100).toFixed(1)} % × ${UPLIFT.estHigh} =  ${estSwHigh.toFixed(1)} (high)
+  
+  Incremental wins (low)         = ${estSwLow.toFixed(1)} − ${estBw.toFixed(1)}  =  ${estΔLow.toFixed(1)}
+  Incremental wins (high)        = ${estSwHigh.toFixed(1)} − ${estBw.toFixed(1)}  =  ${estΔHigh.toFixed(1)}
+  
+  Monthly $ gain (low)           = ${estΔLow.toFixed(1)} × $${AR}  =  $${est$Low.toLocaleString()}
+  Monthly $ gain (high)          = ${estΔHigh.toFixed(1)} × $${AR}  =  $${est$High.toLocaleString()}`;
+  
+  /* existing line */
   revealSlide('slideEst');
 
-  /* ------- 2. SPEED-TO-LEAD ------- */
-  g('toS2L').onclick=()=>{
-    const s2lBw = Reached * CR0;
-    const s2lSwLow  = Reached * UPLIFT.s2lLow;
-    const s2lSwHigh = Reached * UPLIFT.s2lHigh;
-    const s2lΔLow   = s2lSwLow  - s2lBw;
-    const s2lΔHigh  = s2lSwHigh - s2lBw;
-    const s2l$Low   = s2lΔLow  * AR;
-    const s2l$High  = s2lΔHigh * AR;
 
+  /* ------- 2. SPEED-TO-LEAD ------- */
+  g('toS2L').onclick = () => {
+    /* baseline and Chiirp wins */
+    const s2lBw      = Reached * CR0;
+    const s2lSwLow   = Reached * UPLIFT.s2lLow;
+    const s2lSwHigh  = Reached * UPLIFT.s2lHigh;
+    const s2lΔLow    = s2lSwLow  - s2lBw;
+    const s2lΔHigh   = s2lSwHigh - s2lBw;
+    const s2l$Low    = s2lΔLow   * AR;
+    const s2l$High   = s2lΔHigh  * AR;
+  
+    /* headline numbers */
     g('s2lValues').innerHTML = [
-      `Reached leads / mo: ${Reached}`,
+      `Reached leads / mo: ${Reached.toLocaleString()}`,
       `Closed now: ${s2lBw.toFixed(1)}`,
       `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
       `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
       `monthly gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
-    ].map(t=>`<div class="valItem">${t}</div>`).join('');
+    ].map(t => `<div class="valItem">${t}</div>`).join('');
+  
+    /* line-by-line walkthrough */
+    g('s2lExplain').textContent =
+  `Reached × Close %               = ${Reached} × ${(CR0*100).toFixed(1)} %  =  ${s2lBw.toFixed(1)}
+  Reached × ${(UPLIFT.s2lLow*100).toFixed(0)} %     = ${Reached} × ${(UPLIFT.s2lLow*100).toFixed(0)} %  =  ${s2lSwLow.toFixed(1)}  (low)
+  Reached × ${(UPLIFT.s2lHigh*100).toFixed(0)} %    = ${Reached} × ${(UPLIFT.s2lHigh*100).toFixed(0)} %  =  ${s2lSwHigh.toFixed(1)}  (high)
+  
+  Incremental wins (low)          = ${s2lSwLow.toFixed(1)} − ${s2lBw.toFixed(1)}  =  ${s2lΔLow.toFixed(1)}
+  Incremental wins (high)         = ${s2lSwHigh.toFixed(1)} − ${s2lBw.toFixed(1)}  =  ${s2lΔHigh.toFixed(1)}
+  
+  Monthly $ gain (low)            = ${s2lΔLow.toFixed(1)} × $${AR}  =  $${s2l$Low.toLocaleString()}
+  Monthly $ gain (high)           = ${s2lΔHigh.toFixed(1)} × $${AR}  =  $${s2l$High.toLocaleString()}`;
+  
     revealSlide('slideS2L');
+  };
 
-    /* ------- 3. ABANDONED CALL ------- */
-    g('toMissed').onclick=()=>{
-      const missBw = Missed * CR0;
-      const missSwLow  = Missed * UPLIFT.missLow;
-      const missSwHigh = Missed * UPLIFT.missHigh;
-      const missΔLow   = missSwLow  - missBw;
-      const missΔHigh  = missSwHigh - missBw;
-      const miss$Low   = missΔLow  * AR;
-      const miss$High  = missΔHigh * AR;
+  /* ------- 3. ABANDONED CALL ------- */
+  g('toMissed').onclick = () => {
+    /* baseline and Chiirp wins on missed contacts */
+    const missBw      = Missed * CR0;
+    const missSwLow   = Missed * UPLIFT.missLow;
+    const missSwHigh  = Missed * UPLIFT.missHigh;
+    const missΔLow    = missSwLow  - missBw;
+    const missΔHigh   = missSwHigh - missBw;
+    const miss$Low    = missΔLow   * AR;
+    const miss$High   = missΔHigh  * AR;
+  
+    /* headline numbers */
+    g('missValues').innerHTML = [
+      `Missed contacts / mo: ${Missed.toFixed(1)}`,
+      `Closed now: ${missBw.toFixed(1)}`,
+      `With Chiirp (low): ${missSwLow.toFixed(1)}`,
+      `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
+      `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
+    ].map(t => `<div class="valItem">${t}</div>`).join('');
+  
+    /* step-by-step explanation */
+    g('missExplain').textContent =
+  `Missed × Close %             = ${Missed.toFixed(1)} × ${(CR0*100).toFixed(1)} %  =  ${missBw.toFixed(1)}
+  Missed × ${(UPLIFT.missLow*100).toFixed(0)} %   = ${Missed.toFixed(1)} × ${(UPLIFT.missLow*100).toFixed(0)} %  =  ${missSwLow.toFixed(1)}  (low)
+  Missed × ${(UPLIFT.missHigh*100).toFixed(0)} %  = ${Missed.toFixed(1)} × ${(UPLIFT.missHigh*100).toFixed(0)} %  =  ${missSwHigh.toFixed(1)}  (high)
+  
+  Incremental wins (low)       = ${missSwLow.toFixed(1)} − ${missBw.toFixed(1)}  =  ${missΔLow.toFixed(1)}
+  Incremental wins (high)      = ${missSwHigh.toFixed(1)} − ${missBw.toFixed(1)}  =  ${missΔHigh.toFixed(1)}
+  
+  Monthly $ gain (low)         = ${missΔLow.toFixed(1)} × $${AR}  =  $${miss$Low.toLocaleString()}
+  Monthly $ gain (high)        = ${missΔHigh.toFixed(1)} × $${AR}  =  $${miss$High.toLocaleString()}`;
+  
+    revealSlide('slideMissed');
+  };
 
-      g('missValues').innerHTML = [
-        `Missed contacts / mo: ${Missed.toFixed(1)}`,
-        `Closed now: ${missBw.toFixed(1)}`,
-        `With Chiirp (low): ${missSwLow.toFixed(1)}`,
-        `With Chiirp (high): ${missSwHigh.toFixed(1)}`,
-        `monthly gain: $${miss$Low.toLocaleString()} – $${miss$High.toLocaleString()}`
-      ].map(t=>`<div class="valItem">${t}</div>`).join('');
-      revealSlide('slideMissed');
 
       /* ------- 4. SUMMARY ------- */
       g('toSum').onclick=()=>{
