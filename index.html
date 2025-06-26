@@ -196,28 +196,37 @@
   </div>
 
   <button id="calcBtn" disabled>Next ➔</button>
-</section>
+
 
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
-<section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Estimation Follow-Up</h1>
-
-  <!-- dynamic results injected by JS -->
-  <div id="estValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-
-  <!-- optional: show the exact formulas driving the numbers -->
-  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">How these numbers are calculated</summary>
-    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+- <section class="slide" id="slideEst"
+-          style="display:none;opacity:0;transition:opacity .6s">
++ <section class="slide" id="slideEst">
++   <div class="slide-grid">
++     <!-- left column: all the context + formulas -->
++     <div class="details">
++       <h1>Estimation Follow-Up</h1>
++       <div id="estValues" class="results"></div>
++       <details class="calc-formula">
++         <summary>How these numbers are calculated</summary>
++         <pre>
 Baseline wins      = Quotes × Close %
 Wins with Chiirp   = Quotes × Close % × Uplift
 Incremental wins   = Wins with Chiirp − Baseline wins
 Monthly revenue    = Incremental wins × Avg Revenue
-        </pre>
-  </details>
+         </pre>
++       </details>
++     </div>
++
++     <!-- right column: the big “monthly gain” highlight -->
++     <aside class="savings">
++       <h3>Monthly gain</h3>
++       <p id="estGain" class="highlight-number"></p>
++     </aside>
++   </div>
++   <button id="toS2L">Next ➔</button>
+ </section>
 
-  <button id="toS2L">Next ➔</button>
-</section>
 
 
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
