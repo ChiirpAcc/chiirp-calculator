@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3*/
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3*/
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -513,6 +513,10 @@ calcBtn.addEventListener('click', () => {
  const ReachedCalls  = TotalCalls - MissedCalls;
 
   /* ──── 1. ESTIMATION FOLLOW-UP ──── */
+  const Q           = +g('quotes').value;       // # estimates per month
+  const CR0_est     = (+g('closeRate').value)/100;
+  const AR_est      = +g('avgRev').value;
+  
   const baselineWins = Quotes * CR0;
   const closedNow  = Leads * CR0;
   const chiirpLow  = Leads * UPLIFT.estLow;
@@ -523,21 +527,20 @@ calcBtn.addEventListener('click', () => {
   const revHigh    = deltaHigh * AR;
 
   // render Estimation table
-  const rows = [
-    ['Closed now',         Math.round(closedNow).toLocaleString()],
-    ['With Chiirp (low)',  Math.round(chiirpLow).toLocaleString()],
-    ['With Chiirp (high)', Math.round(chiirpHigh).toLocaleString()],
-    ['Monthly gain',       `$${Math.round(revLow).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`]
+  const estRows = [
+    ['Baseline wins',       baselineEst.toFixed(1)],
+    ['With Chiirp (low)',   lowWinsEst .toFixed(1)],
+    ['With Chiirp (high)',  highWinsEst.toFixed(1)],
+    ['Monthly gain',        `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
   ];
-  g('estValues').innerHTML = rows
-    .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
+  g('estValues').innerHTML = estRows
+    .map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`)
     .join('');
 
   // render Estimation highlights
-  g('estGainMonthly').textContent =
-    `$${Math.round(revLow).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`;
-  g('estGainAnnual').textContent =
-    `$${Math.round(revLow * 12).toLocaleString()} – $${Math.round(revHigh * 12).toLocaleString()}`;
+  g('estGainMonthly').textContent = `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
+  g('estGainAnnual'). textContent = `$${Math.round(revLowEst*12).toLocaleString()} – $${Math.round(revHighEst*12).toLocaleString()}`;
+
 
   // show Estimation slide
   revealSlide('slideEst');
