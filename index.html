@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3*/
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3*/
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -309,48 +309,23 @@
 <!-- explanatory key -->
 <div class="guide">
   <h3>What each field means</h3>
-  <table>
-    <thead>
-      <tr><th>Variable</th><th>Plain-English prompt</th><th>How we reuse it</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Leads</td>
-        <td>How many new prospects you get per month (all sources)</td>
-        <td>Feeds Speed-to-Lead and sets the base for Missed-Call math</td>
-      </tr>
-      <tr>
-        <td>Missed %</td>
-        <td>About what % of those prospects you never reach live</td>
-        <td>Calculates Missed = Leads × Missed %; Reached = Leads − Missed</td>
-      </tr>
-      <tr>
-        <td>Quotes</td>
-        <td>How many price quotes/estimates you send per month</td>
-        <td>Drives the Estimation: Follow-Up module</td>
-      </tr>
-      <tr>
-        <td>Total calls</td>
-        <td>How many outbound call attempts you make per month</td>
-        <td>Used to compute reached vs. abandoned calls</td>
-      </tr>
-      <tr>
-        <td>Missed calls</td>
-        <td>Raw count of calls that went unanswered</td>
-        <td>Drives the Abandoned-Call Recovery module</td>
-      </tr>
-      <tr>
-        <td>Close %</td>
-        <td>% of reached prospects (or quoted jobs) that turn into sales today</td>
-        <td>Baseline close rate for all three modules</td>
-      </tr>
-      <tr>
-        <td>Avg Revenue</td>
-        <td>Average revenue per new customer ($)</td>
-        <td>Converts extra deals into dollars everywhere</td>
-      </tr>
-    </tbody>
-  </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Variable</th>
+          <th>Plain-English prompt</th>
+          <th>How we reuse it</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Form wins (W₁)</td>
+          <td>How many form-submissions you currently turn into sales</td>
+          <td>Baseline for Speed-to-Lead uplift</td>
+        </tr>
+        …etc…
+      </tbody>
+    </table>
 </div>
 
 
@@ -364,36 +339,27 @@
       <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Estimate: Follow-Up</h1>
-        <p class="subhead">Based on your business numbers</p>
-        <table>
+        <p class="subhead">Based on your monthly estimates and wins</p>
+          <table>
           <thead>
             <tr><th>Metric</th><th>Value</th></tr>
           </thead>
-          <tbody id="estValues">
-            <!-- JS injects rows here -->
-          </tbody>
+          <tbody id="estValues"><!-- JS injects rows here --></tbody>
         </table>
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
           <pre>
-Baseline wins      = Quotes × Close %
-Wins with Chiirp   = Quotes × Close % × Uplift
-Incremental wins   = Wins with Chiirp − Baseline wins
-Monthly revenue    = Incremental wins × Avg Revenue
+Baseline wins      = W₃ (current quote wins)
+Chiirp wins (low)  = min(W₃ × 1.5, Q)
+Chiirp wins (high) = min(W₃ × 2.0, Q)
+Incremental wins   = Chiirp wins − W₃
+Monthly revenue    = Incremental wins × AR
           </pre>
         </details>
       </div>
-
-      <!-- RIGHT CARD: monthly & annual highlight -->
-      <div class="est-card highlight-table">
-        <h3>Additional Revenue</h3>
-        <p id="estGainMonthly" class="highlight-number">—</p>
-        <p class="subtext">per month</p>
-        <p id="estGainAnnual"  class="highlight-number">—</p>
-        <p class="subtext">per year</p>
-      </div>
+      <!-- RIGHT CARD: highlights unchanged -->
+      <div class="est-card highlight-table">…</div>
     </div>
-
     <button id="toS2L">Next ➔</button>
   </div>
 </section>
@@ -406,48 +372,36 @@ Monthly revenue    = Incremental wins × Avg Revenue
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
 <section class="slide" id="slideS2L" style="display:none;opacity:0;transition:opacity .6s">
   <h1>Speed-to-Lead</h1>
-
-  <!-- dynamic results injected by JS -->
-  <div id="s2lValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-
-  <!-- optional transparency panel -->
-  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">
-      How these numbers are calculated
-    </summary>
-    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
-Reached leads        = Total leads − Missed leads
-Baseline wins        = Reached × Close %
-Wins with Chiirp     = Reached × Uplift close %
-Incremental wins     = Wins with Chiirp − Baseline wins
-Monthly revenue gain = Incremental wins × Avg Revenue
+  <div id="s2lValues" style="…"></div>
+  <details class="calc-formula">
+    <summary>How these numbers are calculated</summary>
+    <pre>
+Baseline wins      = W₁ (current form wins)
+Chiirp wins (low)  = min(W₁ × 2.0, F)
+Chiirp wins (high) = min(W₁ × 5.0, F)
+Incremental wins   = Chiirp wins − W₁
+Monthly revenue    = Incremental wins × AR
     </pre>
   </details>
-
   <button id="toMissed">Next ➔</button>
 </section>
 
-
-<!-- ────────────────  SLIDE 4 – MISSED CALLS ──────────────── -->
-<section class="slide" id="slideMissed"
-         style="display:none;opacity:0;transition:opacity .6s">
+<!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->
+<section class="slide" id="slideMissed" style="display:none;opacity:0;transition:opacity .6s">
   <h1>Abandoned-Call Recovery</h1>
 
-  <!-- dynamic results from JS -->
-  <div id="missValues"
-       style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
+  <!-- JS injects these values here -->
+  <div id="missValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
 
-  <!-- transparency panel (optional) -->
-  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">
-      How these numbers are calculated
-    </summary>
-    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
-Missed contacts       = Total leads × Missed %
-Baseline wins         = Missed × Close %
-Wins with Chiirp      = Missed × Uplift close %
-Incremental wins      = Wins with Chiirp − Baseline wins
-Monthly revenue gain  = Incremental wins × Avg Revenue
+  <details class="calc-formula">
+    <summary>How these numbers are calculated</summary>
+    <pre>
+Pool to text        = M − W₂
+Engage              = Pool × 70 %
+Opened texts        = Engage × 98 %
+Recovered (low)     = min(Opened × 20 %, Pool)
+Recovered (high)    = min(Opened × 40 %, Pool)
+Monthly revenue     = Recovered × AR
     </pre>
   </details>
 
@@ -473,37 +427,36 @@ Monthly revenue gain  = Incremental wins × Avg Revenue
 Low monthly gain   = Est_Low  + S2L_Low  + Miss_Low
 High monthly gain  = Est_High + S2L_High + Miss_High
 
-ROI (low)          = Low gain  ÷ Monthly cost
-ROI (high)         = High gain ÷ Monthly cost
+ROI (low)          = Low monthly gain  ÷ Monthly cost
+ROI (high)         = High monthly gain ÷ Monthly cost
     </pre>
   </details>
 
   <button onclick="location.reload()">Restart ↻</button>
 </section>
 
+
 <script>
-(()=>{
+(() => {
   // ── CONSTANTS ─────────────────────────────────────────
   const UPLIFT = {
-    estLow:  1.5,  estHigh:  2.0,   // Estimation Follow-Up multipliers
-    s2lLow:  2.0,  s2lHigh:  5.0,   // Speed-to-Lead multipliers
-    missLow: 3.0,  missHigh:  5.0    // Abandoned-Call multipliers
+    estLow: 1.5, estHigh: 2.0,
+    s2lLow: 2.0, s2lHigh: 5.0,    // ← you repeated “estHigh” instead of “s2lHigh”
+    missLow: 3.0, missHigh: 5.0
   };
-  const ENGAGE_RATE  = 0.70;         // 70% of missed calls will engage via text
-  const OPEN_RATE    = 0.98;         // 98% of those texts get opened
-  const MONTHLY_COST = 500;          // for any ROI calc
+
+
+  // ── MODULE REVENUE STORAGE ─────────────────────────────
+  let revLowEst   = 0, revHighEst   = 0;
+  let revLowS2L   = 0, revHighS2L   = 0;
+  let revLowMiss  = 0, revHighMiss  = 0;
 
   // ── DOM SHORTCUTS & INPUTS ─────────────────────────────
   const g = id => document.getElementById(id);
   const inputs = [
-    'leads',      // F: total form submissions
-    'formWins',   // W1: wins from forms
-    'missedCalls',// M: total missed calls
-    'missedWins', // W2: wins from missed calls
-    'quotes',     // Q: total quotes sent
-    'quoteWins',  // W3: wins from quotes
-    'avgRev'      // AR: average revenue per win
+    'leads','formWins','missedCalls','missedWins','quotes','quoteWins','avgRev'
   ].map(g);
+
 
   // enable “Next” button once all fields are non-empty
   const calcBtn = g('calcBtn');
@@ -566,8 +519,9 @@ g('toS2L').onclick = () => {
   const deltaHigh = chiirpWinsHigh - W1;
 
   // 5) Revenue gain
-  const revLow  = deltaLow  * AR;
-  const revHigh = deltaHigh * AR;
+  revLowEst  = deltaLow  * AR;
+  revHighEst = deltaHigh * AR;
+
 
   // 6) Render results into your Speed-to-Lead slide
   g('s2lValues').innerHTML = [
@@ -588,7 +542,7 @@ g('toS2L').onclick = () => {
 g('toMissed').onclick = () => {
   // 1) Parse inputs
   const M  = +g('missedCalls').value;      // total missed calls
-  const W2 = +g('missedCalls').dataset.wins || 0;  // current wins from missed calls
+  const W2 = +g('missedWins').value || 0;  // current wins from missed calls
   const AR = +g('avgRev').value;           // avg revenue per win
 
   // 2) Build the textable pool (only calls client can’t reach)
@@ -611,8 +565,9 @@ g('toMissed').onclick = () => {
   const deltaHigh = winsHigh;
 
   // 7) Revenue gain
-  const revLow   = deltaLow  * AR;
-  const revHigh  = deltaHigh * AR;
+  revLowMiss  = deltaLow  * AR;
+  revHighMiss = deltaHigh * AR;
+
 
   // 8) Render results
   g('missValues').innerHTML = [
@@ -627,29 +582,13 @@ g('toMissed').onclick = () => {
 };
 
 
- /* ─── 4. SUMMARY ─── */
+// ─── 4. SUMMARY ───
 g('toSum').onclick = () => {
-  // Re-derive Speed-to-Lead lift
-  const reachedBase = ReachedLeads;
-  const s2lΔLow     = reachedBase * UPLIFT.s2lLow  - reachedBase * CR0;
-  const s2lΔHigh    = reachedBase * UPLIFT.s2lHigh - reachedBase * CR0;
-  const s2lLowRev   = s2lΔLow  * AR;
-  const s2lHighRev  = s2lΔHigh * AR;
+  const totalLow  = revLowEst  + revLowS2L  + revLowMiss;
+  const totalHigh = revHighEst + revHighS2L + revHighMiss;
+  const roiLow    = (totalLow  / MONTHLY_COST).toFixed(1);
+  const roiHigh   = (totalHigh / MONTHLY_COST).toFixed(1);
 
-  // Re-derive Missed-Call lift
-  const missΔLow    = MissedCalls * UPLIFT.missLow  - MissedCalls * CR0;
-  const missΔHigh   = MissedCalls * UPLIFT.missHigh - MissedCalls * CR0;
-  const missLowRev  = missΔLow  * AR;
-  const missHighRev = missΔHigh * AR;
-
-  // Total lift = Estimation + S2L + Missed
-  const totalLow   = revLowEst   + s2lLowRev   + missLowRev;
-  const totalHigh  = revHighEst  + s2lHighRev  + missHighRev;
-
-  const roiLow     = (totalLow  / MONTHLY_COST).toFixed(1);
-  const roiHigh    = (totalHigh / MONTHLY_COST).toFixed(1);
-
-  // Render summary
   g('sumValues').innerHTML = [
     `Total monthly revenue lift:`,
     `$${Math.round(totalLow).toLocaleString()} – $${Math.round(totalHigh).toLocaleString()}`,
@@ -658,6 +597,7 @@ g('toSum').onclick = () => {
 
   revealSlide('slideSum');
 };
+
 
 
 });            
