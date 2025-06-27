@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #00 100%); /*0693e3*/
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3*/
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -571,34 +571,36 @@ g('estGainAnnual').textContent  =
 // Advance to Estimation slide
 revealSlide('slideEst');
 
-  /* ------- 2. SPEED-TO-LEAD ------- */
-  g('toS2L').onclick = () => {
-    // choose whether to use ReachedLeads or ReachedCalls as your base
-    const base = ReachedLeads; // or: const base = ReachedCalls;
-    const s2lBw     = base * CR0;
-    const s2lSwLow  = base * UPLIFT.s2lLow;
-    const s2lSwHigh = base * UPLIFT.s2lHigh;
-    const s2lΔLow   = s2lSwLow  - s2lBw;
-    const s2lΔHigh  = s2lSwHigh - s2lBw;
-    const s2l$Low   = s2lΔLow  * AR;
-    const s2l$High  = s2lΔHigh * AR;
+/* ─────── 2. SPEED-TO-LEAD ─────── */
+g('toS2L').onclick = () => {
+  // choose whether to use ReachedLeads or ReachedCalls as your base
+  const base     = ReachedLeads; // or: ReachedCalls
+  const s2lBw    = base * CR0;
+  const s2lSwLow = base * UPLIFT.s2lLow;
+  const s2lSwHigh= base * UPLIFT.s2lHigh;
+  const s2lΔLow  = s2lSwLow  - s2lBw;
+  const s2lΔHigh = s2lSwHigh - s2lBw;
+  const s2lLow$  = s2lΔLow  * AR;
+  const s2lHigh$ = s2lΔHigh * AR;
 
-    g('s2lValues').innerHTML = [
-      `Reached leads / mo: ${base}`,
-      `Closed now: ${s2lBw.toFixed(1)}`,
-      `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
-      `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
-      `Monthly gain: $${s2l$Low.toLocaleString()} – $${s2l$High.toLocaleString()}`
-    ].map(t => `<div class="valItem">${t}</div>`).join('');
+  // render Speed-to-Lead results
+  g('s2lValues').innerHTML = [
+    `Reached leads / mo: ${base}`,
+    `Closed now: ${s2lBw.toFixed(1)}`,
+    `With Chiirp (low): ${s2lSwLow.toFixed(1)}`,
+    `With Chiirp (high): ${s2lSwHigh.toFixed(1)}`,
+    `Monthly gain: $${s2lLow$.toLocaleString()} – $${s2lHigh$.toLocaleString()}`
+  ].map(t => `<div class="valItem">${t}</div>`).join('');
 
-    // reuse Estimation highlights
-    g('estGainMonthly').textContent =
-      `$${Math.round(revLow).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`;
-    g('estGainAnnual').textContent =
-      `$${Math.round(revLow * 12).toLocaleString()} – $${Math.round(revHigh * 12).toLocaleString()}`;
+  // reuse Estimation highlights from revLowEst/revHighEst
+  g('estGainMonthly').textContent =
+    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
+  g('estGainAnnual').textContent =
+    `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
 
-    revealSlide('slideS2L');
-  };
+  revealSlide('slideS2L');
+};
+
 
   /* ------- 3. ABANDONED-CALL RECOVERY ------- */
   g('toMissed').onclick = () => {
