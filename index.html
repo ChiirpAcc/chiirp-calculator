@@ -83,10 +83,39 @@
   white-space: nowrap;
 }
 
-/* reset default margins on the number & its label */
-.slide .slide-content.estimation .highlight-table .highlight-number,
-.slide .slide-content.estimation .highlight-table .subtext {
+/* split the right-card into two equal rows */
+.slide .slide-content.estimation .highlight-table .highlight-grid {
+  display: grid;
+  grid-template-rows: 1fr 1fr;  /* one row for monthly, one for annual */
+  height: 100%;
+}
+
+/* stack each number + label and pin them to the bottom of their row */
+.slide .slide-content.estimation .highlight-table .highlight-pair {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;    /* pushes content into the “middle” of each red box */
+  gap: 0.25rem;                 /* tiny gap between number & label */
+}
+
+/* remove default <p> margins inside each pair */
+.slide .slide-content.estimation .highlight-table .highlight-pair p {
   margin: 0;
+}
+
+/* your existing number style */
+.slide .slide-content.estimation .highlight-table .highlight-number {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 700;
+  color: #ffeb3b;
+  line-height: 1;
+}
+
+/* your existing label style */
+.slide .slide-content.estimation .highlight-table .subtext {
+  font-size: 1rem;
+  color: #fff;
 }
 
 /* big yellow number stays the same */
@@ -149,7 +178,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -340,22 +369,21 @@ Monthly revenue    = Incremental wins × AR
       </div>
 
       <!-- RIGHT CARD: monthly & annual highlight -->
-      <div class="est-card highlight-table">
-        <h3>Additional Revenue</h3>
-      
-        <div class="highlight-grid">
-          <div class="highlight-pair">
-            <p id="estGainMonthly" class="highlight-number">—</p>
-            <p class="subtext">per month</p>
-          </div>
-      
-          <div class="highlight-pair">
-            <p id="estGainAnnual" class="highlight-number">—</p>
-            <p class="subtext">per year</p>
+        <div class="est-card highlight-table">
+          <h3>Additional Revenue</h3>
+        
+          <div class="highlight-grid">
+            <div class="highlight-pair">
+              <p id="estGainMonthly" class="highlight-number">—</p>
+              <p class="subtext">per month</p>
+            </div>
+            <div class="highlight-pair">
+              <p id="estGainAnnual" class="highlight-number">—</p>
+              <p class="subtext">per year</p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+
 
     <button id="toS2L">Next ➔</button>
   </div>
