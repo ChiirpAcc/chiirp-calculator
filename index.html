@@ -77,72 +77,49 @@
   text-align: left;
 }
 
-/* right-column highlight */
+/* 1) Make the right‐card itself a 2-row grid: header + content */
 .slide .slide-content.estimation .highlight-table {
+  display: grid;
+  grid-template-rows: max-content 1fr; /* h3 in the top row, pairs fill the bottom */
+  height: 100%;                        /* match its parent card height */
   text-align: center;
   white-space: nowrap;
 }
 
-/* split the right-card into two equal rows */
+/* 2) Your header already lives in the first row, so let .highlight-grid occupy the 2nd */
 .slide .slide-content.estimation .highlight-table .highlight-grid {
   display: grid;
-  grid-template-rows: 1fr 1fr;  /* one row for monthly, one for annual */
-  height: 100%;
+  grid-template-rows: 1fr 1fr; /* two equal rows for monthly + annual */
+  row-gap: 0;                  /* no extra space between them */
+  width: 100%;
+  /* remove any height:100% here—grid row sizing will handle it */
 }
 
-/* stack each number + label and pin them to the bottom of their row */
+/* 3) Bottom‐align number+label in each half */
 .slide .slide-content.estimation .highlight-table .highlight-pair {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;    /* pushes content into the “middle” of each red box */
-  gap: 0.25rem;                 /* tiny gap between number & label */
+  justify-content: flex-end;  /* pushes them down into the middle of each row */
+  gap: 0.25rem;               /* small gap between number & label */
 }
 
-/* remove default <p> margins inside each pair */
+/* 4) Reset default <p> margins */
 .slide .slide-content.estimation .highlight-table .highlight-pair p {
   margin: 0;
 }
 
-/* your existing number style */
+/* 5) Your existing number & label styles */
 .slide .slide-content.estimation .highlight-table .highlight-number {
   font-size: clamp(3rem, 8vw, 5rem);
   font-weight: 700;
   color: #ffeb3b;
   line-height: 1;
 }
-
-/* your existing label style */
 .slide .slide-content.estimation .highlight-table .subtext {
   font-size: 1rem;
   color: #fff;
 }
-
-/* big yellow number stays the same */
-.slide .slide-content.estimation .highlight-table .highlight-number {
-  font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 700;
-  color: #ffeb3b;
-  line-height: 1;
-}
-
-/* tight gap under each number, then extra bottom-margin under “per month” */
-.slide .slide-content.estimation .highlight-table .subtext {
-  margin-top: 0.25rem;   /* space just under each number */
-  font-size: 1rem;
-  color: #fff;
-}
-
-/* push “per year” up by adding extra space after “per month” */
-.slide .slide-content.estimation .highlight-table .subtext:first-of-type {
-  margin-bottom: 4rem;   /* tweak this value until “per year” sits correctly */
-}
-
-/* no extra gap after the final label */
-.slide .slide-content.estimation .highlight-table .subtext:last-of-type {
-  margin-bottom: 0;
-}
-
 
 /* responsive: stack cards on mobile */
 @media (max-width: 640px) {
@@ -178,7 +155,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
