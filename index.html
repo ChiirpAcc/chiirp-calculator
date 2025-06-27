@@ -34,30 +34,29 @@
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
 /* 1) Make the slide itself a full-width grid and center its content */
 .slide {
-  display: grid;
-  place-items: center;
-  width: 100%;
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
 }
 
-/* applies to slides 2, 3, 4, 5 (any slide-content.estimation) */
+/* applies to slides 2–5 */
 .slide .slide-content.estimation {
-  /* this can stay shrink-to-fit */
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
-  width: max-content;    /* grow/shrink around its cards */
+  width: max-content;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  margin: auto;          /* center the card in its slide */
+  margin: auto;
 }
 
-/* 2) Two-column: left fixed 360px, right flexible, shrink-wrap and centered */
 .slide .slide-content.estimation .est-grid {
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 2rem;
-  width: max-content;    /* shrink-to-fit both columns */
-  margin: 0 auto;        /* center that inner grid */
+  width: max-content;
+  margin: 0 auto;
 }
+
 
 /* card styles */
 .slide .slide-content.estimation .est-card {
@@ -156,6 +155,12 @@
     text-align: center;
     padding: 2rem;
   }
+
+  .slide {
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+}
 
   /* ─────────────────────────────────────────────────────────────────────────────
      HEADINGS
