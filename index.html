@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -391,53 +391,76 @@ Monthly revenue    = Incremental wins × AR
 
 
 <!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->
-<section class="slide" id="slideMissed" style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Abandoned-Call Recovery</h1>
+<section class="slide" id="slideMissed" style="display:none; opacity:0; transition:opacity .6s">
+  <div class="slide-content estimation">
+    <div class="est-grid">
 
-  <!-- dynamic results injected by JS -->
-  <div id="missValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-
-  <details class="calc-formula">
-    <summary>How these numbers are calculated</summary>
-    <pre>
+      <!-- LEFT CARD: dynamic results -->
+      <div class="est-card details-table">
+        <h1>Abandoned-Call Recovery</h1>
+        <div id="missValues" class="val-table">
+          <!-- JS injects .valItem divs here -->
+        </div>
+        <details class="calc-formula">
+          <summary>How these numbers are calculated</summary>
+          <pre>
 Pool to text        = M − W₂
 Engage              = Pool × 70%
 Opened texts        = Engage × 98%
 Recovered (low)     = min(Opened × 20%, Pool)
 Recovered (high)    = min(Opened × 40%, Pool)
 Monthly revenue     = Recovered × AR
-    </pre>
-  </details>
+          </pre>
+        </details>
+      </div>
 
-  <button id="toSum">Next ➔</button>
+      <!-- RIGHT CARD: highlight placeholder -->
+      <div class="est-card highlight-table">
+        <p class="highlight-number">—</p>
+      </div>
+
+    </div>
+
+    <button id="toSum">Next ➔</button>
+  </div>
 </section>
 
 
+
 <!-- ────────────────  SLIDE 5 – SUMMARY ──────────────── -->
-<section class="slide" id="slideSum"
-         style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Total Monthly Gain</h1>
+<section class="slide" id="slideSum" style="display:none; opacity:0; transition:opacity .6s">
+  <div class="slide-content estimation">
+    <div class="est-grid">
 
-  <!-- populated by JS -->
-  <div id="sumValues"
-       style="margin:2rem 0;font-size:1.6rem;line-height:2"></div>
-
-  <!-- optional: reveal the math behind the totals -->
-  <details style="margin:1.5rem 0 0;font-size:.9rem;text-align:left">
-    <summary style="cursor:pointer;font-weight:600">
-      How these numbers are calculated
-    </summary>
-    <pre style="white-space:pre-wrap;line-height:1.5;margin-top:.8rem">
+      <!-- LEFT CARD: totals -->
+      <div class="est-card details-table">
+        <h1>Total Monthly Gain</h1>
+        <div id="sumValues" class="val-table">
+          <!-- JS injects .valItem.show divs here -->
+        </div>
+        <details style="margin-top:1.5rem; font-size:.9rem; text-align:left">
+          <summary style="cursor:pointer; font-weight:600">
+            How these numbers are calculated
+          </summary>
+          <pre style="white-space:pre-wrap; line-height:1.5; margin-top:.8rem">
 Low monthly gain   = Est_Low  + S2L_Low  + Miss_Low
 High monthly gain  = Est_High + S2L_High + Miss_High
 
 ROI (low)          = Low monthly gain  ÷ Monthly cost
 ROI (high)         = High monthly gain ÷ Monthly cost
-    </pre>
-  </details>
+          </pre>
+        </details>
+      </div>
 
-  <button onclick="location.reload()">Restart ↻</button>
+      <!-- RIGHT CARD: final highlight -->
+      <div class="est-card highlight-table">
+        <button onclick="location.reload()">Restart ↻</button>
+      </div>
+
+    </div>
+  </div>
 </section>
+
 
 
 <script>
