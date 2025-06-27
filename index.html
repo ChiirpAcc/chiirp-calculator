@@ -83,13 +83,13 @@
   white-space: nowrap;
 }
 
-/* reset any default margins on number & label */
+/* reset default margins on the number & its label */
 .slide .slide-content.estimation .highlight-table .highlight-number,
 .slide .slide-content.estimation .highlight-table .subtext {
   margin: 0;
 }
 
-/* keep your big yellow number as is */
+/* big yellow number stays the same */
 .slide .slide-content.estimation .highlight-table .highlight-number {
   font-size: clamp(3rem, 8vw, 5rem);
   font-weight: 700;
@@ -97,13 +97,23 @@
   line-height: 1;
 }
 
-/* tighten the gap under each number */
+/* tight gap under each number, then extra bottom-margin under “per month” */
 .slide .slide-content.estimation .highlight-table .subtext {
-  margin-top: 0.25rem;     /* small space under the number */
-  margin-bottom: 1.5rem;   /* space before next number */
+  margin-top: 0.25rem;     /* space just under each number */
   font-size: 1rem;
   color: #fff;
 }
+
+/* push “per year” up by adding extra space after “per month” */
+.slide .slide-content.estimation .highlight-table .subtext:first-of-type {
+  margin-bottom: 4rem;     /* adjust 4rem until “per year” aligns in its red box */
+}
+
+/* no extra gap after the final label */
+.slide .slide-content.estimation .highlight-table .subtext:last-of-type {
+  margin-bottom: 0;
+}
+
 
 
 /* responsive: stack cards on mobile */
@@ -140,7 +150,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
