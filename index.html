@@ -30,6 +30,7 @@
     padding: 1rem;
     border-radius: 8px;
   }
+
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
 
 /* applies to slides 2–5 */
@@ -38,18 +39,22 @@
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  margin: auto;
 
-  /* NEW: centre the grid via flex */
-  display: flex;
-  justify-content: center;
+  /* centre any inline-level child (our grid) */
+  text-align: center;
+  margin: auto;
 }
 
 .slide .slide-content.estimation .est-grid {
-  /* grid stays grid, but drop width/max-content and margin */
-  display: grid;
+  /* become inline-grid, drop manual sizing */
+  display: inline-grid;
   grid-template-columns: 360px 1fr;
   gap: 2rem;
+
+  /* remove these:
+  width: max-content;
+  margin: 0 auto;
+  */
 }
 
 /* card styles */
@@ -104,6 +109,7 @@
   }
 }
 
+  
 
   /* ─────────────────────────────────────────────────────────────────────────────
      BODY & ROTATING BACKDROP
@@ -126,7 +132,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
