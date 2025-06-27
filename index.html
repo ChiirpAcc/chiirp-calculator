@@ -128,7 +128,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -417,18 +417,24 @@ Monthly revenue     = Recovered × AR
 </section>
 
 
-
 <!-- ────────────────  SLIDE 5 – SUMMARY ──────────────── -->
 <section class="slide" id="slideSum" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
 
-      <!-- LEFT CARD: totals -->
+      <!-- LEFT CARD: individual ranges -->
       <div class="est-card details-table">
-        <h1>Total Monthly Gain</h1>
-        <div id="sumValues" class="val-table">
-          <!-- JS injects .valItem.show divs here -->
-        </div>
+        <h1>Breakdown by Module</h1>
+        <table>
+          <thead>
+            <tr><th>Module</th><th>Monthly Gain</th></tr>
+          </thead>
+          <tbody id="sumValues">
+            <!-- JS injects rows:
+              <tr><td>Estimation</td><td>$x – $y</td></tr>
+              etc. -->
+          </tbody>
+        </table>
         <details style="margin-top:1.5rem; font-size:.9rem; text-align:left">
           <summary style="cursor:pointer; font-weight:600">
             How these numbers are calculated
@@ -443,8 +449,14 @@ ROI (high)         = High monthly gain ÷ Monthly cost
         </details>
       </div>
 
-      <!-- RIGHT CARD: final highlight -->
+      <!-- RIGHT CARD: totals & ROI highlight -->
       <div class="est-card highlight-table">
+        <h3>Total Additional Revenue</h3>
+        <p id="sumGainMonthly" class="highlight-number">—</p>
+        <p class="subtext">per month</p>
+        <p id="sumGainAnnual" class="highlight-number">—</p>
+        <p class="subtext">per year</p>
+        <p id="sumROI" class="subtext" style="margin-top:1rem;font-size:1.1rem">ROI: —</p>
         <button onclick="location.reload()">Restart ↻</button>
       </div>
 
@@ -617,21 +629,34 @@ g('toMissed').onclick = () => {
 };
 
 
-// ─── 4. SUMMARY ───
 g('toSum').onclick = () => {
-  const totalLow  = revLowEst  + revLowS2L  + revLowMiss;
-  const totalHigh = revHighEst + revHighS2L + revHighMiss;
-  const roiLow    = (totalLow  / MONTHLY_COST).toFixed(1);
-  const roiHigh   = (totalHigh / MONTHLY_COST).toFixed(1);
+  // aggregate monthly gains
+  const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
+  const highTotal = revHighEst + revHighS2L + revHighMiss;
+  // compute ROI using constant MONTHLY_COST = 500
+  const roiLow  = (lowTotal  / MONTHLY_COST).toFixed(1);
+  const roiHigh = (highTotal / MONTHLY_COST).toFixed(1);
 
+  // 1) render breakdown table
   g('sumValues').innerHTML = [
-    `Total monthly revenue lift:`,
-    `$${Math.round(totalLow).toLocaleString()} – $${Math.round(totalHigh).toLocaleString()}`,
-    `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
-  ].map(t => `<div class="valItem show">${t}</div>`).join('');
+    ['Estimation',      `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
+    ['Speed-to-Lead',   `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
+    ['Call Recovery',   `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
+  ].map(([mod, val]) =>
+    `<tr><td>${mod}</td><td>${val}</td></tr>`
+  ).join('');
+
+  // 2) render total highlights
+  g('sumGainMonthly').textContent =
+    `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
+  g('sumGainAnnual').textContent =
+    `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
+  g('sumROI').textContent =
+    `ROI: ${roiLow}× – ${roiHigh}×`;
 
   revealSlide('slideSum');
 };
+
 
 
 
