@@ -305,7 +305,7 @@
       <tbody>
         <tr><td>Leads</td><td>How many new prospects you get per month (all sources)</td><td>Feeds Speed-to-Lead and sets the base for Missed-Call math</td></tr>
         <tr><td>Missed %</td><td>About what % of those prospects you never reach live</td><td>Calculates Missed = Leads × Missed % ; Reached = Leads − Missed</td></tr>
-        <tr><td>Quotes</td><td>How many price quotes / estimates you send per month</td><td>Drives Estimation Follow-Up</td></tr>
+        <tr><td>Quotes</td><td>How many price quotes / estimates you send per month</td><td>Drives Estimate: Follow-Up</td></tr>
         <tr><td>Close %</td><td>% of reached prospects (or quoted jobs) that turn into sales today</td><td>Baseline close rate for all three modules</td></tr>
         <tr><td>AvgRev $</td><td>Average revenue per new customer ($)</td><td>Converts extra deals to dollars everywhere</td></tr>
       </tbody>
@@ -321,7 +321,7 @@
     <div class="est-grid">
       <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
-        <h1>Estimation Follow-Up</h1>
+        <h1>Estimate: Follow-Up</h1>
         <p class="subhead">Based on your business numbers</p>
         <table>
           <thead>
@@ -469,11 +469,12 @@ calcBtn.addEventListener('click', () => {
   const MissedCalls = +g('missedCalls').value;        // raw count
   const CR0         = (+g('closeRate').value) / 100;
   const AR          = +g('avgRev').value;
+  
 
   /* DERIVED COUNTS (shared) */
-  const MissedLeads  = Leads * MissPct;    // all-channels missed
-  const ReachedLeads = Leads - MissedLeads;
-  const ReachedCalls = TotalCalls - MissedCalls;
++ const MissedLeads   = Leads * MissPct;
++ const ReachedLeads  = Leads - MissedLeads;
++ const ReachedCalls  = TotalCalls - MissedCalls;
 
   /* ──── 1. ESTIMATION FOLLOW-UP ──── */
   const closedNow  = Leads * CR0;
@@ -554,26 +555,38 @@ calcBtn.addEventListener('click', () => {
     revealSlide('slideMissed');
   };
 
-  /* ------- 4. SUMMARY ------- */
-  g('toSum').onclick = () => {
-    const s2lLowWin    = (base * UPLIFT.s2lLow  - base * CR0) * AR;
-    const s2lHighWin   = (base * UPLIFT.s2lHigh - base * CR0) * AR;
-    const missLowWin   = (MissedCalls * UPLIFT.missLow  - MissedCalls * CR0) * AR;
-    const missHighWin  = (MissedCalls * UPLIFT.missHigh - MissedCalls * CR0) * AR;
-    const totalLow     = revLow  + s2lLowWin  + missLowWin;
-    const totalHigh    = revHigh + s2lHighWin + missHighWin;
-    const roiLow       = (totalLow  / MONTHLY_COST).toFixed(1);
-    const roiHigh      = (totalHigh / MONTHLY_COST).toFixed(1);
+/* ------- 4. SUMMARY ------- */
+g('toSum').onclick = () => {
+  // Re‐derive the Speed-to-Lead revenue lift:
+  const reachedBase = ReachedLeads;
+  const s2lΔLow         = reachedBase * UPLIFT.s2lLow  - reachedBase * CR0;
+  const s2lΔHigh        = reachedBase * UPLIFT.s2lHigh - reachedBase * CR0;
+  const s2lLowRev       = s2lΔLow  * AR;
+  const s2lHighRev      = s2lΔHigh * AR;
 
-    g('sumValues').innerHTML = [
-      `Total monthly revenue lift:`,
-      `$${Math.round(totalLow).toLocaleString()} – $${Math.round(totalHigh).toLocaleString()}`,
-      `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
-    ].map(t => `<div class="valItem show">${t}</div>`).join('');
+  // Re‐derive the Missed-Call recovery lift:
+  const missΔLow        = MissedCalls * UPLIFT.missLow  - MissedCalls * CR0;
+  const missΔHigh       = MissedCalls * UPLIFT.missHigh - MissedCalls * CR0;
+  const missLowRev      = missΔLow  * AR;
+  const missHighRev     = missΔHigh * AR;
 
-    revealSlide('slideSum');
-  };
-});
+  // Total lift = Estimation + S2L + Missed
+  const totalLow        = revLow  + s2lLowRev  + missLowRev;
+  const totalHigh       = revHigh + s2lHighRev + missHighRev;
+
+  const roiLow          = (totalLow  / MONTHLY_COST).toFixed(1);
+  const roiHigh         = (totalHigh / MONTHLY_COST).toFixed(1);
+
+  // Render
+  g('sumValues').innerHTML = [
+    `Total monthly revenue lift:`,
+    `$${Math.round(totalLow).toLocaleString()} – $${Math.round(totalHigh).toLocaleString()}`,
+    `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
+  ].map(t => `<div class="valItem show">${t}</div>`).join('');
+
+  revealSlide('slideSum');
+};
+
 
 
 /* ── helper to fade-in slide and animate items ── */
