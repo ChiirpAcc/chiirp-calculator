@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -569,7 +569,7 @@ g('toMissed').onclick = () => {
     `Missed calls / mo: ${M}`,
     `Recovered (low): ${winsLow.toFixed(1)}`,
     `Recovered (high): ${winsHigh.toFixed(1)}`,
-    `Monthly gain: $${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`
+    `Monthly gain: $${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`
   ].map(t => `<div class="valItem">${t}</div>`).join('');
 
   // 9) Show this slide
