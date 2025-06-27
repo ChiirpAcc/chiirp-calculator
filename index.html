@@ -512,45 +512,47 @@ calcBtn.addEventListener('click', () => {
  const ReachedLeads  = Leads - MissedLeads;
  const ReachedCalls  = TotalCalls - MissedCalls;
 
-/* ──── 1. ESTIMATION FOLLOW-UP ──── */
-const Q        = +g('quotes').value;            // # estimates per month
-const CR0_est  = (+g('closeRate').value) / 100; // conversion rate decimal
-const AR_est   = +g('avgRev').value;            // avg job value
+// ──── Estimation Follow-Up ────
+{
+  // Parse client inputs
+  const Q   = +g('quotes').value;         // # estimates per month
+  const W3  = +g('quoteWins').value;      // # of those estimates currently closing
+  const AR  = +g('avgRev').value;         // average revenue per win
 
-// Baseline wins from estimates
-const baselineEst = Q * CR0_est;
+  // Chiirp uplift multipliers
+  const UPLIFT_LOW  = 1.5;
+  const UPLIFT_HIGH = 2.0;
 
-// Chiirp wins with uplift range
-const lowWinsEst  = baselineEst * UPLIFT.estLow;
-const highWinsEst = baselineEst * UPLIFT.estHigh;
+  // Projected Chiirp wins, capped by total estimates Q
+  const chiirpWinsLow  = Math.min(W3 * UPLIFT_LOW,  Q);
+  const chiirpWinsHigh = Math.min(W3 * UPLIFT_HIGH, Q);
 
-// Incremental wins
-const incLowEst  = lowWinsEst  - baselineEst;
-const incHighEst = highWinsEst - baselineEst;
+  // Incremental wins
+  const deltaLow  = chiirpWinsLow  - W3;
+  const deltaHigh = chiirpWinsHigh - W3;
 
-// Revenue gains
-const revLowEst  = incLowEst  * AR_est;
-const revHighEst = incHighEst * AR_est;
+  // Revenue gain
+  const revLowEst  = deltaLow  * AR;
+  const revHighEst = deltaHigh * AR;
 
-// Render Estimation table
-const estRows = [
-  ['Baseline wins',      baselineEst.toFixed(1)],
-  ['With Chiirp (low)',  lowWinsEst.toFixed(1)],
-  ['With Chiirp (high)', highWinsEst.toFixed(1)],
-  ['Monthly gain',       `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
-];
-g('estValues').innerHTML = estRows
-  .map(([lbl, val]) => `<tr><td>${lbl}</td><td>${val}</td></tr>`)
-  .join('');
+  // Render table rows
+  g('estValues').innerHTML = [
+    ['Baseline wins',      W3.toFixed(1)],
+    ['With Chiirp (low)',  chiirpWinsLow.toFixed(1)],
+    ['With Chiirp (high)', chiirpWinsHigh.toFixed(1)],
+    ['Monthly gain',       `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
+  ].map(([lbl, val]) => `<tr><td>${lbl}</td><td>${val}</td></tr>`).join('');
 
-// Render highlights
-g('estGainMonthly').textContent = 
-  `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
-g('estGainAnnual').textContent  = 
-  `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
+  // Render highlights
+  g('estGainMonthly').textContent = 
+    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
+  g('estGainAnnual').textContent  = 
+    `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
 
-// Advance to Estimation slide
-revealSlide('slideEst');
+  // Advance to slide
+  revealSlide('slideEst');
+}
+
 
 
 // Render highlights
