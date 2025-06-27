@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #00 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -470,28 +470,32 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
 
     // ──── 1. ESTIMATION FOLLOW-UP ───────────────────────────
-    {
-      const lowWins  = Math.min(W3 * UPLIFT.estLow,  Q);
-      const highWins = Math.min(W3 * UPLIFT.estHigh, Q);
-      const deltaLow  = lowWins  - W3;
-      const deltaHigh = highWins - W3;
-      const revLowEst    = deltaLow  * AR;
-      const revHigh   = deltaHigh * AR;
-     revLowEst      = deltaLow  * AR;
-     revHighEst     = deltaHigh * AR;
-      
-      g('estValues').innerHTML = [
-        ['Baseline wins',      W3.toFixed(1)],
-        ['With Chiirp (low)',  lowWins.toFixed(1)],
-        ['With Chiirp (high)', highWins.toFixed(1)],
-        ['Monthly gain',       `$${Math.round(revLow).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`]
-      ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+{
+  const lowWins    = Math.min(W3 * UPLIFT.estLow,  Q);
+  const highWins   = Math.min(W3 * UPLIFT.estHigh, Q);
+  const deltaLow   = lowWins  - W3;
+  const deltaHigh  = highWins - W3;
 
-      g('estGainMonthly').textContent = `$${Math.round(revLow).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`;
-      g('estGainAnnual').textContent  = `$${Math.round(revLow * 12).toLocaleString()} – $${Math.round(revHigh * 12).toLocaleString()}`;
+  // assign to existing storage vars
+  revLowEst  = deltaLow  * AR;
+  revHighEst = deltaHigh * AR;
 
-      revealSlide('slideEst');
-    }
+  g('estValues').innerHTML = [
+    ['Baseline wins',      W3.toFixed(1)],
+    ['With Chiirp (low)',  lowWins.toFixed(1)],
+    ['With Chiirp (high)', highWins.toFixed(1)],
+    ['Monthly gain',
+     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
+  ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+
+  g('estGainMonthly').textContent = 
+    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
+  g('estGainAnnual').textContent  = 
+    `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
+
+  revealSlide('slideEst');
+}
+
   
 /* ──── 2. FORM SUBMISSIONS (Speed-to-Lead) ──── */
 g('toS2L').onclick = () => {
