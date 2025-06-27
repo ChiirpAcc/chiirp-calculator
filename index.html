@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3*/
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3*/
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -555,49 +555,55 @@ calcBtn.addEventListener('click', () => {
     revealSlide('slideMissed');
   };
 
-/* ------- 4. SUMMARY ------- */
-g('toSum').onclick = () => {
-  // Re‐derive the Speed-to-Lead revenue lift:
-  const reachedBase = ReachedLeads;
-  const s2lΔLow         = reachedBase * UPLIFT.s2lLow  - reachedBase * CR0;
-  const s2lΔHigh        = reachedBase * UPLIFT.s2lHigh - reachedBase * CR0;
-  const s2lLowRev       = s2lΔLow  * AR;
-  const s2lHighRev      = s2lΔHigh * AR;
+  /* ─── 4. SUMMARY ─── */
+  g('toSum').onclick = () => {
+    // Re-derive Speed-to-Lead lift
+    const reachedBase = ReachedLeads;
+    const s2lΔLow     = reachedBase * UPLIFT.s2lLow  - reachedBase * CR0;
+    const s2lΔHigh    = reachedBase * UPLIFT.s2lHigh - reachedBase * CR0;
+    const s2lLowRev   = s2lΔLow  * AR;
+    const s2lHighRev  = s2lΔHigh * AR;
 
-  // Re‐derive the Missed-Call recovery lift:
-  const missΔLow        = MissedCalls * UPLIFT.missLow  - MissedCalls * CR0;
-  const missΔHigh       = MissedCalls * UPLIFT.missHigh - MissedCalls * CR0;
-  const missLowRev      = missΔLow  * AR;
-  const missHighRev     = missΔHigh * AR;
+    // Re-derive Missed-Call lift
+    const missΔLow    = MissedCalls * UPLIFT.missLow  - MissedCalls * CR0;
+    const missΔHigh   = MissedCalls * UPLIFT.missHigh - MissedCalls * CR0;
+    const missLowRev  = missΔLow  * AR;
+    const missHighRev = missΔHigh * AR;
 
-  // Total lift = Estimation + S2L + Missed
-  const totalLow        = revLow  + s2lLowRev  + missLowRev;
-  const totalHigh       = revHigh + s2lHighRev + missHighRev;
+    // Total lift
+    const totalLow  = revLow  + s2lLowRev  + missLowRev;
+    const totalHigh = revHigh + s2lHighRev + missHighRev;
 
-  const roiLow          = (totalLow  / MONTHLY_COST).toFixed(1);
-  const roiHigh         = (totalHigh / MONTHLY_COST).toFixed(1);
+    const roiLow  = (totalLow  / MONTHLY_COST).toFixed(1);
+    const roiHigh = (totalHigh / MONTHLY_COST).toFixed(1);
 
-  // Render
-  g('sumValues').innerHTML = [
-    `Total monthly revenue lift:`,
-    `$${Math.round(totalLow).toLocaleString()} – $${Math.round(totalHigh).toLocaleString()}`,
-    `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
-  ].map(t => `<div class="valItem show">${t}</div>`).join('');
+    // Render summary
+    g('sumValues').innerHTML = [
+      `Total monthly revenue lift:`,
+      `$${Math.round(totalLow).toLocaleString()} – $${Math.round(totalHigh).toLocaleString()}`,
+      `Estimated ROI range: ${roiLow}× – ${roiHigh}×`
+    ].map(t => `<div class="valItem show">${t}</div>`).join('');
 
-  revealSlide('slideSum');
-};
+    revealSlide('slideSum');
+  };            // ← closes toSum onclick
 
-
+});            // ← closes calcBtn.addEventListener('click', …)
 
 /* ── helper to fade-in slide and animate items ── */
 function revealSlide(id){
-  document.querySelectorAll('.slide').forEach(s=>s.style.display='none');
-  const el=g(id); el.style.display='block'; requestAnimationFrame(()=>el.style.opacity=1);
-  setTimeout(()=>el.querySelectorAll('.valItem').forEach((v,i)=>setTimeout(()=>v.classList.add('show'),200+i*250)),400);
+  document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
+  const el = g(id);
+  el.style.display = 'block';
+  requestAnimationFrame(() => el.style.opacity = 1);
+  setTimeout(() =>
+    el.querySelectorAll('.valItem').forEach((v,i) =>
+      setTimeout(() => v.classList.add('show'), 200 + i*250)
+    )
+  , 400);
 }
 
-})();
-</script>
+})();          // ← closes the IIFE
+
 </body>
 </html>
   
