@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3*/
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3*/
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -512,67 +512,45 @@ calcBtn.addEventListener('click', () => {
  const ReachedLeads  = Leads - MissedLeads;
  const ReachedCalls  = TotalCalls - MissedCalls;
 
-// ──── Estimation Follow-Up ────
-{
-  // Parse client inputs
-  const Q   = +g('quotes').value;         // # estimates per month
-  const W3  = +g('quoteWins').value;      // # of those estimates currently closing
-  const AR  = +g('avgRev').value;         // average revenue per win
+/* ──── 1. ESTIMATION FOLLOW-UP ──── */
+const Q        = +g('quotes').value;            // # estimates per month
+const CR0_est  = (+g('closeRate').value) / 100; // conversion rate decimal
+const AR_est   = +g('avgRev').value;            // avg job value
 
-  // Chiirp uplift multipliers
-  const UPLIFT_LOW  = 1.5;
-  const UPLIFT_HIGH = 2.0;
+// Baseline wins from estimates
+const baselineEst = Q * CR0_est;
 
-  // Projected Chiirp wins, capped by total estimates Q
-  const chiirpWinsLow  = Math.min(W3 * UPLIFT_LOW,  Q);
-  const chiirpWinsHigh = Math.min(W3 * UPLIFT_HIGH, Q);
+// Chiirp wins with uplift range
+const lowWinsEst  = baselineEst * UPLIFT.estLow;
+const highWinsEst = baselineEst * UPLIFT.estHigh;
 
-  // Incremental wins
-  const deltaLow  = chiirpWinsLow  - W3;
-  const deltaHigh = chiirpWinsHigh - W3;
+// Incremental wins
+const incLowEst  = lowWinsEst  - baselineEst;
+const incHighEst = highWinsEst - baselineEst;
 
-  // Revenue gain
-  const revLowEst  = deltaLow  * AR;
-  const revHighEst = deltaHigh * AR;
+// Revenue gains
+const revLowEst  = incLowEst  * AR_est;
+const revHighEst = incHighEst * AR_est;
 
-  // Render table rows
-  g('estValues').innerHTML = [
-    ['Baseline wins',      W3.toFixed(1)],
-    ['With Chiirp (low)',  chiirpWinsLow.toFixed(1)],
-    ['With Chiirp (high)', chiirpWinsHigh.toFixed(1)],
-    ['Monthly gain',       `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
-  ].map(([lbl, val]) => `<tr><td>${lbl}</td><td>${val}</td></tr>`).join('');
-
-  // Render highlights
-  g('estGainMonthly').textContent = 
-    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
-  g('estGainAnnual').textContent  = 
-    `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
-
-  // Advance to slide
-  revealSlide('slideEst');
-}
-
-
+// Render Estimation table
+const estRows = [
+  ['Baseline wins',      baselineEst.toFixed(1)],
+  ['With Chiirp (low)',  lowWinsEst.toFixed(1)],
+  ['With Chiirp (high)', highWinsEst.toFixed(1)],
+  ['Monthly gain',       $${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}]
+];
+g('estValues').innerHTML = estRows
+  .map(([lbl, val]) => <tr><td>${lbl}</td><td>${val}</td></tr>)
+  .join('');
 
 // Render highlights
 g('estGainMonthly').textContent = 
-  `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
+  $${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()};
 g('estGainAnnual').textContent  = 
-  `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
+  $${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()};
 
 // Advance to Estimation slide
-revealSlide('slideEst');
-
-// Render highlights
-g('estGainMonthly').textContent = 
-  `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
-g('estGainAnnual').textContent  = 
-  `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
-
-// Advance to Estimation slide
-revealSlide('slideEst');
-
+  
 /* ─────── 2. SPEED-TO-LEAD ─────── */
 g('toS2L').onclick = () => {
   // choose whether to use ReachedLeads or ReachedCalls as your base
