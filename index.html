@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #00 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -434,7 +434,7 @@ ROI (high)         = High monthly gain ÷ Monthly cost
     s2lLow: 2.0, s2lHigh: 5.0,    // ← you repeated “estHigh” instead of “s2lHigh”
     missLow: 3.0, missHigh: 5.0
   };
-
+  const MONTHLY_COST = 500
 
   // ── MODULE REVENUE STORAGE ─────────────────────────────
   let revLowEst   = 0, revHighEst   = 0;
@@ -517,20 +517,17 @@ g('toS2L').onclick = () => {
   const deltaHigh = chiirpWinsHigh - W1;
 
   // 5) Revenue gain
-  revLowEst  = deltaLow  * AR;
-  revHighEst = deltaHigh * AR;
+  revLowS2L  = deltaLow  * AR;
+  revHighS2L = deltaHigh * AR;
 
-
-  // 6) Render results into your Speed-to-Lead slide
   g('s2lValues').innerHTML = [
     `Form submissions / mo: ${F}`,
     `Closed now: ${W1.toFixed(1)}`,
     `With Chiirp (low): ${chiirpWinsLow.toFixed(1)}`,
     `With Chiirp (high): ${chiirpWinsHigh.toFixed(1)}`,
-    `Monthly gain: $${revLow.toLocaleString()} – $${revHigh.toLocaleString()}`
+    `Monthly gain: $${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`
   ].map(t => `<div class="valItem">${t}</div>`).join('');
 
-  // 7) Reveal the slide
   revealSlide('slideS2L');
 };
 
