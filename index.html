@@ -285,13 +285,13 @@
     <h1>CHIIRP DEMO</h1>
     <h2>SEE YOUR SAVINGS WITH CHIIRP</h2>
 
-    <div class="input-row">
-      <input id="leads"      type="number" step="1"    placeholder="Monthly leads (all sources)">
-      <input id="missPct"    type="number" step="0.1"  placeholder="Missed lead %">
-      <input id="quotes"     type="number" step="1"    placeholder="Quotes sent / month">
-      <input id="closeRate"  type="number" step="0.1"  placeholder="Current close %">
-      <input id="avgRev"     type="number" step="0.01" placeholder="Avg revenue / sale $">
-    </div>
+      <div class="input-row">
+        <input id="leads"     type="number" step="1"    placeholder="Monthly leads (all sources)">
+        <input id="missPct"   type="number" step="0.1"  placeholder="Missed lead %">
+        <input id="closeRate" type="number" step="0.1"  placeholder="Current close %">
+        <input id="avgRev"    type="number" step="0.01" placeholder="Avg revenue /sale $">
+      </div>
+
 
 
   <!-- explanatory key -->
@@ -451,61 +451,58 @@ const MONTHLY_COST = 500;
 
 /* ── DOM SHORTCUTS ───────────────────────────────────── */
 const g   = id=>document.getElementById(id);
-const inputs = ['leads','missPct','quotes','closeRate','avgRev'].map(g);
+const inputs = ['leads','missPct','closeRate','avgRev'].map(g);
 
 /* enable calc button when all inputs filled */
 const calcBtn=g('calcBtn');
 inputs.forEach(i=>i.addEventListener('input',()=>calcBtn.disabled=inputs.some(e=>!e.value.trim())));
 
 /* ── MAIN CALCULATION ────────────────────────────────── */
-calcBtn.addEventListener('click',()=>{
-
+calcBtn.addEventListener('click', () => {
   /* CLIENT INPUTS */
-  const Leads   = +g('leads').value;
+  const Leads = +g('leads').value;
+  const CR0   = (+g('closeRate').value) / 100;  // use their known conversion rate
+  const AR    = +g('avgRev').value;
   const MissPct = (+g('missPct').value)/100;
-  const Quotes  = +g('quotes').value;
-  const CR0     = (+g('closeRate').value)/100;
-  const AR      = +g('avgRev').value;
 
-  /* DERIVED COUNTS */
+  // for Speed-to-Lead and Abandoned-Call slides:
   const Missed  = Leads * MissPct;
   const Reached = Leads - Missed;
+  
+  /* ──── 1. ESTIMATION FOLLOW-UP ──── */
+  const closedNow  = Leads * CR0;
+  const chiirpLow  = Leads * UPLIFT.estLow;
+  const chiirpHigh = Leads * UPLIFT.estHigh;
+  const deltaLow   = chiirpLow  - closedNow;
+  const deltaHigh  = chiirpHigh - closedNow;
+  const revLow     = deltaLow  * AR;
+  const revHigh    = deltaHigh * AR;
 
-/* ──── 1. ESTIMATION FOLLOW-UP ──── */
-const estBw     = Quotes * CR0;
-const estSwLow  = Quotes * CR0 * UPLIFT.estLow;
-const estSwHigh = Quotes * CR0 * UPLIFT.estHigh;
-const estΔLow   = estSwLow  - estBw;
-const estΔHigh  = estSwHigh - estBw;
-const est$Low   = estΔLow  * AR;
-const est$High  = estΔHigh * AR;
+  // build the left‐hand table, rounded to the nearest dollar
+  const rows = [
+    ['Closed now',         Math.round(closedNow).toLocaleString()],
+    ['With Chiirp (low)',  Math.round(chiirpLow).toLocaleString()],
+    ['With Chiirp (high)', Math.round(chiirpHigh).toLocaleString()],
+    ['Monthly gain',       `$${Math.round(revLow).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`]
+  ];
+  g('estValues').innerHTML = rows
+    .map(([label, val]) => `
+      <tr>
+        <td>${label}</td>
+        <td>${val}</td>
+      </tr>
+    `).join('');
 
-// build the left-hand table, rounded to the nearest dollar
-const rows = [
-  ['Closed now',         Math.round(estBw).toLocaleString()],
-  ['With Chiirp (low)',  Math.round(estSwLow).toLocaleString()],
-  ['With Chiirp (high)', Math.round(estSwHigh).toLocaleString()],
-  ['Monthly gain',       `$${Math.round(est$Low).toLocaleString()} – $${Math.round(est$High).toLocaleString()}`]
-];
-g('estValues').innerHTML = rows
-  .map(([label, val]) => `
-    <tr>
-      <td>${label}</td>
-      <td>${val}</td>
-    </tr>
-  `).join('');
+  // populate the right‐hand highlights
+  g('estGainMonthly').textContent =
+    `$${Math.round(revLow).toLocaleString()} – $${Math.round(revHigh).toLocaleString()}`;
+  const annLow  = revLow * 12;
+  const annHigh = revHigh * 12;
+  g('estGainAnnual').textContent =
+    `$${Math.round(annLow).toLocaleString()} – $${Math.round(annHigh).toLocaleString()}`;
 
-// populate the right-hand highlights, also rounded
-g('estGainMonthly').textContent =
-  `$${Math.round(est$Low).toLocaleString()} – $${Math.round(est$High).toLocaleString()}`;
-
-const annLow  = est$Low * 12;
-const annHigh = est$High * 12;
-g('estGainAnnual').textContent =
-  `$${Math.round(annLow).toLocaleString()} – $${Math.round(annHigh).toLocaleString()}`;
-
-// now reveal slide 2
-revealSlide('slideEst');
+  // now reveal slide 2
+  revealSlide('slideEst');
 
 
 
