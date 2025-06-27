@@ -355,26 +355,40 @@ Monthly revenue    = Incremental wins × AR
 
 
 
-<!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
-<section class="slide" id="slideS2L" style="display:none;opacity:0;transition:opacity .6s">
-  <h1>Speed-to-Lead</h1>
+  <section class="slide" id="slideS2L" style="display:none; opacity:0; transition:opacity .6s">
+    <div class="slide-content estimation">
+      <div class="est-grid">
+  
+        <!-- LEFT CARD: dynamic results -->
+        <div class="est-card details-table">
+          <h1>Speed-to-Lead</h1>
+          <div id="s2lValues" class="val-table">
+            <!-- JS injects .valItem divs here -->
+          </div>
+          <details class="calc-formula">
+            <summary>How these numbers are calculated</summary>
+            <pre>
+  Baseline wins      = W₁ (current form wins)
+  Chiirp wins (low)  = min(W₁ × 2.0, F)
+  Chiirp wins (high) = min(W₁ × 5.0, F)
+  Incremental wins   = Chiirp wins − W₁
+  Monthly revenue    = Incremental wins × AR
+            </pre>
+          </details>
+        </div>
+  
+        <!-- RIGHT CARD: (optional highlight or leave blank for now) -->
+        <div class="est-card highlight-table">
+          <!-- you could put a summary highlight here, or remove this card entirely -->
+          <p class="highlight-number">—</p>
+        </div>
+  
+      </div>
+  
+      <button id="toMissed">Next ➔</button>
+    </div>
+  </section>
 
-  <!-- dynamic results injected by JS -->
-  <div id="s2lValues" style="margin:2rem 0;font-size:1.4rem;line-height:2"></div>
-
-  <details class="calc-formula">
-    <summary>How these numbers are calculated</summary>
-    <pre>
-Baseline wins      = W₁ (current form wins)
-Chiirp wins (low)  = min(W₁ × 2.0, F)
-Chiirp wins (high) = min(W₁ × 5.0, F)
-Incremental wins   = Chiirp wins − W₁
-Monthly revenue    = Incremental wins × AR
-    </pre>
-  </details>
-
-  <button id="toMissed">Next ➔</button>
-</section>
 
 <!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->
 <section class="slide" id="slideMissed" style="display:none;opacity:0;transition:opacity .6s">
