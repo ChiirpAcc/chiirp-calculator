@@ -295,22 +295,48 @@
     </div>
 
 
-  <!-- explanatory key -->
-  <div class="guide">
-    <h3>What each field means</h3>
-    <table>
-      <thead>
-        <tr><th>Variable</th><th>Plain-English prompt</th><th>How we reuse it</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Leads</td><td>How many new prospects you get per month (all sources)</td><td>Feeds Speed-to-Lead and sets the base for Missed-Call math</td></tr>
-        <tr><td>Missed %</td><td>About what % of those prospects you never reach live</td><td>Calculates Missed = Leads × Missed % ; Reached = Leads − Missed</td></tr>
-        <tr><td>Quotes</td><td>How many price quotes / estimates you send per month</td><td>Drives Estimate: Follow-Up</td></tr>
-        <tr><td>Close %</td><td>% of reached prospects (or quoted jobs) that turn into sales today</td><td>Baseline close rate for all three modules</td></tr>
-        <tr><td>AvgRev $</td><td>Average revenue per new customer ($)</td><td>Converts extra deals to dollars everywhere</td></tr>
-      </tbody>
-    </table>
-  </div>
+<!-- explanatory key -->
+<div class="guide">
+  <h3>What each field means</h3>
+  <table>
+    <thead>
+      <tr><th>Variable</th><th>Plain-English prompt</th><th>How we reuse it</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Leads</td>
+        <td>How many new prospects you get per month (all sources)</td>
+        <td>Feeds Speed-to-Lead and sets the base for Missed-Call math</td>
+      </tr>
+      <tr>
+        <td>Missed %</td>
+        <td>About what % of those prospects you never reach live</td>
+        <td>Calculates Missed = Leads × Missed %; Reached = Leads − Missed</td>
+      </tr>
+      <tr>
+        <td>Total calls</td>
+        <td>How many outbound call attempts you make per month</td>
+        <td>Used to compute reached vs. abandoned calls</td>
+      </tr>
+      <tr>
+        <td>Missed calls</td>
+        <td>Raw count of calls that went unanswered</td>
+        <td>Drives the Abandoned-Call Recovery module</td>
+      </tr>
+      <tr>
+        <td>Close %</td>
+        <td>% of reached prospects (or quoted jobs) that turn into sales today</td>
+        <td>Baseline close rate for all three modules</td>
+      </tr>
+      <tr>
+        <td>Avg Revenue</td>
+        <td>Average revenue per new customer ($)</td>
+        <td>Converts extra deals into dollars everywhere</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
   <button id="calcBtn">Next ➔</button>
 </section>
