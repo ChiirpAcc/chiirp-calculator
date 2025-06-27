@@ -99,21 +99,20 @@
 
 /* tight gap under each number, then extra bottom-margin under “per month” */
 .slide .slide-content.estimation .highlight-table .subtext {
-  margin-top: 0.25rem;     /* space just under each number */
+  margin-top: 0.25rem;   /* space just under each number */
   font-size: 1rem;
   color: #fff;
 }
 
 /* push “per year” up by adding extra space after “per month” */
 .slide .slide-content.estimation .highlight-table .subtext:first-of-type {
-  margin-bottom: 4rem;     /* adjust 4rem until “per year” aligns in its red box */
+  margin-bottom: 4rem;   /* tweak this value until “per year” sits correctly */
 }
 
 /* no extra gap after the final label */
 .slide .slide-content.estimation .highlight-table .subtext:last-of-type {
   margin-bottom: 0;
 }
-
 
 
 /* responsive: stack cards on mobile */
@@ -150,7 +149,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -343,10 +342,18 @@ Monthly revenue    = Incremental wins × AR
       <!-- RIGHT CARD: monthly & annual highlight -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
-        <p id="estGainMonthly" class="highlight-number">—</p>
-        <p class="subtext">per month</p>
-        <p id="estGainAnnual" class="highlight-number">—</p>
-        <p class="subtext">per year</p>
+      
+        <div class="highlight-grid">
+          <div class="highlight-pair">
+            <p id="estGainMonthly" class="highlight-number">—</p>
+            <p class="subtext">per month</p>
+          </div>
+      
+          <div class="highlight-pair">
+            <p id="estGainAnnual" class="highlight-number">—</p>
+            <p class="subtext">per year</p>
+          </div>
+        </div>
       </div>
     </div>
 
