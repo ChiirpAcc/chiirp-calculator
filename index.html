@@ -30,32 +30,37 @@
     padding: 1rem;
     border-radius: 8px;
   }
-
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
 
-/* applies to slides 2–5 */
+/* 1) Turn the slide container into a full-width grid centered parent */
 .slide .slide-content.estimation {
+  display: grid;
+  place-items: center;       /* centers its child both axes (horizontal is all you need) */
+  width: 100%;               /* span the full width of the slide */
+  
+  /* your existing styles: */
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-
-  /* centre any inline-level child (our grid) */
-  text-align: center;
-  margin: auto;
 }
 
+/* 2) Inner grid stays as is (it’ll be centered by the parent) */
 .slide .slide-content.estimation .est-grid {
-  /* become inline-grid, drop manual sizing */
-  display: inline-grid;
+  display: grid;
   grid-template-columns: 360px 1fr;
   gap: 2rem;
-
-  /* remove these:
-  width: max-content;
-  margin: 0 auto;
-  */
+  width: max-content;   /* shrink-to-fit its two columns */
+  /* margin:auto no longer needed */
 }
+
+/* 3) Card styles remain the same */
+.slide .slide-content.estimation .est-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
 
 /* card styles */
 .slide .slide-content.estimation .est-card {
@@ -64,7 +69,7 @@
   padding: 1.5rem;
 }
 
-/* left-column table */
+/* left‐column table */
 .slide .slide-content.estimation .details-table table {
   width: 100%;
   border-collapse: collapse;
@@ -77,7 +82,7 @@
   text-align: left;
 }
 
-/* right-column highlight */
+/* right‐column highlight */
 .slide .slide-content.estimation .highlight-table {
   text-align: center;
   white-space: nowrap;
@@ -132,7 +137,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
