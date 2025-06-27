@@ -142,7 +142,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3*/
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3*/
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -331,20 +331,21 @@
 
 
 </section>
-
 <!-- ────────────────  SLIDE 2 – ESTIMATION ──────────────── -->
-<section class="slide" id="slideEst" style="display:none;opacity:0;transition:opacity .6s">
+<section class="slide" id="slideEst" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
       <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Estimate: Follow-Up</h1>
         <p class="subhead">Based on your monthly estimates and wins</p>
-          <table>
+        <table>
           <thead>
             <tr><th>Metric</th><th>Value</th></tr>
           </thead>
-          <tbody id="estValues"><!-- JS injects rows here --></tbody>
+          <tbody id="estValues">
+            <!-- JS injects rows here -->
+          </tbody>
         </table>
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
@@ -357,9 +358,17 @@ Monthly revenue    = Incremental wins × AR
           </pre>
         </details>
       </div>
-      <!-- RIGHT CARD: highlights unchanged -->
-      <div class="est-card highlight-table">…</div>
+
+      <!-- RIGHT CARD: monthly & annual highlight -->
+      <div class="est-card highlight-table">
+        <h3>Additional Revenue</h3>
+        <p id="estGainMonthly" class="highlight-number">—</p>
+        <p class="subtext">per month</p>
+        <p id="estGainAnnual" class="highlight-number">—</p>
+        <p class="subtext">per year</p>
+      </div>
     </div>
+
     <button id="toS2L">Next ➔</button>
   </div>
 </section>
