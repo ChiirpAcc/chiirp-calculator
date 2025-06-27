@@ -32,44 +32,39 @@
   }
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
 
-/* 1) Turn the slide container into a full-width grid centered parent */
-.slide .slide-content.estimation {
+/* 1) Center the card by making the slide a grid container */
+.slide {
   display: grid;
-  place-items: center;       /* centers its child both axes (horizontal is all you need) */
-  width: 100%;               /* span the full width of the slide */
-  
-  /* your existing styles: */
+  place-items: center;  /* centers its direct child (.slide-content) */
+}
+
+/* 2) Keep the estimation card shrink-wrapped */
+.slide .slide-content.estimation {
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
+  width: max-content;           /* shrink-wrap */
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  margin: 0;                    /* no auto-margins needed */
 }
 
-/* 2) Inner grid stays as is (it’ll be centered by the parent) */
+/* 3) Inner grid stays centered inside the card */
 .slide .slide-content.estimation .est-grid {
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 2rem;
-  width: max-content;   /* shrink-to-fit its two columns */
-  /* margin:auto no longer needed */
+  width: max-content;           /* shrink-wrap two columns */
+  margin: 0;                    /* no centering here either */
 }
 
-/* 3) Card styles remain the same */
+/* 4) Card styles (no duplication) */
 .slide .slide-content.estimation .est-card {
   background: rgba(255,255,255,0.08);
   border-radius: 8px;
   padding: 1.5rem;
 }
 
-
-/* card styles */
-.slide .slide-content.estimation .est-card {
-  background: rgba(255,255,255,0.08);
-  border-radius: 8px;
-  padding: 1.5rem;
-}
-
-/* left‐column table */
+/* left-column table */
 .slide .slide-content.estimation .details-table table {
   width: 100%;
   border-collapse: collapse;
@@ -82,7 +77,7 @@
   text-align: left;
 }
 
-/* right‐column highlight */
+/* right-column highlight */
 .slide .slide-content.estimation .highlight-table {
   text-align: center;
   white-space: nowrap;
@@ -114,6 +109,7 @@
   }
 }
 
+
   
 
   /* ─────────────────────────────────────────────────────────────────────────────
@@ -137,7 +133,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
