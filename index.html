@@ -31,36 +31,26 @@
     border-radius: 8px;
   }
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
-/* Only slides 2–5 (the ones with .slide-content.estimation) */
-.slide .slide-content.estimation {
-  /* make it a grid container that centers its inner .est-grid */
-  display: grid;
-  place-items: center;
 
+
+/* applies to slides 2–5 */
+.slide .slide-content.estimation {
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
-
-  /* shrink-wrap around the cards */
   width: max-content;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-
-  /* center the card itself in its slide */
   margin: auto;
 }
 
-/* two-column grid: left fixed 360px, right flexible; shrink-wrap & center */
 .slide .slide-content.estimation .est-grid {
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 2rem;
-
-  /* shrink-wrap the two cards */
   width: max-content;
-
-  /* center that inner grid */
   margin: 0 auto;
 }
+
 
 /* card styles */
 .slide .slide-content.estimation .est-card {
@@ -69,13 +59,9 @@
   padding: 1.5rem;
 }
 
-/* left-column table */
-.slide .slide-content.estimation .details-table {
-  width: 360px;            /* lock the left card width */
-}
+/* left‐column table */
 .slide .slide-content.estimation .details-table table {
   width: 100%;
-  table-layout: fixed;     /* prevents runaway columns */
   border-collapse: collapse;
   color: #fff;
 }
@@ -86,7 +72,7 @@
   text-align: left;
 }
 
-/* right-column highlight */
+/* right‐column highlight */
 .slide .slide-content.estimation .highlight-table {
   text-align: center;
   white-space: nowrap;
@@ -118,6 +104,7 @@
   }
 }
 
+
   
 
   /* ─────────────────────────────────────────────────────────────────────────────
@@ -141,7 +128,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
