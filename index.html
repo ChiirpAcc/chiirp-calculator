@@ -757,38 +757,48 @@ g('toMissed').onclick = () => {
 };
 
 
-/*<!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->*/
-g('toSum').onclick = () => {
-  // aggregate monthly gains
-  const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
-  const highTotal = revHighEst + revHighS2L + revHighMiss;
-  // compute ROI using constant MONTHLY_COST = 500
-  const roiLow  = (lowTotal  / MONTHLY_COST).toFixed(1);
-  const roiHigh = (highTotal / MONTHLY_COST).toFixed(1);
-  
-  // Summary breakdown table injection (mirrors Slide 2)
-  g('sumValues').innerHTML = [
-    ['Estimation',     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
-    ['Speed-to-Lead',  `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
-    ['Missed calls',   `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
+// ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── 
+g('toMissed').onclick = () => {
+  // 1) Parse inputs
+  const M       = +g('missedPool').value;   // total abandoned calls
+  const W2      = +g('missWins').value;     // baseline recoveries now
+  const AR      = +g('avgRev').value;       // avg revenue per win
+
+  // 2) Compute intermediate values
+  const pool         = M - W2;
+  const engage       = Math.round(pool * 0.70);
+  const opened       = Math.round(engage * 0.98);
+  const recoveredLow  = Math.min(opened * 0.20, pool).toFixed(0);
+  const recoveredHigh = Math.min(opened * 0.40, pool).toFixed(0);
+
+  // 3) Compute monthly revenue gains
+  revLowMiss  = recoveredLow  * AR;
+  revHighMiss = recoveredHigh * AR;
+
+  // 4) Inject table rows into the left card <tbody id="missValues">
+  g('missValues').innerHTML = [
+    ['Pool to text',      pool],
+    ['Engage',            engage],
+    ['Opened texts',      opened],
+    ['Recovered (low)',   recoveredLow],
+    ['Recovered (high)',  recoveredHigh],
+    ['Monthly gain',
+      `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
   ]
   .map(([label, val]) =>
     `<tr><td>${label}</td><td>${val}</td></tr>`
   )
   .join('');
 
+  // 5) Update the right‐hand highlights
+  g('missGainMonthly').textContent =
+    `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`;
+  g('missGainAnnual').textContent =
+    `$${Math.round(revLowMiss * 12).toLocaleString()} – $${Math.round(revHighMiss * 12).toLocaleString()}`;
 
-  // 2) render total highlights
-  g('sumGainMonthly').textContent =
-    `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
-  g('sumGainAnnual').textContent =
-    `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
-  g('sumROI').textContent =
-    `ROI: ${roiLow}× – ${roiHigh}×`;
-
-  revealSlide('slideSum');
+  // 6) Reveal the recovery slide
+  revealSlide('slideMissed');
 };
-
 
 
 
