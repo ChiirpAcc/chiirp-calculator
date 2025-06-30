@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -762,15 +762,18 @@ g('toSum').onclick = () => {
   // compute ROI using constant MONTHLY_COST = 500
   const roiLow  = (lowTotal  / MONTHLY_COST).toFixed(1);
   const roiHigh = (highTotal / MONTHLY_COST).toFixed(1);
-
-  // 1) render breakdown table
+  
+  // Summary breakdown table injection (mirrors Slide 2)
   g('sumValues').innerHTML = [
-    ['Estimation',      `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
-    ['Speed-to-Lead',   `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
-    ['Call Recovery',   `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
-  ].map(([mod, val]) =>
-    `<tr><td>${mod}</td><td>${val}</td></tr>`
-  ).join('');
+    ['Estimation',     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
+    ['Speed-to-Lead',  `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
+    ['Missed calls',   `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
+  ]
+  .map(([label, val]) =>
+    `<tr><td>${label}</td><td>${val}</td></tr>`
+  )
+  .join('');
+
 
   // 2) render total highlights
   g('sumGainMonthly').textContent =
