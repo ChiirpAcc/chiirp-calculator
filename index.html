@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -635,42 +635,48 @@ ROI (high)         = High monthly gain ÷ Monthly cost
     const W3 = +g('quoteWins').value;
     const AR = +g('avgRev').value;
 
-    // ──── 1. ESTIMATION FOLLOW-UP (15% / 35%) ─────────────────────────
-    {
-      // Conversion rates
-      const RATE_LOW  = 0.15;    // 15% conversion when following up within 30s
-      const RATE_HIGH = 0.35;    // 35% conversion in best-practice follow-up
+    
+// ──── 1. ESTIMATION FOLLOW-UP (15% / 35%) ─────────────────────────
+{
+  // Inputs
+  const F  = +g('leads').value;    // total form submissions
+  const W1 = +g('formWins').value; // current form wins
+  const AR = +g('avgRev').value;   // avg revenue per win
 
-      // Projected wins at each rate
-      const projLowWins  = F * RATE_LOW;
-      const projHighWins = F * RATE_HIGH;
+  // Conversion rates
+  const RATE_LOW  = 0.15;  // 15% quick-follow conversion
+  const RATE_HIGH = 0.35;  // 35% best-practice conversion
 
-      // Net-new wins (clamp at zero)
-      const deltaLow  = Math.max(projLowWins  - W1, 0);
-      const deltaHigh = Math.max(projHighWins - W1, 0);
+  // Projected absolute wins
+  const projLowWins  = F * RATE_LOW;
+  const projHighWins = F * RATE_HIGH;
 
-      // Revenue uplift
-      revLowEst  = deltaLow  * AR;
-      revHighEst = deltaHigh * AR;
+  // Net-new wins, floored at zero
+  const deltaLow  = Math.max(projLowWins  - W1, 0);
+  const deltaHigh = Math.max(projHighWins - W1, 0);
 
-      // Render the table rows
-      g('estValues').innerHTML = [
-        ['Form submissions / mo', F],
-        ['Baseline wins',         W1.toFixed(1)],
-        ['Projected (15 %)',      projLowWins.toFixed(1)],
-        ['Projected (35 %)',      projHighWins.toFixed(1)],
-        ['Monthly gain',
-         `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
-      ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+  // Revenue uplift
+  revLowEst  = deltaLow  * AR;
+  revHighEst = deltaHigh * AR;
 
-      // Update highlight cards
-      g('estGainMonthly').textContent =
-        `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
-      g('estGainAnnual').textContent  =
-        `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
+  // Render table and highlights as before…
+  g('estValues').innerHTML = [
+    ['Form submissions / mo', F],
+    ['Baseline wins',         W1.toFixed(1)],
+    ['Projected (15 %)',      projLowWins.toFixed(1)],
+    ['Projected (35 %)',      projHighWins.toFixed(1)],
+    ['Monthly gain',
+     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
+  ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-      revealSlide('slideEst');
-    }
+  g('estGainMonthly').textContent =
+    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
+  g('estGainAnnual').textContent =
+    `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
+
+  revealSlide('slideEst');
+}
+
   
 /* ──── 2. FORM SUBMISSIONS (Speed-to-Lead) ──── */
 g('toS2L').onclick = () => {
