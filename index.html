@@ -169,7 +169,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -410,20 +410,30 @@ Monthly revenue    = Incremental wins × AR
         </details>
       </div>
 
-      <!-- RIGHT CARD: monthly & annual highlight -->
+      <!-- RIGHT CARD: monthly & annual highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
-        <p id="s2lGainMonthly" class="highlight-number">—</p>
-        <p class="subtext">per month</p>
-        <p id="s2lGainAnnual" class="highlight-number">—</p>
-        <p class="subtext">per year</p>
+
+        <div class="highlight-grid">
+          <div class="highlight-pair">
+            <p id="s2lGainMonthly" class="highlight-number">—</p>
+            <p class="subtext">per month</p>
+          </div>
+          <div class="highlight-pair">
+            <p id="s2lGainAnnual" class="highlight-number">—</p>
+            <p class="subtext">per year</p>
+          </div>
+        </div>
+
+        <div class="highlight-footer">
+          <button id="toMissed">Next ➔</button>
+        </div>
       </div>
 
     </div>
-
-    <button id="toMissed">Next ➔</button>
   </div>
 </section>
+
 
 
 
@@ -451,18 +461,27 @@ Monthly revenue     = Recovered × AR
         </details>
       </div>
 
-      <!-- RIGHT CARD: monthly & annual highlight -->
+      <!-- RIGHT CARD: monthly & annual highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
-        <p id="missGainMonthly" class="highlight-number">—</p>
-        <p class="subtext">per month</p>
-        <p id="missGainAnnual" class="highlight-number">—</p>
-        <p class="subtext">per year</p>
+
+        <div class="highlight-grid">
+          <div class="highlight-pair">
+            <p id="missGainMonthly" class="highlight-number">—</p>
+            <p class="subtext">per month</p>
+          </div>
+          <div class="highlight-pair">
+            <p id="missGainAnnual" class="highlight-number">—</p>
+            <p class="subtext">per year</p>
+          </div>
+        </div>
+
+        <div class="highlight-footer">
+          <button id="toSum">Next ➔</button>
+        </div>
       </div>
 
     </div>
-
-    <button id="toSum">Next ➔</button>
   </div>
 </section>
 
@@ -499,20 +518,35 @@ ROI (high)         = High monthly gain ÷ Monthly cost
         </details>
       </div>
 
-      <!-- RIGHT CARD: totals & ROI highlight -->
+      <!-- RIGHT CARD: totals & ROI highlight + footer -->
       <div class="est-card highlight-table">
         <h3>Total Additional Revenue</h3>
-        <p id="sumGainMonthly" class="highlight-number">—</p>
-        <p class="subtext">per month</p>
-        <p id="sumGainAnnual" class="highlight-number">—</p>
-        <p class="subtext">per year</p>
-        <p id="sumROI" class="subtext" style="margin-top:1rem;font-size:1.1rem">ROI: —</p>
-        <button onclick="location.reload()">Restart ↻</button>
+
+        <!-- monthly & annual in a grid -->
+        <div class="highlight-grid">
+          <div class="highlight-pair">
+            <p id="sumGainMonthly" class="highlight-number">—</p>
+            <p class="subtext">per month</p>
+          </div>
+          <div class="highlight-pair">
+            <p id="sumGainAnnual" class="highlight-number">—</p>
+            <p class="subtext">per year</p>
+          </div>
+        </div>
+
+        <!-- footer: ROI + button -->
+        <div class="highlight-footer">
+          <p id="sumROI" class="subtext" style="margin-bottom: 1rem; font-size:1.1rem">
+            ROI: —
+          </p>
+          <button onclick="location.reload()">Restart ↻</button>
+        </div>
       </div>
 
     </div>
   </div>
 </section>
+
 
 
 
