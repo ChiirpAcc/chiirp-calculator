@@ -32,13 +32,13 @@
   }
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
 
-/* ─── 1) Center the card ─── */
+/* 1) Center the card */
 .slide {
   display: grid;
   place-items: center;
 }
 
-/* ─── 2) Shrink-wrap the outer card ─── */
+/* 2) Shrink-wrap the outer card */
 .slide .slide-content.estimation {
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
@@ -48,17 +48,17 @@
   margin: 0;
 }
 
-/* ─── 3) Two-column inner grid with generous gutter ─── */
+/* 3) Two-column inner grid */
 .slide .slide-content.estimation .est-grid {
   display: grid;
   grid-template-columns: 360px 1fr;
-  gap: 5rem;           /* ← 2rem keeps them perfectly apart */
+  gap: 5rem;              /* reduced from 2rem */
   width: max-content;
   margin: 0;
-  align-items: stretch; /* equalize card heights */
+  align-items: stretch;     /* equalize card heights */
 }
 
-/* ─── 4) Common card styles ─── */
+/* 4) Common card styles */
 .slide .slide-content.estimation .est-card {
   background: rgba(255,255,255,0.08);
   border-radius: 8px;
@@ -67,23 +67,14 @@
   flex-direction: column;
 }
 
-/* ─── 5) Left-column “details-table” ─── */
+/* LEFT CARD: table */
 .slide .slide-content.estimation .details-table {
   width: 360px;
-  display: flex;
-  flex-direction: column;
-}
-.slide .slide-content.estimation .details-table h1 {
-  margin-bottom: 0.5rem;      /* match Follow-Up slide */
-}
-.slide .slide-content.estimation .details-table .subhead {
-  margin-bottom: 1.5rem;      /* space under the subtitle */
 }
 .slide .slide-content.estimation .details-table table {
   width: 100%;
   border-collapse: collapse;
   color: #fff;
-  margin-bottom: 1.5rem;      /* space under the table */
 }
 .slide .slide-content.estimation .details-table th,
 .slide .slide-content.estimation .details-table td {
@@ -91,54 +82,57 @@
   border-bottom: 1px solid rgba(255,255,255,0.2);
   text-align: left;
 }
-.slide .slide-content.estimation .details-table details.calc-formula {
-  margin-top: 0;              /* snug under the table */
-}
-.slide .slide-content.estimation .details-table details.calc-formula summary {
-  margin-bottom: 0.5rem;      /* tighten summary spacing */
-}
 
-/* ─── 6) Right-column “highlight-table” ─── */
+/* RIGHT CARD: header + content + footer */
 .slide .slide-content.estimation .highlight-table {
   display: flex;
   flex-direction: column;
   text-align: center;
   white-space: nowrap;
 }
+
+/* 2-row grid → flex: grid removed */
+/* let the number grid expand */
 .slide .slide-content.estimation .highlight-grid {
   display: grid;
   grid-template-rows: 1fr 1fr;
   width: 100%;
-  flex: 1 0 auto;            /* grow to fill space, pushing footer down */
+  flex: 1 0 auto;
 }
+
+/* bottom-align each number+label */
 .slide .slide-content.estimation .highlight-pair {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.5rem;                /* number↔label gap */
+  gap: 0.5rem;              /* increased from 0.25rem */
 }
 .slide .slide-content.estimation .highlight-pair p {
   margin: 0;
 }
+
+/* larger, bolder numbers */
 .slide .slide-content.estimation .highlight-number {
   font-size: clamp(4rem, 9vw, 6rem);
   font-weight: 700;
   color: #ffeb3b;
   line-height: 1;
 }
+
+/* slightly bigger subtext */
 .slide .slide-content.estimation .subtext {
   font-size: 1.1rem;
   color: #fff;
 }
 
-/* ─── 7) Footer button ─── */
+/* BUTTON FOOTER */
 .slide .slide-content.estimation .highlight-footer {
   margin-top: 1.5rem;
   text-align: center;
 }
 
-/* ─── 8) Responsive: stack on mobile ─── */
+/* responsive: stack on mobile */
 @media (max-width: 640px) {
   .slide .slide-content.estimation .est-grid {
     grid-template-columns: 1fr;
@@ -150,7 +144,6 @@
     width: 100%;
   }
 }
-
 
 
   
@@ -176,7 +169,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -393,50 +386,44 @@ Monthly revenue    = Incremental wins × AR
 </section>
 
 
+
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
 <section class="slide" id="slideS2L" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
 
-<!-- LEFT CARD: details + formulas (mirrors Slide 2 exactly) -->
-<div class="est-card details-table">
-  <h1>Speed-to-Lead</h1>
-  <p class="subhead">Based on your monthly form submissions and wins</p>
+      <!-- LEFT CARD: details-table -->
+      <div class="est-card details-table">
+        <h1>Speed-to-Lead</h1>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Metric</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-    <tbody id="s2lValues">
-      <!-- JS injects rows here, e.g.:
-           <tr><td>Form submissions / mo</td><td>42</td></tr>
-           <tr><td>Closed now</td><td>10</td></tr>
-           <tr><td>With Chiirp (low)</td><td>20</td></tr>
-           <tr><td>With Chiirp (high)</td><td>50</td></tr>
-           <tr><td>Monthly gain</td><td>$1,010 – $4,040</td></tr>
-      -->
-    </tbody>
-  </table>
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Value</th></tr>
+          </thead>
+          <tbody id="s2lValues">
+            <!-- JS injects rows here, e.g.:
+                 <tr><td>Form submissions / mo</td><td>42</td></tr>
+                 <tr><td>Closed now</td><td>10</td></tr>
+                 … -->
+          </tbody>
+        </table>
 
-  <details class="calc-formula">
-    <summary>How these numbers are calculated</summary>
-    <pre>
+        <details class="calc-formula">
+          <summary>How these numbers are calculated</summary>
+          <pre>
 Baseline wins      = W₁ (current form wins)
 Chiirp wins (low)  = min(W₁ × 2.0, F)
 Chiirp wins (high) = min(W₁ × 5.0, F)
 Incremental wins   = Chiirp wins − W₁
 Monthly revenue    = Incremental wins × AR
-    </pre>
-  </details>
-</div>
+          </pre>
+        </details>
+      </div>
 
-
-      <!-- RIGHT CARD: highlight + bottom-aligned button -->
+      <!-- RIGHT CARD: highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
+
         <div class="highlight-grid">
           <div class="highlight-pair">
             <p id="s2lGainMonthly" class="highlight-number">—</p>
@@ -447,6 +434,7 @@ Monthly revenue    = Incremental wins × AR
             <p class="subtext">per year</p>
           </div>
         </div>
+
         <div class="highlight-footer">
           <button id="toMissed">Next ➔</button>
         </div>
@@ -457,32 +445,26 @@ Monthly revenue    = Incremental wins × AR
 </section>
 
 
+
+
 <!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->
 <section class="slide" id="slideMissed" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
 
-      <!-- LEFT CARD: details + formulas (mirrors Slide 2) -->
+      <!-- LEFT CARD: details-table -->
       <div class="est-card details-table">
         <h1>Abandoned-Call Recovery</h1>
-        <p class="subhead">Based on your pool, engagement, and open rates</p>
 
         <table>
           <thead>
-            <tr>
-              <th>Metric</th>
-              <th>Value</th>
-            </tr>
+            <tr><th>Metric</th><th>Value</th></tr>
           </thead>
           <tbody id="missValues">
-            <!-- JS injects rows here:
+            <!-- JS injects rows here, e.g.:
                  <tr><td>Pool to text</td><td>123</td></tr>
                  <tr><td>Engage</td><td>86</td></tr>
-                 <tr><td>Opened texts</td><td>84</td></tr>
-                 <tr><td>Recovered (low)</td><td>17</td></tr>
-                 <tr><td>Recovered (high)</td><td>34</td></tr>
-                 <tr><td>Monthly gain</td><td>$X – $Y</td></tr>
-            -->
+                 … -->
           </tbody>
         </table>
 
@@ -499,9 +481,10 @@ Monthly revenue     = Recovered × AR
         </details>
       </div>
 
-      <!-- RIGHT CARD: highlight + bottom-aligned button -->
+      <!-- RIGHT CARD: highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
+
         <div class="highlight-grid">
           <div class="highlight-pair">
             <p id="missGainMonthly" class="highlight-number">—</p>
@@ -512,6 +495,7 @@ Monthly revenue     = Recovered × AR
             <p class="subtext">per year</p>
           </div>
         </div>
+
         <div class="highlight-footer">
           <button id="toSum">Next ➔</button>
         </div>
@@ -688,20 +672,13 @@ g('toS2L').onclick = () => {
     `$${Math.round(revLowS2L * 12).toLocaleString()} – $${Math.round(revHighS2L * 12).toLocaleString()}`;
 
 
-  // ─── Speed-to-Lead table injection ───
   g('s2lValues').innerHTML = [
-    ['Form submissions / mo', F],
-    ['Closed now',           W1.toFixed(1)],
-    ['With Chiirp (low)',    chiirpWinsLow.toFixed(1)],
-    ['With Chiirp (high)',   chiirpWinsHigh.toFixed(1)],
-    ['Monthly gain',
-      `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`]
-  ]
-  .map(([label, val]) =>
-    `<tr><td>${label}</td><td>${val}</td></tr>`
-  )
-  .join('');
-  
+    `Form submissions / mo: ${F}`,
+    `Closed now: ${W1.toFixed(1)}`,
+    `With Chiirp (low): ${chiirpWinsLow.toFixed(1)}`,
+    `With Chiirp (high): ${chiirpWinsHigh.toFixed(1)}`,
+    `Monthly gain: $${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`
+  ].map(t => `<div class="valItem">${t}</div>`).join('');
 
   revealSlide('slideS2L');
 };
@@ -788,6 +765,7 @@ g('toSum').onclick = () => {
 
 
 
+});            
 
 /* ── helper to fade-in slide and animate items ── */
 function revealSlide(id){
