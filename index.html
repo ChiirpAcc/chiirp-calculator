@@ -32,39 +32,45 @@
   }
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
 
-/* 1) Center the card by making the slide a grid container */
+/* 1) Center the card */
 .slide {
   display: grid;
-  place-items: center;  /* centers its direct child (.slide-content) */
+  place-items: center;
 }
 
-/* 2) Keep the estimation card shrink-wrapped */
+/* 2) Shrink-wrap the outer card */
 .slide .slide-content.estimation {
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
-  width: max-content;           /* shrink-wrap */
+  width: max-content;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  margin: 0;                    /* no auto-margins needed */
+  margin: 0;
 }
 
-/* 3) Inner grid stays centered inside the card */
+/* 3) Two-column inner grid */
 .slide .slide-content.estimation .est-grid {
   display: grid;
   grid-template-columns: 360px 1fr;
-  gap: 2rem;
-  width: max-content;           /* shrink-wrap two columns */
-  margin: 0;                    /* no centering here either */
+  gap: 1.5rem;              /* reduced from 2rem */
+  width: max-content;
+  margin: 0;
+  align-items: stretch;     /* equalize card heights */
 }
 
-/* 4) Card styles (no duplication) */
+/* 4) Common card styles */
 .slide .slide-content.estimation .est-card {
   background: rgba(255,255,255,0.08);
   border-radius: 8px;
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
-/* left-column table */
+/* LEFT CARD: table */
+.slide .slide-content.estimation .details-table {
+  width: 360px;
+}
 .slide .slide-content.estimation .details-table table {
   width: 100%;
   border-collapse: collapse;
@@ -77,57 +83,65 @@
   text-align: left;
 }
 
-/* 1) Make the right‐card itself a 2-row grid: header + content */
+/* RIGHT CARD: header + content + footer */
 .slide .slide-content.estimation .highlight-table {
-  display: grid;
-  grid-template-rows: max-content 1fr; /* h3 in the top row, pairs fill the bottom */
-  height: 100%;                        /* match its parent card height */
+  display: flex;
+  flex-direction: column;
   text-align: center;
   white-space: nowrap;
 }
 
-/* 2) Your header already lives in the first row, so let .highlight-grid occupy the 2nd */
-.slide .slide-content.estimation .highlight-table .highlight-grid {
+/* 2-row grid → flex: grid removed */
+/* let the number grid expand */
+.slide .slide-content.estimation .highlight-grid {
   display: grid;
-  grid-template-rows: 1fr 1fr; /* two equal rows for monthly + annual */
-  row-gap: 0;                  /* no extra space between them */
+  grid-template-rows: 1fr 1fr;
   width: 100%;
-  /* remove any height:100% here—grid row sizing will handle it */
+  flex: 1 0 auto;
 }
 
-/* 3) Bottom‐align number+label in each half */
-.slide .slide-content.estimation .highlight-table .highlight-pair {
+/* bottom-align each number+label */
+.slide .slide-content.estimation .highlight-pair {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;  /* pushes them down into the middle of each row */
-  gap: 0.25rem;               /* small gap between number & label */
+  justify-content: flex-end;
+  gap: 0.5rem;              /* increased from 0.25rem */
 }
-
-/* 4) Reset default <p> margins */
-.slide .slide-content.estimation .highlight-table .highlight-pair p {
+.slide .slide-content.estimation .highlight-pair p {
   margin: 0;
 }
 
-/* 5) Your existing number & label styles */
-.slide .slide-content.estimation .highlight-table .highlight-number {
-  font-size: clamp(3rem, 8vw, 5rem);
+/* larger, bolder numbers */
+.slide .slide-content.estimation .highlight-number {
+  font-size: clamp(4rem, 9vw, 6rem);
   font-weight: 700;
   color: #ffeb3b;
   line-height: 1;
 }
-.slide .slide-content.estimation .highlight-table .subtext {
-  font-size: 1rem;
+
+/* slightly bigger subtext */
+.slide .slide-content.estimation .subtext {
+  font-size: 1.1rem;
   color: #fff;
 }
 
-/* responsive: stack cards on mobile */
+/* BUTTON FOOTER */
+.slide .slide-content.estimation .highlight-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* responsive: stack on mobile */
 @media (max-width: 640px) {
   .slide .slide-content.estimation .est-grid {
     grid-template-columns: 1fr;
   }
   .slide .slide-content.estimation .est-card {
     margin-bottom: 2rem;
+  }
+  .slide .slide-content.estimation .highlight-footer button {
+    width: 100%;
   }
 }
 
@@ -155,7 +169,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -321,6 +335,7 @@
 <section class="slide" id="slideEst" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
+
       <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Estimate: Follow-Up</h1>
@@ -345,26 +360,31 @@ Monthly revenue    = Incremental wins × AR
         </details>
       </div>
 
-      <!-- RIGHT CARD: monthly & annual highlight -->
-        <div class="est-card highlight-table">
-          <h3>Additional Revenue</h3>
-        
-          <div class="highlight-grid">
-            <div class="highlight-pair">
-              <p id="estGainMonthly" class="highlight-number">—</p>
-              <p class="subtext">per month</p>
-            </div>
-            <div class="highlight-pair">
-              <p id="estGainAnnual" class="highlight-number">—</p>
-              <p class="subtext">per year</p>
-            </div>
+      <!-- RIGHT CARD: monthly & annual highlight + button -->
+      <div class="est-card highlight-table">
+        <h3>Additional Revenue</h3>
+
+        <div class="highlight-grid">
+          <div class="highlight-pair">
+            <p id="estGainMonthly" class="highlight-number">—</p>
+            <p class="subtext">per month</p>
+          </div>
+          <div class="highlight-pair">
+            <p id="estGainAnnual" class="highlight-number">—</p>
+            <p class="subtext">per year</p>
           </div>
         </div>
 
+        <!-- Footer container for bottom-aligned button -->
+        <div class="highlight-footer">
+          <button id="toS2L">Next ➔</button>
+        </div>
+      </div>
 
-    <button id="toS2L">Next ➔</button>
+    </div>
   </div>
 </section>
+
 
 
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
