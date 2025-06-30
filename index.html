@@ -169,7 +169,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -392,12 +392,22 @@ Monthly revenue    = Incremental wins × AR
   <div class="slide-content estimation">
     <div class="est-grid">
 
-      <!-- LEFT CARD: dynamic results -->
+      <!-- LEFT CARD: details-table -->
       <div class="est-card details-table">
         <h1>Speed-to-Lead</h1>
-        <div id="s2lValues" class="val-table">
-          <!-- JS injects .valItem divs here -->
-        </div>
+
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Value</th></tr>
+          </thead>
+          <tbody id="s2lValues">
+            <!-- JS injects rows here, e.g.:
+                 <tr><td>Form submissions / mo</td><td>42</td></tr>
+                 <tr><td>Closed now</td><td>10</td></tr>
+                 … -->
+          </tbody>
+        </table>
+
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
           <pre>
@@ -410,7 +420,7 @@ Monthly revenue    = Incremental wins × AR
         </details>
       </div>
 
-      <!-- RIGHT CARD: monthly & annual highlight + button -->
+      <!-- RIGHT CARD: highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
 
@@ -442,12 +452,22 @@ Monthly revenue    = Incremental wins × AR
   <div class="slide-content estimation">
     <div class="est-grid">
 
-      <!-- LEFT CARD: dynamic results -->
+      <!-- LEFT CARD: details-table -->
       <div class="est-card details-table">
         <h1>Abandoned-Call Recovery</h1>
-        <div id="missValues" class="val-table">
-          <!-- JS injects .valItem divs here -->
-        </div>
+
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Value</th></tr>
+          </thead>
+          <tbody id="missValues">
+            <!-- JS injects rows here, e.g.:
+                 <tr><td>Pool to text</td><td>123</td></tr>
+                 <tr><td>Engage</td><td>86</td></tr>
+                 … -->
+          </tbody>
+        </table>
+
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
           <pre>
@@ -461,7 +481,7 @@ Monthly revenue     = Recovered × AR
         </details>
       </div>
 
-      <!-- RIGHT CARD: monthly & annual highlight + button -->
+      <!-- RIGHT CARD: highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
 
@@ -484,6 +504,7 @@ Monthly revenue     = Recovered × AR
     </div>
   </div>
 </section>
+
 
 
 <!-- ────────────────  SLIDE 5 – SUMMARY ──────────────── -->
