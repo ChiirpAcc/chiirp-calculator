@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -457,10 +457,6 @@ Monthly revenue    = Incremental wins × AR
 </section>
 
 
-
-
-
-
 <!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->
 <section class="slide" id="slideMissed" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
@@ -479,7 +475,7 @@ Monthly revenue    = Incremental wins × AR
             </tr>
           </thead>
           <tbody id="missValues">
-            <!-- JS injects rows here, e.g.:
+            <!-- JS injects rows here:
                  <tr><td>Pool to text</td><td>123</td></tr>
                  <tr><td>Engage</td><td>86</td></tr>
                  <tr><td>Opened texts</td><td>84</td></tr>
@@ -524,7 +520,6 @@ Monthly revenue     = Recovered × AR
     </div>
   </div>
 </section>
-
 
 
 
@@ -762,6 +757,7 @@ g('toMissed').onclick = () => {
 };
 
 
+/*<!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->*/
 g('toSum').onclick = () => {
   // aggregate monthly gains
   const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
