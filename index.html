@@ -634,40 +634,46 @@ ROI (high)         = High monthly gain ÷ Monthly cost
     const Q  = +g('quotes').value;
     const W3 = +g('quoteWins').value;
     const AR = +g('avgRev').value;
+    
 // ──── 1. ESTIMATION FOLLOW-UP (10% / 20% of quotes) ────────────
 {
   // Inputs
-  const Q  = +g('quotes').value;     // total quotes per month
-  const W3 = +g('quoteWins').value;  // current quote wins
-  const AR = +g('avgRev').value;     // avg revenue per win
+  const Q  = +g('quotes').value;     // Q = total quotes per month
+  const W3 = +g('quoteWins').value;  // W₃ = current quote wins
+  const AR = +g('avgRev').value;     // AR = avg revenue per win
 
   // Conversion rates as a percentage of Q
   const RATE_LOW  = 0.10;  // 10% of all quotes
   const RATE_HIGH = 0.20;  // 20% of all quotes
 
   // Projected wins (absolute counts)
+  // projLowWins  = Q × 0.10
+  // projHighWins = Q × 0.20
   const projLowWins  = Q * RATE_LOW;
   const projHighWins = Q * RATE_HIGH;
 
-  // Net-new wins, floored at zero
+  // Net-new wins (floor at zero)
+  // deltaLow  = max(projLowWins  − W₃, 0)
+  // deltaHigh = max(projHighWins − W₃, 0)
   const deltaLow  = Math.max(projLowWins  - W3, 0);
   const deltaHigh = Math.max(projHighWins - W3, 0);
 
   // Revenue uplift
+  // revLowEst  = deltaLow  × AR
+  // revHighEst = deltaHigh × AR
   revLowEst  = deltaLow  * AR;
   revHighEst = deltaHigh * AR;
 
-  // Render table rows
+  // Render table rows and highlight cards as before…
   g('estValues').innerHTML = [
-    ['Quotes / mo',         Q],
-    ['Baseline wins',       W3.toFixed(1)],
-    ['With Chiirp (low)',   projLowWins.toFixed(1)],
-    ['With Chiirp (high)',  projHighWins.toFixed(1)],
+    ['Quotes / mo',       Q],
+    ['Baseline wins',     W3.toFixed(1)],
+    ['With Chiirp (low)', projLowWins.toFixed(1)],
+    ['With Chiirp (high)',projHighWins.toFixed(1)],
     ['Monthly gain',
       `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
   ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-  // Render highlights
   g('estGainMonthly').textContent =
     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
   g('estGainAnnual').textContent =
@@ -675,6 +681,7 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
   revealSlide('slideEst');
 }
+
 
 
     
