@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -466,21 +466,29 @@ Monthly revenue    = Incremental wins × AR
   <div class="slide-content estimation">
     <div class="est-grid">
 
-      <!-- LEFT CARD: details-table -->
+      <!-- LEFT CARD: details + formulas (mirrors Slide 2 exactly) -->
       <div class="est-card details-table">
         <h1>Abandoned-Call Recovery</h1>
-
+        <p class="subhead">Based on your monthly abandoned calls and texts</p>
+      
         <table>
           <thead>
-            <tr><th>Metric</th><th>Value</th></tr>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+            </tr>
           </thead>
           <tbody id="missValues">
-            <!-- JS injects rows here, e.g.:
+            <!-- JS injects rows here, e.g:
                  <tr><td>Pool to text</td><td>123</td></tr>
                  <tr><td>Engage</td><td>86</td></tr>
-                 … -->
+                 <tr><td>Opened texts</td><td>84</td></tr>
+                 <tr><td>Recovered (low)</td><td>17</td></tr>
+                 <tr><td>Recovered (high)</td><td>33</td></tr>
+            -->
           </tbody>
         </table>
+
 
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
