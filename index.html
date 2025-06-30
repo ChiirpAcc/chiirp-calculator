@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -393,16 +393,15 @@ Monthly revenue    = Incremental wins × AR
 </section>
 
 
-
 <!-- ────────────────  SLIDE 3 – SPEED-TO-LEAD ──────────────── -->
 <section class="slide" id="slideS2L" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
 
-      <!-- LEFT CARD: details-table -->
+      <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Speed-to-Lead</h1>
-
+        <p class="subhead">Based on your monthly form submissions and wins</p>
         <table>
           <thead>
             <tr><th>Metric</th><th>Value</th></tr>
@@ -414,7 +413,6 @@ Monthly revenue    = Incremental wins × AR
                  … -->
           </tbody>
         </table>
-
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
           <pre>
@@ -427,7 +425,7 @@ Monthly revenue    = Incremental wins × AR
         </details>
       </div>
 
-      <!-- RIGHT CARD: highlight + button -->
+      <!-- RIGHT CARD: monthly & annual highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
 
@@ -442,6 +440,7 @@ Monthly revenue    = Incremental wins × AR
           </div>
         </div>
 
+        <!-- Footer container for bottom-aligned button -->
         <div class="highlight-footer">
           <button id="toMissed">Next ➔</button>
         </div>
@@ -450,6 +449,7 @@ Monthly revenue    = Incremental wins × AR
     </div>
   </div>
 </section>
+
 
 
 
