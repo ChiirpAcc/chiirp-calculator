@@ -357,13 +357,16 @@
         </table>
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
-          <pre>
-Baseline wins      = W₃ (current quote wins)
-Chiirp wins (low)  = min(W₃ × 1.5, Q)
-Chiirp wins (high) = min(W₃ × 2.0, Q)
-Incremental wins   = Chiirp wins − W₃
-Monthly revenue    = Incremental wins × AR
-          </pre>
+            <pre>
+            Form submissions    = F (total forms submitted per month)
+            Baseline wins       = W₁ (current form wins)
+            Projected wins (15%)= F × 0.15
+            Projected wins (35%)= F × 0.35
+            Net-new wins (low)  = max((F × 0.15) – W₁, 0)
+            Net-new wins (high) = max((F × 0.35) – W₁, 0)
+            Monthly revenue     = Net-new wins × AR
+            </pre>
+
         </details>
       </div>
 
@@ -592,7 +595,6 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
 
 
-
 <script>
 (() => {
   // ── CONSTANTS ─────────────────────────────────────────
@@ -614,7 +616,6 @@ ROI (high)         = High monthly gain ÷ Monthly cost
     'leads','formWins','missedCalls','missedWins','quotes','quoteWins','avgRev'
   ].map(g);
 
-
   // enable “Next” button once all fields are non-empty
   const calcBtn = g('calcBtn');
   inputs.forEach(i =>
@@ -626,43 +627,50 @@ ROI (high)         = High monthly gain ÷ Monthly cost
   // ── MAIN CALCULATION ────────────────────────────────────
   calcBtn.addEventListener('click', () => {
     // parse client inputs
-    const F  = +g('leads').value;
-    const W1 = +g('formWins').value;
+    const F  = +g('leads').value;       // total form submissions
+    const W1 = +g('formWins').value;    // current form wins
     const M  = +g('missedCalls').value;
     const W2 = +g('missedWins').value;
     const Q  = +g('quotes').value;
     const W3 = +g('quoteWins').value;
     const AR = +g('avgRev').value;
 
+    // ──── 1. ESTIMATION FOLLOW-UP (15% / 35%) ─────────────────────────
+    {
+      // Conversion rates
+      const RATE_LOW  = 0.15;    // 15% conversion when following up within 30s
+      const RATE_HIGH = 0.35;    // 35% conversion in best-practice follow-up
 
+      // Projected wins at each rate
+      const projLowWins  = F * RATE_LOW;
+      const projHighWins = F * RATE_HIGH;
 
-    // ──── 1. ESTIMATION FOLLOW-UP ───────────────────────────
-{
-  const lowWins    = Math.min(W3 * UPLIFT.estLow,  Q);
-  const highWins   = Math.min(W3 * UPLIFT.estHigh, Q);
-  const deltaLow   = lowWins  - W3;
-  const deltaHigh  = highWins - W3;
+      // Net-new wins (clamp at zero)
+      const deltaLow  = Math.max(projLowWins  - W1, 0);
+      const deltaHigh = Math.max(projHighWins - W1, 0);
 
-  // assign to existing storage vars
-  revLowEst  = deltaLow  * AR;
-  revHighEst = deltaHigh * AR;
+      // Revenue uplift
+      revLowEst  = deltaLow  * AR;
+      revHighEst = deltaHigh * AR;
 
-  g('estValues').innerHTML = [
-    ['Baseline wins',      W3.toFixed(1)],
-    ['With Chiirp (low)',  lowWins.toFixed(1)],
-    ['With Chiirp (high)', highWins.toFixed(1)],
-    ['Monthly gain',
-     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
-  ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+      // Render the table rows
+      g('estValues').innerHTML = [
+        ['Form submissions / mo', F],
+        ['Baseline wins',         W1.toFixed(1)],
+        ['Projected (15 %)',      projLowWins.toFixed(1)],
+        ['Projected (35 %)',      projHighWins.toFixed(1)],
+        ['Monthly gain',
+         `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
+      ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-  g('estGainMonthly').textContent = 
-    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
-  g('estGainAnnual').textContent  = 
-    `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
+      // Update highlight cards
+      g('estGainMonthly').textContent =
+        `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
+      g('estGainAnnual').textContent  =
+        `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
 
-  revealSlide('slideEst');
-}
-
+      revealSlide('slideEst');
+    }
   
 /* ──── 2. FORM SUBMISSIONS (Speed-to-Lead) ──── */
 g('toS2L').onclick = () => {
