@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -400,44 +400,31 @@ Monthly revenue      = Incremental wins × AR
   <div class="slide-content estimation">
     <div class="est-grid">
 
-<!-- LEFT CARD: details + formulas (mirrors Slide 2 exactly) -->
-<div class="est-card details-table">
-  <h1>Speed-to-Lead</h1>
-  <p class="subhead">Based on your monthly form submissions and wins</p>
+      <!-- LEFT CARD: details + formulas -->
+      <div class="est-card details-table">
+        <h1>Speed-to-Lead</h1>
+        <p class="subhead">Based on your monthly form submissions and wins</p>
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Value</th></tr>
+          </thead>
+          <tbody id="s2lValues">
+            <!-- Rows will be injected here -->
+          </tbody>
+        </table>
+        <details class="calc-formula">
+          <summary>How these numbers are calculated</summary>
+          <pre>
+Form submissions / mo = F
+Chiirp wins (low)     = max(F × 10%, W₁)
+Chiirp wins (high)    = max(F × 20%, W₁)
+Incremental wins      = Chiirp wins − W₁
+Monthly revenue       = Incremental wins × AR
+          </pre>
+        </details>
+      </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Metric</th>
-        <th>Value</th>
-      </tr>
-    </thead>
-      <tbody id="s2lValues">
-        <!-- JS injects rows here, e.g.: -->
-        <tr><td>Quotes / mo</td><td>Q</td></tr>
-        <tr><td>Closed now</td><td>W₃</td></tr>
-        <tr><td>With Chiirp (low)</td><td>min(W₃ × 1.10, Q)</td></tr>
-        <tr><td>With Chiirp (high)</td><td>min(W₃ × 1.20, Q)</td></tr>
-        <tr><td>Monthly gain</td><td>$… – $…</td></tr>
-      </tbody>
-
-  </table>
-
-  <details class="calc-formula">
-    <summary>How these numbers are calculated</summary>
-      <pre>
-  Quotes / mo         = Q (total quotes per month)
-  Baseline wins       = W₃ (current quote wins)
-  Chiirp wins (low)   = min(W₃ × 1.10, Q)   // 10% uplift
-  Chiirp wins (high)  = min(W₃ × 1.20, Q)   // 20% uplift
-  Incremental wins    = Chiirp wins − W₃
-  Monthly revenue     = Incremental wins × AR
-      </pre>
-  </details>
-</div>
-
-
-      <!-- RIGHT CARD: highlight + bottom-aligned button -->
+      <!-- RIGHT CARD: highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
         <div class="highlight-grid">
@@ -685,50 +672,54 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
 
     
-// ──── 2. FORM SUBMISSIONS (Speed-to-Lead, 10%/20% uplift on quotes) ────
+/* ──── 2. FORM SUBMISSIONS (Speed-to-Lead, 10% / 20% flat conversion) ──── */
 g('toS2L').onclick = () => {
-  // Inputs from the “Estimation” slide
-  const Q      = +g('quotes').value;      // total quotes / month
-  const W3     = +g('quoteWins').value;   // current quote wins
-  const AR     = +g('avgRev').value;      // avg revenue per win
+  // Inputs
+  const F   = +g('leads').value;     // total form submissions / month
+  const W1  = +g('formWins').value;  // current form wins
+  const AR  = +g('avgRev').value;    // avg revenue per win
 
-  // Chiirp uplift multipliers: 10% and 20%
-  const UPLIFT_LOW  = 1.10;  // +10%
-  const UPLIFT_HIGH = 1.20;  // +20%
+  // Fixed conversion rates
+  const RATE_LOW  = 0.10;  // 10%
+  const RATE_HIGH = 0.20;  // 20%
 
-  // Projected wins, capped by total quotes
-  const chiirpWinsLow  = Math.min(W3 * UPLIFT_LOW,  Q);
-  const chiirpWinsHigh = Math.min(W3 * UPLIFT_HIGH, Q);
+  // Raw projected wins
+  const rawLowWins  = F * RATE_LOW;
+  const rawHighWins = F * RATE_HIGH;
 
-  // Net-new wins, floored at zero
-  const deltaLow  = Math.max(chiirpWinsLow  - W3, 0);
-  const deltaHigh = Math.max(chiirpWinsHigh - W3, 0);
+  // Floor at current wins
+  const winsLow  = Math.max(rawLowWins,  W1);
+  const winsHigh = Math.max(rawHighWins, W1);
+
+  // Net-new deals
+  const deltaLow  = winsLow  - W1;
+  const deltaHigh = winsHigh - W1;
 
   // Revenue uplift
   revLowS2L  = deltaLow  * AR;
   revHighS2L = deltaHigh * AR;
 
-  // Render monthly & annual highlight
-  g('s2lGainMonthly').textContent =
-    `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`;
-  g('s2lGainAnnual').textContent =
-    `$${Math.round(revLowS2L * 12).toLocaleString()} – $${Math.round(revHighS2L * 12).toLocaleString()}`;
-
-  // Inject into the table
+  // Render the table
   g('s2lValues').innerHTML = [
-    ['Quotes / mo',           Q],
-    ['Baseline wins',         W3.toFixed(1)],
-    ['With Chiirp (low)',     chiirpWinsLow.toFixed(1)],
-    ['With Chiirp (high)',    chiirpWinsHigh.toFixed(1)],
+    ['Form submissions / mo',        F],
+    ['With Chiirp (low)',            winsLow.toFixed(1)],
+    ['With Chiirp (high)',           winsHigh.toFixed(1)],
     ['Monthly gain',
       `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`]
   ]
   .map(([label,val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
   .join('');
 
-  // Show the slide
+  // Update the highlights
+  g('s2lGainMonthly').textContent =
+    `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`;
+  g('s2lGainAnnual').textContent =
+    `$${Math.round(revLowS2L * 12).toLocaleString()} – $${Math.round(revHighS2L * 12).toLocaleString()}`;
+
+  // Reveal the slide
   revealSlide('slideS2L');
 };
+
 
 
 
