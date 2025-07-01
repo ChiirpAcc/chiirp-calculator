@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -447,7 +447,6 @@ Monthly revenue       = Incremental wins × AR
 </section>
 
 
-
 <!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->
 <section class="slide" id="slideMissed" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
@@ -457,25 +456,22 @@ Monthly revenue       = Incremental wins × AR
       <div class="est-card details-table">
         <h1>Abandoned-Call Recovery</h1>
         <p class="subhead">Based on your monthly abandoned calls and wins</p>
-      
         <table>
           <thead>
             <tr><th>Metric</th><th>Value</th></tr>
           </thead>
           <tbody id="missValues">
-            <!-- JS will inject rows here -->
+            <!-- JS injects rows here -->
           </tbody>
         </table>
-
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
           <pre>
-Pool to text        = M − W₂
-Engage              = Pool × 70%
-Opened texts        = Engage × 98%
-Recovered (low)     = min(Opened × 20%, Pool)
-Recovered (high)    = min(Opened × 40%, Pool)
-Monthly revenue     = Incremental wins × AR
+Abandoned calls / mo = M
+Chiirp wins (low)    = max(M × 20%, W₂)
+Chiirp wins (high)   = max(M × 40%, W₂)
+Incremental wins     = Chiirp wins − W₂
+Monthly revenue      = Incremental wins × AR
           </pre>
         </details>
       </div>
@@ -501,6 +497,7 @@ Monthly revenue     = Incremental wins × AR
     </div>
   </div>
 </section>
+
 
 
 
@@ -707,42 +704,38 @@ g('toS2L').onclick = () => {
   revealSlide('slideS2L');
 };
 
-
-
-
 /* ────────────────  3. ABANDONED-CALL RECOVERY ──────────────── */
 g('toMissed').onclick = () => {
   // 1) Parse inputs
-  const M   = +g('missedCalls').value;      // total abandoned calls
-  const W2  = +g('missedWins').value || 0;  // current wins from those calls
-  const AR  = +g('avgRev').value;           // avg revenue per win
+  const M  = +g('missedCalls').value;     // total abandoned calls/month
+  const W2 = +g('missedWins').value || 0; // current wins from those calls
+  const AR = +g('avgRev').value;          // avg revenue per win
 
-  // 2) Pool of calls eligible for text
-  const pool   = M - W2;
+  // 2) Flat recovery rates
+  const RATE_LOW  = 0.20;  // 20%
+  const RATE_HIGH = 0.40;  // 40%
 
-  // 3) Engagement & open rates
-  const engage = pool * 0.70;   // 70% engage
-  const opened = engage * 0.98;  // 98% of those open
+  // 3) Raw projected wins at those rates
+  const rawLowWins  = M * RATE_LOW;
+  const rawHighWins = M * RATE_HIGH;
 
-  // 4) Recovery lift: 20% & 40%, capped at pool
-  const recLow  = Math.min(opened * 0.20, pool);
-  const recHigh = Math.min(opened * 0.40, pool);
+  // 4) Floor at current wins
+  const winsLow  = Math.max(rawLowWins,  W2);
+  const winsHigh = Math.max(rawHighWins, W2);
 
-  // 5) Net-new deals
-  const deltaLow  = recLow;
-  const deltaHigh = recHigh;
+  // 5) Net-new deals above current
+  const deltaLow  = winsLow  - W2;
+  const deltaHigh = winsHigh - W2;
 
   // 6) Revenue uplift
   revLowMiss  = deltaLow  * AR;
   revHighMiss = deltaHigh * AR;
 
-  // 7) Inject table rows (mirrors Slides 2 & 3)
+  // 7) Inject table rows
   g('missValues').innerHTML = [
-    ['Pool to text',      pool.toFixed(0)],
-    ['Engage',            engage.toFixed(0)],
-    ['Opened texts',      opened.toFixed(0)],
-    ['Recovered (low)',   recLow.toFixed(1)],
-    ['Recovered (high)',  recHigh.toFixed(1)],
+    ['Abandoned calls / mo', M],
+    ['With Chiirp (low)',   winsLow.toFixed(1)],
+    ['With Chiirp (high)',  winsHigh.toFixed(1)],
     ['Monthly gain',
       `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
   ]
@@ -755,9 +748,10 @@ g('toMissed').onclick = () => {
   g('missGainAnnual').textContent =
     `$${Math.round(revLowMiss * 12).toLocaleString()} – $${Math.round(revHighMiss * 12).toLocaleString()}`;
 
-  // 9) Reveal this slide
+  // 9) Show the slide
   revealSlide('slideMissed');
 };
+
 
 /* ────────────────  4. SUMMARY ──────────────── */
 g('toSum').onclick = () => {
