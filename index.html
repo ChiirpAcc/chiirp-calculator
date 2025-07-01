@@ -343,6 +343,7 @@
   <div class="slide-content estimation">
     <div class="est-grid">
 
+
       <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Estimate: Follow-Up</h1>
@@ -359,14 +360,15 @@
           <summary>How these numbers are calculated</summary>
           <pre>
 Quotes / mo          = Q (total quotes per month)
-Baseline wins        = W₃ (current quote wins)
-Chiirp wins (low)    = max(Q × 0.10, W₃)    // 10 % conversion or current wins, whichever is higher
-Chiirp wins (high)   = max(Q × 0.20, W₃)    // 20 % conversion or current wins, whichever is higher
+Baseline rate        = W₃ ÷ Q (current conversion rate)
+Chiirp wins (low)    = max(Q × 0.10, W₃)    // flat 10% or current wins, whichever is higher
+Chiirp wins (high)   = max(Q × 0.20, W₃)    // flat 20% or current wins, whichever is higher
 Incremental wins     = Chiirp wins − W₃
 Monthly revenue      = Incremental wins × AR
           </pre>
         </details>
       </div>
+
 
       <!-- RIGHT CARD: monthly & annual highlight + button -->
       <div class="est-card highlight-table">
@@ -607,52 +609,58 @@ ROI (high)         = High monthly gain ÷ Monthly cost
     const AR = +g('avgRev').value;
 
     
-    // ──── 1. ESTIMATION FOLLOW-UP (10% / 20% flat conversion with floor) ────────────
+// ──── 1. ESTIMATION FOLLOW-UP (10% / 20% flat conversion with floor) ────────────
 {
-  // parse inputs
-  const Q  = +g('quotes').value;     // total quotes per month
-  const W3 = +g('quoteWins').value;  // current quote wins
-  const AR = +g('avgRev').value;     // avg revenue per win
+  // 1) Parse inputs
+  const Q   = +g('quotes').value;     // total quotes per month
+  const W3  = +g('quoteWins').value;  // current quote wins
+  const AR  = +g('avgRev').value;     // avg revenue per win
 
-  // fixed conversion rates
+  // 2) Fixed conversion rates
   const RATE_LOW  = 0.10;  // 10%
   const RATE_HIGH = 0.20;  // 20%
 
-  // raw projections
+  // 3) Baseline win-rate
+  const baseRate = Q > 0 ? W3 / Q : 0;
+
+  // 4) Raw projected wins
   const rawLowWins  = Q * RATE_LOW;
   const rawHighWins = Q * RATE_HIGH;
 
-  // floor at current wins
+  // 5) Floor projections at current wins
   const winsLow  = Math.max(rawLowWins,  W3);
   const winsHigh = Math.max(rawHighWins, W3);
 
-  // net‐new deals
+  // 6) Net-new wins
   const deltaLow  = winsLow  - W3;
   const deltaHigh = winsHigh - W3;
 
-  // revenue uplift
+  // 7) Revenue uplift
   revLowEst  = deltaLow  * AR;
   revHighEst = deltaHigh * AR;
 
-  // render table: total wins & uplift
+  // 8) Inject table rows
   g('estValues').innerHTML = [
+    ['Quotes / mo',       Q],
+    ['Baseline rate',     `${(baseRate*100).toFixed(1)}%`],
     ['Chiirp wins (low)',  winsLow.toFixed(1)],
     ['Chiirp wins (high)', winsHigh.toFixed(1)],
     ['Monthly gain',
       `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
   ]
-  .map(([label,val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
+  .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
   .join('');
 
-  // update highlights
+  // 9) Update highlights
   g('estGainMonthly').textContent =
     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
   g('estGainAnnual').textContent =
     `$${Math.round(revLowEst*12).toLocaleString()} – $${Math.round(revHighEst*12).toLocaleString()}`;
 
-  // show slide
+  // 10) Reveal the slide
   revealSlide('slideEst');
 }
+
 
 
     
