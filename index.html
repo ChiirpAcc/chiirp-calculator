@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -634,61 +634,54 @@ ROI (high)         = High monthly gain ÷ Monthly cost
     const Q  = +g('quotes').value;
     const W3 = +g('quoteWins').value;
     const AR = +g('avgRev').value;
+
     
-// ──── 1. ESTIMATION FOLLOW-UP (10% / 20% uplift on quotes) ────────────
+    // ──── 1. ESTIMATION FOLLOW-UP (10% / 20% flat conversion with floor) ────────────
 {
-  // Inputs
-  const Q   = +g('quotes').value;     // total quotes per month
-  const W3  = +g('quoteWins').value;  // current quote wins
-  const AR  = +g('avgRev').value;     // avg revenue per win
+  // parse inputs
+  const Q  = +g('quotes').value;     // total quotes per month
+  const W3 = +g('quoteWins').value;  // current quote wins
+  const AR = +g('avgRev').value;     // avg revenue per win
 
-  // Uplift percentages
-  const RATE_LOW  = 0.10;  // +10 pp
-  const RATE_HIGH = 0.20;  // +20 pp
+  // fixed conversion rates
+  const RATE_LOW  = 0.10;  // 10%
+  const RATE_HIGH = 0.20;  // 20%
 
-  // Baseline conversion rate
-  const baseRate = Q > 0 ? W3 / Q : 0;
+  // raw projections
+  const rawLowWins  = Q * RATE_LOW;
+  const rawHighWins = Q * RATE_HIGH;
 
-  // New conversion rates
-  const newRateLow  = Math.min(baseRate + RATE_LOW,  1);
-  const newRateHigh = Math.min(baseRate + RATE_HIGH, 1);
+  // floor at current wins
+  const winsLow  = Math.max(rawLowWins,  W3);
+  const winsHigh = Math.max(rawHighWins, W3);
 
-  // Projected wins
-  const projLowWins  = Q * newRateLow;
-  const projHighWins = Q * newRateHigh;
-
-  // Ensure we never drop below current wins
-  const winsLow  = Math.max(projLowWins,  W3);
-  const winsHigh = Math.max(projHighWins, W3);
-
-  // Net-new deals
+  // net‐new deals
   const deltaLow  = winsLow  - W3;
   const deltaHigh = winsHigh - W3;
 
-  // Revenue uplift
+  // revenue uplift
   revLowEst  = deltaLow  * AR;
   revHighEst = deltaHigh * AR;
 
-  // Render table rows
+  // render table: total wins & uplift
   g('estValues').innerHTML = [
     ['Chiirp wins (low)',  winsLow.toFixed(1)],
     ['Chiirp wins (high)', winsHigh.toFixed(1)],
     ['Monthly gain',
       `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
   ]
-  .map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`)
+  .map(([label,val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
   .join('');
 
-  // Render highlights
+  // update highlights
   g('estGainMonthly').textContent =
     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
   g('estGainAnnual').textContent =
-    `$${Math.round(revLowEst * 12).toLocaleString()} – $${Math.round(revHighEst * 12).toLocaleString()}`;
+    `$${Math.round(revLowEst*12).toLocaleString()} – $${Math.round(revHighEst*12).toLocaleString()}`;
 
+  // show slide
   revealSlide('slideEst');
 }
-
-
 
 
     
