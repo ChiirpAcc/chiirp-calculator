@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -448,37 +448,24 @@ Monthly revenue       = Incremental wins × AR
 
 
 
-
-
-
 <!-- ────────────────  SLIDE 4 – ABANDONED-CALL RECOVERY ──────────────── -->
 <section class="slide" id="slideMissed" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
     <div class="est-grid">
 
-      <!-- LEFT CARD: details + formulas (mirrors Slide 2 exactly) -->
+      <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Abandoned-Call Recovery</h1>
-        <p class="subhead">Based on your monthly abandoned calls and texts</p>
+        <p class="subhead">Based on your monthly abandoned calls and wins</p>
       
         <table>
           <thead>
-            <tr>
-              <th>Metric</th>
-              <th>Value</th>
-            </tr>
+            <tr><th>Metric</th><th>Value</th></tr>
           </thead>
           <tbody id="missValues">
-            <!-- JS injects rows here, e.g:
-                 <tr><td>Pool to text</td><td>123</td></tr>
-                 <tr><td>Engage</td><td>86</td></tr>
-                 <tr><td>Opened texts</td><td>84</td></tr>
-                 <tr><td>Recovered (low)</td><td>17</td></tr>
-                 <tr><td>Recovered (high)</td><td>33</td></tr>
-            -->
+            <!-- JS will inject rows here -->
           </tbody>
         </table>
-
 
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
@@ -488,7 +475,7 @@ Engage              = Pool × 70%
 Opened texts        = Engage × 98%
 Recovered (low)     = min(Opened × 20%, Pool)
 Recovered (high)    = min(Opened × 40%, Pool)
-Monthly revenue     = Recovered × AR
+Monthly revenue     = Incremental wins × AR
           </pre>
         </details>
       </div>
@@ -496,7 +483,6 @@ Monthly revenue     = Recovered × AR
       <!-- RIGHT CARD: highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
-
         <div class="highlight-grid">
           <div class="highlight-pair">
             <p id="missGainMonthly" class="highlight-number">—</p>
@@ -507,7 +493,6 @@ Monthly revenue     = Recovered × AR
             <p class="subtext">per year</p>
           </div>
         </div>
-
         <div class="highlight-footer">
           <button id="toSum">Next ➔</button>
         </div>
@@ -516,6 +501,8 @@ Monthly revenue     = Recovered × AR
     </div>
   </div>
 </section>
+
+
 
 
 
@@ -723,58 +710,78 @@ g('toS2L').onclick = () => {
 
 
 
-
-/* ------- 3. ABANDONED-CALL RECOVERY ------- */
+/* ────────────────  3. ABANDONED-CALL RECOVERY ──────────────── */
 g('toMissed').onclick = () => {
   // 1) Parse inputs
-  const M  = +g('missedCalls').value;      // total missed calls
-  const W2 = +g('missedWins').value || 0;  // current wins from missed calls
-  const AR = +g('avgRev').value;           // avg revenue per win
+  const M   = +g('missedCalls').value;      // total abandoned calls
+  const W2  = +g('missedWins').value || 0;  // current wins from those calls
+  const AR  = +g('avgRev').value;           // avg revenue per win
 
-  // 2) Build the textable pool (only calls client can’t reach)
-  const pool    = M - W2;
+  // 2) Pool of calls eligible for text
+  const pool   = M - W2;
 
   // 3) Engagement & open rates
-  const engaged = pool * 0.70;             // 70% will engage via text
-  const opened  = engaged * 0.98;          // 98% of those texts get opened
+  const engage = pool * 0.70;   // 70% engage
+  const opened = engage * 0.98;  // 98% of those open
 
-  // 4) Apply Chiirp’s 20–40% recovery lift
-  const recLow  = opened * 0.20;
-  const recHigh = opened * 0.40;
+  // 4) Recovery lift: 20% & 40%, capped at pool
+  const recLow  = Math.min(opened * 0.20, pool);
+  const recHigh = Math.min(opened * 0.40, pool);
 
-  // 5) Cap at the pool
-  const winsLow  = Math.min(recLow,  pool);
-  const winsHigh = Math.min(recHigh, pool);
+  // 5) Net-new deals
+  const deltaLow  = recLow;
+  const deltaHigh = recHigh;
 
-  // 6) All recovered are net-new deals
-  const deltaLow  = winsLow;
-  const deltaHigh = winsHigh;
-
-  // 7) Revenue gain
+  // 6) Revenue uplift
   revLowMiss  = deltaLow  * AR;
   revHighMiss = deltaHigh * AR;
 
-  // render the monthly & annual highlight for missed calls
+  // 7) Inject table rows (mirrors Slides 2 & 3)
+  g('missValues').innerHTML = [
+    ['Pool to text',      pool.toFixed(0)],
+    ['Engage',            engage.toFixed(0)],
+    ['Opened texts',      opened.toFixed(0)],
+    ['Recovered (low)',   recLow.toFixed(1)],
+    ['Recovered (high)',  recHigh.toFixed(1)],
+    ['Monthly gain',
+      `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
+  ]
+  .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
+  .join('');
+
+  // 8) Update highlights
   g('missGainMonthly').textContent =
     `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`;
   g('missGainAnnual').textContent =
     `$${Math.round(revLowMiss * 12).toLocaleString()} – $${Math.round(revHighMiss * 12).toLocaleString()}`;
 
-  g('missValues').innerHTML = [
-    ['Missed calls / mo',      M],
-    ['Pool to text',           pool.toFixed(0)],
-    ['Engage',                 engaged.toFixed(0)],
-    ['Opened texts',           opened.toFixed(0)],
-    ['Recovered (low)',        winsLow.toFixed(1)],
-    ['Recovered (high)',       winsHigh.toFixed(1)],
-    ['Monthly gain',           `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
-  ].map(([label,val]) =>
-    `<tr><td>${label}</td><td>${val}</td></tr>`
-  ).join('');
-
-
-  // 9) Show this slide
+  // 9) Reveal this slide
   revealSlide('slideMissed');
+};
+
+/* ────────────────  4. SUMMARY ──────────────── */
+g('toSum').onclick = () => {
+  const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
+  const highTotal = revHighEst + revHighS2L + revHighMiss;
+  const roiLow    = (lowTotal  / MONTHLY_COST).toFixed(1);
+  const roiHigh   = (highTotal / MONTHLY_COST).toFixed(1);
+
+  g('sumValues').innerHTML = [
+    ['Estimation',     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
+    ['Speed-to-Lead',  `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
+    ['Call Recovery',  `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
+  ]
+  .map(([label,val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
+  .join('');
+
+  g('sumGainMonthly').textContent =
+    `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
+  g('sumGainAnnual').textContent =
+    `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
+  g('sumROI').textContent =
+    `ROI: ${roiLow}× – ${roiHigh}×`;
+
+  revealSlide('slideSum');
 };
 
 /* ------- 4 slide ------- */
