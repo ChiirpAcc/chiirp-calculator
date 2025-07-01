@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -360,9 +360,8 @@
           <pre>
 Quotes / mo          = Q (total quotes per month)
 Baseline wins        = W₃ (current quote wins)
-Chiirp wins (low)    = min(W₃ × 1.10, Q)   // 10 % uplift
-Chiirp wins (high)   = min(W₃ × 1.20, Q)   // 20 % uplift
-Incremental wins     = Chiirp wins − W₃
+Chiirp wins (low)    = max(Q × 0.10, W₃)    // 10 % conversion or current wins, whichever is higher
+Chiirp wins (high)   = max(Q × 0.20, W₃)    // 20 % conversion or current wins, whichever is higher
 Monthly revenue      = Incremental wins × AR
           </pre>
         </details>
@@ -638,35 +637,32 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 // ──── 1. ESTIMATION FOLLOW-UP (10% / 20% uplift on quotes) ────────────
 {
   // Inputs
-  const Q  = +g('quotes').value;     // Q = total quotes per month
-  const W3 = +g('quoteWins').value;  // W₃ = current quote wins
-  const AR = +g('avgRev').value;     // AR = avg revenue per win
+  const Q   = +g('quotes').value;     // total quotes per month
+  const W3  = +g('quoteWins').value;  // current quote wins
+  const AR  = +g('avgRev').value;     // avg revenue per win
 
-  // Absolute uplift percentages
+  // Uplift percentages
   const RATE_LOW  = 0.10;  // +10 pp
   const RATE_HIGH = 0.20;  // +20 pp
 
   // Baseline conversion rate
-  // baseRate = W₃ / Q
   const baseRate = Q > 0 ? W3 / Q : 0;
 
-  // New total conversion rates
-  // newRateLow  = baseRate + 0.10  (e.g. 0.05 + 0.10 = 0.15 → 15%)
-  // newRateHigh = baseRate + 0.20  (e.g. 0.05 + 0.20 = 0.25 → 25%)
+  // New conversion rates
   const newRateLow  = Math.min(baseRate + RATE_LOW,  1);
   const newRateHigh = Math.min(baseRate + RATE_HIGH, 1);
 
-  // Projected wins at those rates
-  // projLowWins  = Q × newRateLow
-  // projHighWins = Q × newRateHigh
+  // Projected wins
   const projLowWins  = Q * newRateLow;
   const projHighWins = Q * newRateHigh;
 
-  // Net-new wins, floored at zero
-  // deltaLow  = max(projLowWins  − W₃, 0)
-  // deltaHigh = max(projHighWins − W₃, 0)
-  const deltaLow  = Math.max(projLowWins  - W3, 0);
-  const deltaHigh = Math.max(projHighWins - W3, 0);
+  // Ensure we never drop below current wins
+  const winsLow  = Math.max(projLowWins,  W3);
+  const winsHigh = Math.max(projHighWins, W3);
+
+  // Net-new deals
+  const deltaLow  = winsLow  - W3;
+  const deltaHigh = winsHigh - W3;
 
   // Revenue uplift
   revLowEst  = deltaLow  * AR;
@@ -674,13 +670,13 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
   // Render table rows
   g('estValues').innerHTML = [
-    ['Quotes / mo',         Q],
-    ['Baseline wins',       W3.toFixed(1)],
-    ['Baseline rate',       `${(baseRate*100).toFixed(1)}%`],
-    ['With Chiirp (low)',   projLowWins.toFixed(1)],
-    ['New rate (low)',      `${(newRateLow*100).toFixed(1)}%`],
-    ['With Chiirp (high)',  projHighWins.toFixed(1)],
-    ['New rate (high)',     `${(newRateHigh*100).toFixed(1)}%`],
+    ['Quotes / mo',       Q],
+    ['Baseline wins',     W3.toFixed(1)],
+    ['Baseline rate',     `${(baseRate*100).toFixed(1)}%`],
+    ['Proj. wins (low)',  winsLow.toFixed(1)],
+    ['Proj. rate (low)',  `${(newRateLow*100).toFixed(1)}%`],
+    ['Proj. wins (high)', winsHigh.toFixed(1)],
+    ['Proj. rate (high)', `${(newRateHigh*100).toFixed(1)}%`],
     ['Monthly gain',
       `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
   ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
