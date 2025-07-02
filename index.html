@@ -679,8 +679,8 @@ inputs.forEach(i =>
   // ── MAIN CALCULATION ────────────────────────────────────
   calcBtn.addEventListener('click', () => {
     // parse client inputs
-    const F  = +g('leads').value;       // total form submissions
-    const W1 = +g('formWins').value;    // current form wins
+    const F  = +g('leads').value;    
+    const W1 = +g('formWins').value;    
     const M  = +g('missedCalls').value;
     const W2 = +g('missedWins').value;
     const Q  = +g('quotes').value;
@@ -840,41 +840,40 @@ g('toMissed').onclick = () => {
 
 /* ────────────────  SLIDE 4 – SUMMARY ──────────────── */
 g('toSum').onclick = () => {
-  // grab the plan cost from the radio buttons
+  // 1) Grab the plan cost from the radio buttons
   const monthlyCost = getMonthlyCost();
 
-  // aggregate all three revenue streams
+  // 2) Aggregate all three revenue streams
   const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
   const highTotal = revHighEst + revHighS2L + revHighMiss;
 
-  // compute ROI based on the selected plan cost
+  // 3) Compute ROI based on the selected plan cost
   const roiLow  = (lowTotal  / monthlyCost).toFixed(1);
   const roiHigh = (highTotal / monthlyCost).toFixed(1);
 
-  // populate the breakdown table
+  // 4) Populate the left‐hand breakdown table
   g('sumValues').innerHTML = [
     ['Estimation Follow-Up', `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
     ['Speed-to-Lead',        `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
     ['Call Recovery',        `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
-  ].map(([label, val]) =>
-    `<tr><td>${label}</td><td>${val}</td></tr>`
-  ).join('');
+  ]
+  .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
+  .join('');
 
-  // update the big money numbers
-  g('sumGainMonthly').textContent = 
+  // 5) Update the big yellow money figures
+  g('sumGainMonthly').textContent =
     `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
-  g('sumGainAnnual').textContent  = 
+  g('sumGainAnnual').textContent  =
     `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
 
-  // show the ROI in yellow
-  g('sumROINumber').textContent = 
+  // 6) Show the ROI number in yellow
+  g('sumROINumber').textContent =
     `${roiLow}× – ${roiHigh}×`;
 
-  // white “ROI” label already in the markup under sumROINumber
-
-  // finally, reveal the summary slide
+  // 7) Finally, reveal the Summary slide
   revealSlide('slideSum');
 };
+
 
 });            
 
