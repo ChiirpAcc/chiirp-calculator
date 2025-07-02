@@ -641,51 +641,50 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
 <script>
 
-  
-(() => {
-// ── CONSTANTS ─────────────────────────────────────────
-const UPLIFT = {
-  estLow:   1.5, estHigh:  2.0,
-  s2lLow:   2.0, s2lHigh:  5.0,
-  missLow:  3.0, missHigh: 5.0
-};
+  (() => {
+  // ── CONSTANTS ─────────────────────────────────────────
+  const UPLIFT = {
+    estLow:   1.5, estHigh:  2.0,
+    s2lLow:   2.0, s2lHigh:  5.0,
+    missLow:  3.0, missHigh: 5.0
+  };
 
-// ── MODULE REVENUE STORAGE ─────────────────────────────
-let revLowEst   = 0, revHighEst   = 0;
-let revLowS2L   = 0, revHighS2L   = 0;
-let revLowMiss  = 0, revHighMiss  = 0;
+  // ── MODULE REVENUE STORAGE ─────────────────────────────
+  let revLowEst   = 0, revHighEst   = 0;
+  let revLowS2L   = 0, revHighS2L   = 0;
+  let revLowMiss  = 0, revHighMiss  = 0;
 
-// ── DOM SHORTCUTS & INPUTS ─────────────────────────────
-const g = id => document.getElementById(id);
+  // ── DOM SHORTCUTS & INPUTS ─────────────────────────────
+  const g = id => document.getElementById(id);
 
-// helper to read the currently selected plan cost
-function getMonthlyCost() {
-  return +document.querySelector('input[name="plan"]:checked').value;
-}
+  // helper to read the currently selected plan cost
+  function getMonthlyCost() {
+    return +document.querySelector('input[name="plan"]:checked').value;
+  }
 
-const inputs = [
-  'leads','formWins','missedCalls','missedWins',
-  'quotes','quoteWins','avgRev'
-].map(g);
+  const inputs = [
+    'leads','formWins','missedCalls','missedWins',
+    'quotes','quoteWins','avgRev'
+  ].map(g);
 
-// enable “Next” button once all fields are non-empty
-const calcBtn = g('calcBtn');
-inputs.forEach(i =>
-  i.addEventListener('input', () =>
-    calcBtn.disabled = inputs.some(e => !e.value.trim())
-  )
-);
+  // enable “Next” button once all fields are non-empty
+  const calcBtn = g('calcBtn');
+  inputs.forEach(i =>
+    i.addEventListener('input', () =>
+      calcBtn.disabled = inputs.some(e => !e.value.trim())
+    )
+  );
 
   // ── MAIN CALCULATION ────────────────────────────────────
   calcBtn.addEventListener('click', () => {
     // parse client inputs
-    const F  = +g('leads').value;    
-    const W1 = +g('formWins').value;    
-    const M  = +g('missedCalls').value;
-    const W2 = +g('missedWins').value;
-    const Q  = +g('quotes').value;
-    const W3 = +g('quoteWins').value;
-    const AR = +g('avgRev').value;
+    const F  = +g('leads').value;       // total form submissions
+    const W1 = +g('formWins').value;    // current form wins
+    const M  = +g('missedCalls').value; // abandoned calls
+    const W2 = +g('missedWins').value;  // wins from abandoned calls
+    const Q  = +g('quotes').value;      // quotes sent
+    const W3 = +g('quoteWins').value;   // wins from quotes
+    const AR = +g('avgRev').value;      // avg revenue per sale
 
     
 // ──── 1. ESTIMATION FOLLOW-UP (10% / 20% flat conversion with floor) ────────────
@@ -837,45 +836,42 @@ g('toMissed').onclick = () => {
   // 9) Show the slide
   revealSlide('slideMissed');
 };
+  /* ────────────────  SLIDE 4 – SUMMARY ──────────────── */
+  g('toSum').onclick = () => {
+    // 1) Grab the plan cost from the radio buttons
+    const monthlyCost = getMonthlyCost();
 
-/* ────────────────  SLIDE 4 – SUMMARY ──────────────── */
-g('toSum').onclick = () => {
-  // 1) Grab the plan cost from the radio buttons
-  const monthlyCost = getMonthlyCost();
+    // 2) Aggregate all three revenue streams
+    const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
+    const highTotal = revHighEst + revHighS2L + revHighMiss;
 
-  // 2) Aggregate all three revenue streams
-  const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
-  const highTotal = revHighEst + revHighS2L + revHighMiss;
+    // 3) Compute ROI based on the selected plan cost
+    const roiLow  = (lowTotal  / monthlyCost).toFixed(1);
+    const roiHigh = (highTotal / monthlyCost).toFixed(1);
 
-  // 3) Compute ROI based on the selected plan cost
-  const roiLow  = (lowTotal  / monthlyCost).toFixed(1);
-  const roiHigh = (highTotal / monthlyCost).toFixed(1);
+    // 4) Populate the left‐hand breakdown table
+    g('sumValues').innerHTML = [
+      ['Estimation Follow-Up', `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
+      ['Speed-to-Lead',       `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
+      ['Call Recovery',       `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
+    ].map(([label, val]) =>
+      `<tr><td>${label}</td><td>${val}</td></tr>`
+    ).join('');
 
-  // 4) Populate the left‐hand breakdown table
-  g('sumValues').innerHTML = [
-    ['Estimation Follow-Up', `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
-    ['Speed-to-Lead',        `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
-    ['Call Recovery',        `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
-  ]
-  .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
-  .join('');
+    // 5) Update the big yellow money figures
+    g('sumGainMonthly').textContent =
+      `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
+    g('sumGainAnnual').textContent  =
+      `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
 
-  // 5) Update the big yellow money figures
-  g('sumGainMonthly').textContent =
-    `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
-  g('sumGainAnnual').textContent  =
-    `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
+    // 6) Show the ROI number in yellow (ID matches HTML)
+    g('sumROI').textContent =
+      `${roiLow}× – ${roiHigh}×`;
 
-  // 6) Show the ROI number in yellow
-  g('sumROINumber').textContent =
-    `${roiLow}× – ${roiHigh}×`;
-
-  // 7) Finally, reveal the Summary slide
-  revealSlide('slideSum');
-};
-
-
-});            
+    // 7) Reveal the Summary slide
+    revealSlide('slideSum');
+  };
+})();
 
 /* ── helper to fade-in slide and animate items ── */
 function revealSlide(id){
