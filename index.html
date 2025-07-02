@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -536,33 +536,33 @@ ROI (high)         = High monthly gain ÷ Monthly cost
         </details>
       </div>
 
-    <!-- RIGHT CARD: totals & ROI highlight + footer -->
-      <div class="est-card highlight-table">
-        <h3>Total Additional Revenue</h3>
-      
-        <div class="highlight-grid">
-          <div class="highlight-pair">
-            <p id="sumGainMonthly" class="highlight-number">—</p>
-            <p class="subtext">per month</p>
-          </div>
-          <div class="highlight-pair">
-            <p id="sumGainAnnual" class="highlight-number">—</p>
-            <p class="subtext">per year</p>
-          </div>
-        </div>
-      
-        <!-- Big yellow ROI numbers -->
-        <p id="sumROINumber" class="highlight-number" style="margin-top:1.5rem; line-height:1;">—</p>
-        <!-- White “ROI” label underneath -->
-        <p class="subtext" style="margin-bottom:1.5rem; font-size:1.1rem;">ROI</p>
-      
-        <div class="highlight-footer">
-          <button onclick="location.reload()">Restart ↻</button>
-        </div>
-      </div>
+<!-- RIGHT CARD: totals & ROI highlight + footer -->
+<div class="est-card highlight-table">
+  <h3>Total Additional Revenue</h3>
 
+  <!-- monthly & annual in a grid -->
+  <div class="highlight-grid">
+    <div class="highlight-pair">
+      <p id="sumGainMonthly" class="highlight-number">—</p>
+      <p class="subtext">per month</p>
+    </div>
+    <div class="highlight-pair">
+      <p id="sumGainAnnual" class="highlight-number">—</p>
+      <p class="subtext">per year</p>
+    </div>
+    <!-- NEW: ROI big and yellow -->
+    <div class="highlight-pair">
+      <p id="sumROI" class="highlight-number">—×</p>
+      <p class="subtext">ROI</p>
+    </div>
+  </div>
 
-</section>
+  <!-- footer: just the restart button -->
+  <div class="highlight-footer">
+    <button onclick="location.reload()">Restart ↻</button>
+  </div>
+</div>
+
 
 <script>
 
@@ -810,7 +810,7 @@ g('toSum').onclick = () => {
   g('sumGainAnnual').textContent =
     `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
   g('sumROI').textContent =
-    `ROI: ${roiLow}× – ${roiHigh}×`;
+    `{roiLow}× – {roiHigh}×`;
 
   revealSlide('slideSum');
 };
