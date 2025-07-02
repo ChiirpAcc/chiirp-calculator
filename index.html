@@ -32,9 +32,9 @@
   }
 /* ────────── SLIDE 1 – PLAN SELECTOR ONLY ────────── */
 .slide-content.inputs .plan-selector {
-  grid-column: 1 / -1;              /* span full width */
-  margin-top: 1.5rem;               /* some breathing room */
-  padding: 0.75rem 1rem;            /* inner padding */
+  grid-column: 1 / -1;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.3);
   border-radius: 8px;
@@ -50,36 +50,24 @@
   font-weight: 500;
   color: #fff;
   border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
+  transition: color 0.2s;
 }
 
-.slide-content.inputs .plan-selector input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
+/* hide the big box on checked: remove any checked + ::before rules */
 .slide-content.inputs .plan-selector label::before {
-  content: '';
-  display: block;
-  position: absolute;
-  inset: 0;
-  border-radius: 6px;
+  display: none;
+}
+
+/* only show on hover */
+.slide-content.inputs .plan-selector label:hover {
   background: rgba(255,255,255,0.2);
-  opacity: 0;
-  transition: opacity 0.2s;
 }
 
-/* only show on hover – no checked‐state background */
-.slide-content.inputs .plan-selector label:hover::before {
-  opacity: 1;
-  background: rgba(255,255,255,0.4);
-}
-
-
-.slide-content.inputs .plan-selector label span {
-  position: relative; /* to sit above the ::before bg */
-  z-index: 1;
+/* visually mark the chosen plan by changing its text color & adding an underline */
+.slide-content.inputs .plan-selector input:checked + span {
+  color: #ffb703;
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
