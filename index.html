@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -542,10 +542,6 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
   <!-- monthly & annual in a grid -->
   <div class="highlight-grid">
-    <div class="highlight-pair">
-      <p id="sumGainMonthly" class="highlight-number">—</p>
-      <p class="subtext">per month</p>
-    </div>
     <div class="highlight-pair">
       <p id="sumGainAnnual" class="highlight-number">—</p>
       <p class="subtext">per year</p>
