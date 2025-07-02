@@ -628,256 +628,111 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
 
 <script>
-
-  (() => {
-  // ── CONSTANTS ─────────────────────────────────────────
-  const UPLIFT = {
-    estLow:   1.5, estHigh:  2.0,
-    s2lLow:   2.0, s2lHigh:  5.0,
-    missLow:  3.0, missHigh: 5.0
-  };
-
-  // ── MODULE REVENUE STORAGE ─────────────────────────────
-  let revLowEst   = 0, revHighEst   = 0;
-  let revLowS2L   = 0, revHighS2L   = 0;
-  let revLowMiss  = 0, revHighMiss  = 0;
-
-  // ── DOM SHORTCUTS & INPUTS ─────────────────────────────
+(() => {
+  // shorthand for document.getElementById
   const g = id => document.getElementById(id);
 
-  // helper to read the currently selected plan cost
-  function getMonthlyCost() {
-    return +document.querySelector('input[name="plan"]:checked').value;
-  }
+  // storage for each module’s revenue
+  let revLowEst = 0, revHighEst = 0;
+  let revLowS2L = 0, revHighS2L = 0;
+  let revLowMiss = 0, revHighMiss = 0;
 
-  const inputs = [
-    'leads','formWins','missedCalls','missedWins',
-    'quotes','quoteWins','avgRev'
-  ].map(g);
-
-  // enable “Next” button once all fields are non-empty
-  const calcBtn = g('calcBtn');
-  inputs.forEach(i =>
-    i.addEventListener('input', () =>
-      calcBtn.disabled = inputs.some(e => !e.value.trim())
-    )
-  );
-
-  // ── MAIN CALCULATION ────────────────────────────────────
-  calcBtn.addEventListener('click', () => {
-    // parse client inputs
-    const F  = +g('leads').value;       // total form submissions
-    const W1 = +g('formWins').value;    // current form wins
-    const M  = +g('missedCalls').value; // abandoned calls
-    const W2 = +g('missedWins').value;  // wins from abandoned calls
-    const Q  = +g('quotes').value;      // quotes sent
-    const W3 = +g('quoteWins').value;   // wins from quotes
-    const AR = +g('avgRev').value;      // avg revenue per sale
-
-    
-// ──── 1. ESTIMATION FOLLOW-UP (10% / 20% flat conversion with floor) ────────────
-{
-  // 1) Parse inputs
-  const Q   = +g('quotes').value;     // total quotes per month
-  const W3  = +g('quoteWins').value;  // current quote wins
-  const AR  = +g('avgRev').value;     // avg revenue per win
-
-  // 2) Fixed conversion rates
-  const RATE_LOW  = 0.10;  // 10%
-  const RATE_HIGH = 0.20;  // 20%
-
-  // 3) Baseline win-rate
-  const baseRate = Q > 0 ? W3 / Q : 0;
-
-  // 4) Raw projected wins
-  const rawLowWins  = Q * RATE_LOW;
-  const rawHighWins = Q * RATE_HIGH;
-
-  // 5) Floor projections at current wins
-  const winsLow  = Math.max(rawLowWins,  W3);
-  const winsHigh = Math.max(rawHighWins, W3);
-
-  // 6) Net-new wins
-  const deltaLow  = winsLow  - W3;
-  const deltaHigh = winsHigh - W3;
-
-  // 7) Revenue uplift
-  revLowEst  = deltaLow  * AR;
-  revHighEst = deltaHigh * AR;
-
-  // 8) Inject table rows
-  g('estValues').innerHTML = [
-    ['Quotes / mo',       Q],
-    ['Chiirp wins (low)',  winsLow.toFixed(1)],
-    ['Chiirp wins (high)', winsHigh.toFixed(1)],
-    ['Monthly gain',
-      `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`]
-  ]
-  .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
-  .join('');
-
-  // 9) Update highlights
-  g('estGainMonthly').textContent =
-    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
-  g('estGainAnnual').textContent =
-    `$${Math.round(revLowEst*12).toLocaleString()} – $${Math.round(revHighEst*12).toLocaleString()}`;
-
-  // 10) Reveal the slide
-  revealSlide('slideEst');
-}
-
-
-
-    
-/* ──── 2. FORM SUBMISSIONS (Speed-to-Lead, 10% / 20% flat conversion) ──── */
-g('toS2L').onclick = () => {
-  // Inputs
-  const F   = +g('leads').value;     // total form submissions / month
-  const W1  = +g('formWins').value;  // current form wins
-  const AR  = +g('avgRev').value;    // avg revenue per win
-
-  // Fixed conversion rates
-  const RATE_LOW  = 0.15;  // 10%
-  const RATE_HIGH = 0.35;  // 20%
-
-  // Raw projected wins
-  const rawLowWins  = F * RATE_LOW;
-  const rawHighWins = F * RATE_HIGH;
-
-  // Floor at current wins
-  const winsLow  = Math.max(rawLowWins,  W1);
-  const winsHigh = Math.max(rawHighWins, W1);
-
-  // Net-new deals
-  const deltaLow  = winsLow  - W1;
-  const deltaHigh = winsHigh - W1;
-
-  // Revenue uplift
-  revLowS2L  = deltaLow  * AR;
-  revHighS2L = deltaHigh * AR;
-
-  // Render the table
-  g('s2lValues').innerHTML = [
-    ['Form submissions / mo',        F],
-    ['With Chiirp (low)',            winsLow.toFixed(1)],
-    ['With Chiirp (high)',           winsHigh.toFixed(1)],
-    ['Monthly gain',
-      `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`]
-  ]
-  .map(([label,val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
-  .join('');
-
-  // Update the highlights
-  g('s2lGainMonthly').textContent =
-    `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`;
-  g('s2lGainAnnual').textContent =
-    `$${Math.round(revLowS2L * 12).toLocaleString()} – $${Math.round(revHighS2L * 12).toLocaleString()}`;
-
-  // Reveal the slide
-  revealSlide('slideS2L');
-};
-
-/* ────────────────  3. ABANDONED-CALL RECOVERY ──────────────── */
-g('toMissed').onclick = () => {
-  // 1) Parse inputs
-  const M  = +g('missedCalls').value;     // total abandoned calls/month
-  const W2 = +g('missedWins').value || 0; // current wins from those calls
-  const AR = +g('avgRev').value;          // avg revenue per win
-
-  // 2) Flat recovery rates
-  const RATE_LOW  = 0.20;  // 20%
-  const RATE_HIGH = 0.40;  // 40%
-
-  // 3) Raw projected wins at those rates
-  const rawLowWins  = M * RATE_LOW;
-  const rawHighWins = M * RATE_HIGH;
-
-  // 4) Floor at current wins
-  const winsLow  = Math.max(rawLowWins,  W2);
-  const winsHigh = Math.max(rawHighWins, W2);
-
-  // 5) Net-new deals above current
-  const deltaLow  = winsLow  - W2;
-  const deltaHigh = winsHigh - W2;
-
-  // 6) Revenue uplift
-  revLowMiss  = deltaLow  * AR;
-  revHighMiss = deltaHigh * AR;
-
-  // 7) Inject table rows
-  g('missValues').innerHTML = [
-    ['Abandoned calls / mo', M],
-    ['With Chiirp (low)',   winsLow.toFixed(1)],
-    ['With Chiirp (high)',  winsHigh.toFixed(1)],
-    ['Monthly gain',
-      `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
-  ]
-  .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
-  .join('');
-
-  // 8) Update highlights
-  g('missGainMonthly').textContent =
-    `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`;
-  g('missGainAnnual').textContent =
-    `$${Math.round(revLowMiss * 12).toLocaleString()} – $${Math.round(revHighMiss * 12).toLocaleString()}`;
-
-  // 9) Show the slide
-  revealSlide('slideMissed');
-};
-  <!-- … earlier bindings for calcBtn, toS2L, toMissed … -->
-
-  /* ────────────────  SLIDE 4 – SUMMARY ──────────────── */
-  g('toSum').onclick = () => {
-    // 1) Grab the plan cost
-    const monthlyCost = getMonthlyCost();
-
-    // 2) Aggregate revenue
-    const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
-    const highTotal = revHighEst + revHighS2L + revHighMiss;
-
-    // 3) Compute ROI
-    const roiLow  = (lowTotal  / monthlyCost).toFixed(1);
-    const roiHigh = (highTotal / monthlyCost).toFixed(1);
-
-    // 4) Populate breakdown table
-    g('sumValues').innerHTML = [
-      ['Estimation Follow-Up', `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
-      ['Speed-to-Lead',       `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
-      ['Call Recovery',       `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
-    ].map(([label, val]) =>
-      `<tr><td>${label}</td><td>${val}</td></tr>`
-    ).join('');
-
-    // 5) Update big yellow numbers
-    g('sumGainMonthly').textContent =
-      `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
-    g('sumGainAnnual').textContent  =
-      `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
-
-    // 6) Show the ROI in yellow
-    g('sumROI').textContent = `${roiLow}× – ${roiHigh}×`;
-
-    // 7) Reveal the Summary slide
-    revealSlide('slideSum');
-  };  // ← closes g('toSum').onclick
-
-  /* ── helper to fade-in slide and animate items ── */
-  function revealSlide(id){
+  // helper to swap slides
+  function revealSlide(id) {
     document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
     const el = g(id);
     el.style.display = 'block';
     requestAnimationFrame(() => el.style.opacity = 1);
-    setTimeout(() =>
-      el.querySelectorAll('.valItem').forEach((v,i) =>
-        setTimeout(() => v.classList.add('show'), 200 + i*250)
-      )
-    , 400);
   }
 
-})();  // ← closes the entire IIFE
+  // 1) Inputs → Estimation Follow-Up
+  g('calcBtn').addEventListener('click', () => {
+    const Q  = +g('quotes').value;
+    const W3 = +g('quoteWins').value;
+    const AR = +g('avgRev').value;
+    const lowWins  = Math.max(Q * 0.10, W3);
+    const highWins = Math.max(Q * 0.20, W3);
+    revLowEst  = (lowWins  - W3) * AR;
+    revHighEst = (highWins - W3) * AR;
 
+    g('estValues').innerHTML = [
+      ['Quotes / mo', Q],
+      ['Chiirp wins (low)', lowWins.toFixed(1)],
+      ['Chiirp wins (high)', highWins.toFixed(1)],
+      ['Monthly gain', `$${Math.round(revLowEst)} – $${Math.round(revHighEst)}`]
+    ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-  </script>
+    g('estGainMonthly').textContent = `$${Math.round(revLowEst)}`;
+    g('estGainAnnual').textContent  = `$${Math.round(revLowEst * 12)}`;
+    revealSlide('slideEst');
+  });
+
+  // 2) Estimation → Speed-to-Lead
+  g('toS2L').onclick = () => {
+    const F   = +g('leads').value;
+    const W1  = +g('formWins').value;
+    const AR  = +g('avgRev').value;
+    const lowWins  = Math.max(F * 0.15, W1);
+    const highWins = Math.max(F * 0.35, W1);
+    revLowS2L  = (lowWins  - W1) * AR;
+    revHighS2L = (highWins - W1) * AR;
+
+    g('s2lValues').innerHTML = [
+      ['Form submissions / mo', F],
+      ['With Chiirp (low)', lowWins.toFixed(1)],
+      ['With Chiirp (high)', highWins.toFixed(1)],
+      ['Monthly gain', `$${Math.round(revLowS2L)} – $${Math.round(revHighS2L)}`]
+    ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+
+    g('s2lGainMonthly').textContent = `$${Math.round(revLowS2L)}`;
+    g('s2lGainAnnual').textContent  = `$${Math.round(revLowS2L * 12)}`;
+    revealSlide('slideS2L');
+  };
+
+  // 3) Speed-to-Lead → Abandoned-Call Recovery
+  g('toMissed').onclick = () => {
+    const M   = +g('missedCalls').value;
+    const W2  = +g('missedWins').value || 0;
+    const AR  = +g('avgRev').value;
+    const lowWins  = Math.max(M * 0.20, W2);
+    const highWins = Math.max(M * 0.40, W2);
+    revLowMiss  = (lowWins  - W2) * AR;
+    revHighMiss = (highWins - W2) * AR;
+
+    g('missValues').innerHTML = [
+      ['Abandoned calls / mo', M],
+      ['With Chiirp (low)', lowWins.toFixed(1)],
+      ['With Chiirp (high)', highWins.toFixed(1)],
+      ['Monthly gain', `$${Math.round(revLowMiss)} – $${Math.round(revHighMiss)}`]
+    ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+
+    g('missGainMonthly').textContent = `$${Math.round(revLowMiss)}`;
+    g('missGainAnnual').textContent  = `$${Math.round(revLowMiss * 12)}`;
+    revealSlide('slideMissed');
+  };
+
+  // 4) Abandoned-Call → Summary
+  g('toSum').onclick = () => {
+    const monthlyCost = +document.querySelector('input[name="plan"]:checked').value;
+    const lowTotal    = revLowEst + revLowS2L + revLowMiss;
+    const highTotal   = revHighEst + revHighS2L + revHighMiss;
+    const roiLow      = (lowTotal  / monthlyCost).toFixed(1);
+    const roiHigh     = (highTotal / monthlyCost).toFixed(1);
+
+    g('sumValues').innerHTML = [
+      ['Estimation Follow-Up', `$${Math.round(revLowEst)} – $${Math.round(revHighEst)}`],
+      ['Speed-to-Lead',         `$${Math.round(revLowS2L)} – $${Math.round(revHighS2L)}`],
+      ['Call Recovery',         `$${Math.round(revLowMiss)} – $${Math.round(revHighMiss)}`]
+    ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+
+    g('sumGainMonthly').textContent = `$${Math.round(lowTotal)}`;
+    g('sumGainAnnual').textContent  = `$${Math.round(lowTotal * 12)}`;
+    g('sumROI').textContent         = `${roiLow}× – ${roiHigh}×`;
+    revealSlide('slideSum');
+  };
+})();
+</script>
+
 </body>
 </html>
   
