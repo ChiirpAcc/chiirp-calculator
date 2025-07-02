@@ -145,19 +145,19 @@
 .slide .slide-content.estimation .highlight-table {
   display: flex;
   flex-direction: column;
-  align-items: center;     /* keep heading centred */
+  align-items: center;        /* keep heading centred */
   text-align: center;
   white-space: nowrap;
 }
 
-/* vertical stack instead of a 2-row grid */
+/* vertical stack for value blocks */
 .slide .slide-content.estimation .highlight-grid {
-  display: flex;
+  display: flex;              /* replaces 2-row grid  */
   flex-direction: column;
   align-items: center;
-  gap: 3rem;               /* space between monthly ↔ annual */
+  gap: 3rem;                  /* space between Monthly ↔ Annual */
   width: 100%;
-  flex: 1 0 auto;
+  flex: 1 0 auto;             /* still pushes footer down */
 }
 
 /* label + number pair */
@@ -165,19 +165,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .4rem;
+  gap: .4rem;                 /* label ↔ number */
 }
 .slide .slide-content.estimation .highlight-pair p { margin: 0; }
 
-/* big yellow numbers – a touch smaller */
+/* big yellow numbers (same size as before) */
 .slide .slide-content.estimation .highlight-number {
-  font-size: clamp(3.4rem, 8vw, 5rem); /* was up to 6rem */
+  font-size: clamp(4rem, 9vw, 6rem);
   font-weight: 700;
   color: #ffeb3b;
   line-height: 1.1;
 }
 
-/* small caps labels */
+/* uppercase labels */
 .slide .slide-content.estimation .subtext {
   font-size: 1rem;
   letter-spacing: .05rem;
@@ -185,10 +185,34 @@
   color: #fff;
 }
 
-/* hide ROI block on non-summary slides (keep it only on #slideSum) */
+/* hide ROI block on non-summary slides (keep it on #slideSum) */
 .slide:not(#slideSum) #sumROIPair,
 .slide:not(#slideSum) #sumROI { display: none; }
 
+/* 7) Footer button ─── make it absolute again */
+.slide .slide-content.estimation .highlight-footer {
+  position: absolute;
+  bottom: 1.5rem;                 /* tweak as you like */
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  text-align: center;
+  pointer-events: auto;
+  margin-top: 0;                  /* remove the old flex push */
+}
+  
+/* ─── 8) Responsive: stack on mobile ─── */
+@media (max-width: 640px) {
+  .slide .slide-content.estimation .est-grid {
+    grid-template-columns: 1fr;
+  }
+  .slide .slide-content.estimation .est-card {
+    margin-bottom: 2rem;
+  }
+  .slide .slide-content.estimation .highlight-footer button {
+    width: 100%;
+  }
+}
 
 
   
@@ -214,7 +238,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
