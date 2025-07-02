@@ -70,17 +70,12 @@
   transition: opacity 0.2s;
 }
 
-/* when checked, highlight that label */
-.slide-content.inputs .plan-selector input:checked + span,
-.slide-content.inputs .plan-selector input:checked + span + * {
-  /* if you wrap text in <span>, adjust selector */
-}
-
-.slide-content.inputs .plan-selector input:checked + span,
+/* only show on hover – no checked‐state background */
 .slide-content.inputs .plan-selector label:hover::before {
   opacity: 1;
   background: rgba(255,255,255,0.4);
 }
+
 
 .slide-content.inputs .plan-selector label span {
   position: relative; /* to sit above the ::before bg */
