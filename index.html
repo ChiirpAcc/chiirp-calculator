@@ -810,7 +810,7 @@ g('toSum').onclick = () => {
   g('sumGainAnnual').textContent =
     `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
   g('sumROI').textContent =
-    `{roiLow}× – {roiHigh}×`;
+    `${roiLow}× – ${roiHigh}×`;
 
   revealSlide('slideSum');
 };
