@@ -824,20 +824,22 @@ g('toMissed').onclick = () => {
   // 9) Show the slide
   revealSlide('slideMissed');
 };
+  <!-- … earlier bindings for calcBtn, toS2L, toMissed … -->
+
   /* ────────────────  SLIDE 4 – SUMMARY ──────────────── */
   g('toSum').onclick = () => {
-    // 1) Grab the plan cost from the radio buttons
+    // 1) Grab the plan cost
     const monthlyCost = getMonthlyCost();
 
-    // 2) Aggregate all three revenue streams
+    // 2) Aggregate revenue
     const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
     const highTotal = revHighEst + revHighS2L + revHighMiss;
 
-    // 3) Compute ROI based on the selected plan cost
+    // 3) Compute ROI
     const roiLow  = (lowTotal  / monthlyCost).toFixed(1);
     const roiHigh = (highTotal / monthlyCost).toFixed(1);
 
-    // 4) Populate the left‐hand breakdown table
+    // 4) Populate breakdown table
     g('sumValues').innerHTML = [
       ['Estimation Follow-Up', `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
       ['Speed-to-Lead',       `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
@@ -846,33 +848,34 @@ g('toMissed').onclick = () => {
       `<tr><td>${label}</td><td>${val}</td></tr>`
     ).join('');
 
-    // 5) Update the big yellow money figures
+    // 5) Update big yellow numbers
     g('sumGainMonthly').textContent =
       `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
     g('sumGainAnnual').textContent  =
       `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
 
-   // 6) Show the ROI number in yellow
-  g('sumROI').textContent = `${roiLow}× – ${roiHigh}×`;
+    // 6) Show the ROI in yellow
+    g('sumROI').textContent = `${roiLow}× – ${roiHigh}×`;
 
-  // 7) Reveal the Summary slide
-  revealSlide('slideSum');
-};              // ← closes the toSum onclick
+    // 7) Reveal the Summary slide
+    revealSlide('slideSum');
+  };  // ← closes g('toSum').onclick
 
-/* ── helper to fade-in slide and animate items ── */
-function revealSlide(id){
-  document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
-  const el = g(id);
-  el.style.display = 'block';
-  requestAnimationFrame(() => el.style.opacity = 1);
-  setTimeout(() =>
-    el.querySelectorAll('.valItem').forEach((v,i) =>
-      setTimeout(() => v.classList.add('show'), 200 + i*250)
-    )
-  , 400);
-}
+  /* ── helper to fade-in slide and animate items ── */
+  function revealSlide(id){
+    document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
+    const el = g(id);
+    el.style.display = 'block';
+    requestAnimationFrame(() => el.style.opacity = 1);
+    setTimeout(() =>
+      el.querySelectorAll('.valItem').forEach((v,i) =>
+        setTimeout(() => v.classList.add('show'), 200 + i*250)
+      )
+    , 400);
+  }
 
-})();  // ← closes the IIFE
+})();  // ← closes the entire IIFE
+
 
   </script>
 </body>
