@@ -875,41 +875,6 @@ g('toSum').onclick = () => {
   revealSlide('slideSum');
 };
 
-/* ------- 4 slide ------- */
-g('toSum').onclick = () => {
-  // aggregate monthly gains
-  const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
-  const highTotal = revHighEst + revHighS2L + revHighMiss;
-  // compute ROI using constant MONTHLY_COST = 500
-  const roiLow  = (lowTotal  / MONTHLY_COST).toFixed(1);
-  const roiHigh = (highTotal / MONTHLY_COST).toFixed(1);
-  
-  // Summary breakdown table injection (mirrors Slide 2)
-  g('sumValues').innerHTML = [
-    ['Estimation Follow-Up',     `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`],
-    ['Speed-to-Lead',  `$${Math.round(revLowS2L).toLocaleString()} – $${Math.round(revHighS2L).toLocaleString()}`],
-    ['Missed calls',   `$${Math.round(revLowMiss).toLocaleString()} – $${Math.round(revHighMiss).toLocaleString()}`]
-  ]
-  .map(([label, val]) =>
-    `<tr><td>${label}</td><td>${val}</td></tr>`
-  )
-  .join('');
-
-
-  // 2) render total highlights
-  g('sumGainMonthly').textContent =
-    `$${Math.round(lowTotal).toLocaleString()} – $${Math.round(highTotal).toLocaleString()}`;
-  g('sumGainAnnual').textContent =
-    `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
-  g('sumROI').textContent =
-    `${roiLow}× – ${roiHigh}×`;
-
-  revealSlide('slideSum');
-};
-
-
-
-
 });            
 
 /* ── helper to fade-in slide and animate items ── */
