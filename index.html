@@ -537,31 +537,29 @@ ROI (high)         = High monthly gain ÷ Monthly cost
       </div>
 
     <!-- RIGHT CARD: totals & ROI highlight + footer -->
-    <div class="est-card highlight-table">
-      <h3>Total Additional Revenue</h3>
-    
-      <!-- monthly & annual in a grid -->
-      <div class="highlight-grid">
-        <div class="highlight-pair">
-          <p id="sumGainMonthly" class="highlight-number">—</p>
-          <p class="subtext">per month</p>
+      <div class="est-card highlight-table">
+        <h3>Total Additional Revenue</h3>
+      
+        <div class="highlight-grid">
+          <div class="highlight-pair">
+            <p id="sumGainMonthly" class="highlight-number">—</p>
+            <p class="subtext">per month</p>
+          </div>
+          <div class="highlight-pair">
+            <p id="sumGainAnnual" class="highlight-number">—</p>
+            <p class="subtext">per year</p>
+          </div>
         </div>
-        <div class="highlight-pair">
-          <p id="sumGainAnnual" class="highlight-number">—</p>
-          <p class="subtext">per year</p>
-        </div>
-        <!-- NEW: ROI big and yellow -->
-        <div class="highlight-pair">
-          <p id="sumROI" class="highlight-number">—×</p>
-          <p class="subtext">ROI</p>
+      
+        <!-- ROI in white subtext under the grid -->
+        <p id="sumROI" class="subtext" style="margin-top:1rem; font-size:1.25rem;">
+          ROI: —
+        </p>
+      
+        <div class="highlight-footer">
+          <button onclick="location.reload()">Restart ↻</button>
         </div>
       </div>
-    
-      <!-- footer: just the restart button -->
-      <div class="highlight-footer">
-        <button onclick="location.reload()">Restart ↻</button>
-      </div>
-    </div>
 
 </section>
 
