@@ -215,7 +215,31 @@
 }
 
 
-  
+  /* ───── Right-pane polish ─────────────────────────────────────────── */
+
+/* 1 ▸ keep heading centred, but left-align each number+label pair */
+.slide .slide-content.estimation .highlight-pair{
+  align-items:flex-start;          /* flush-left number & label        */
+  text-align:left;
+  gap:.25rem;                      /* slightly tighter vertical gap    */
+}
+
+/* 2 ▸ style the label line (“MONTHLY” / “ANNUAL”) */
+.slide .slide-content.estimation .subtext{
+  font-size:.9rem;
+  font-weight:600;                 /* small caps weight                */
+  text-transform:uppercase;
+  letter-spacing:.04rem;
+  color:rgba(255,255,255,.7);      /* 70 % opacity                     */
+  margin:0;
+  padding-left:.25rem;             /* tiny indent to clear the “$”     */
+}
+
+/* 3 ▸ optional: narrow max-width so huge numbers don’t sprawl */
+.est-card.highlight-table{max-width:520px}
+
+/* mobile keeps the same rules – no changes needed */
+
 
   /* ─────────────────────────────────────────────────────────────────────────────
      BODY & ROTATING BACKDROP
@@ -238,7 +262,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
