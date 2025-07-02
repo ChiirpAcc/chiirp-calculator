@@ -233,7 +233,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -389,21 +389,22 @@
     </div>
 
     <!-- Plan selector -->
-    <fieldset class="plan-selector">
-      <legend>Select your plan</legend>
-      <label>
-        <input type="radio" name="plan" value="enterprise">
-        <span>Enterprise</span>
-      </label>
-      <label>
-        <input type="radio" name="plan" value="growth">
-        <span>Growth</span>
-      </label>
-      <label>
-        <input type="radio" name="plan" value="lite" checked>
-        <span>Lite</span>
-      </label>
-    </fieldset>
+      <fieldset class="plan-selector">
+        <legend>Select your plan</legend>
+        <label>
+          <input type="radio" name="plan" value="1600">
+          <span>Enterprise</span>
+        </label>
+        <label>
+          <input type="radio" name="plan" value="900">
+          <span>Growth</span>
+        </label>
+        <label>
+          <input type="radio" name="plan" value="500" checked>
+          <span>Lite</span>
+        </label>
+      </fieldset>
+
 
     <button id="calcBtn">Next ➔</button>
   </div>
