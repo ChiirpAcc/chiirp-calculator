@@ -53,22 +53,22 @@
   transition: color 0.2s;
 }
 
-/* hide the big box on checked: remove any checked + ::before rules */
+/* remove the big semi-opaque box entirely */
 .slide-content.inputs .plan-selector label::before {
   display: none;
 }
 
-/* only show on hover */
+/* on hover, just lightly tint background */
 .slide-content.inputs .plan-selector label:hover {
   background: rgba(255,255,255,0.2);
 }
 
-/* visually mark the chosen plan by changing its text color & adding an underline */
+/* checked → bold + underline (no color change) */
 .slide-content.inputs .plan-selector input:checked + span {
-  color: #ffb703;
   font-weight: 700;
   text-decoration: underline;
 }
+
 
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
 
