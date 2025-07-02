@@ -225,7 +225,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #064892 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -351,13 +351,12 @@
     display: none;
   }
 
-/* summary slide: monthly total – white, bold, smaller */
-#slideSum #sumGainMonthly {
-  color: #fff;
-  font-weight: 700;
+  #slideSum #sumGainMonthly {
+  color: #fff;       /* white instead of yellow */
+  font-weight: 700;  /* regular instead of bold */
   font-size: clamp(3rem, 7vw, 4rem);   /* was 4–6 rem, now tops out at 4 rem */
 }
-
+</style>
 
 
 </head>
