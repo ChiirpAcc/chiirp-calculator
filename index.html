@@ -78,9 +78,9 @@
   display: grid;
   place-items: center;
 }
+
 /* ─── 2) Shrink-wrap the outer card ─── */
 .slide .slide-content.estimation {
-  position: relative;      /* ← added so the footer absolute is inside this container */
   background: rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 2rem;
@@ -88,6 +88,56 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   margin: 0;
   padding-bottom: 4rem;
+}
+
+/* ─── 3) Two-column inner grid with generous gutter ─── */
+.slide .slide-content.estimation .est-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 5rem;           /* ← 2rem keeps them perfectly apart */
+  width: max-content;
+  margin: 0;
+  align-items: stretch; /* equalize card heights */
+}
+
+/* ─── 4) Common card styles ─── */
+.slide .slide-content.estimation .est-card {
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── 5) Left-column “details-table” ─── */
+.slide .slide-content.estimation .details-table {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+}
+.slide .slide-content.estimation .details-table h1 {
+  margin-bottom: 0.5rem;      /* match Follow-Up slide */
+}
+.slide .slide-content.estimation .details-table .subhead {
+  margin-bottom: 1.5rem;      /* space under the subtitle */
+}
+.slide .slide-content.estimation .details-table table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+  margin-bottom: 1.5rem;      /* space under the table */
+}
+.slide .slide-content.estimation .details-table th,
+.slide .slide-content.estimation .details-table td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  text-align: left;
+}
+.slide .slide-content.estimation .details-table details.calc-formula {
+  margin-top: 0;              /* snug under the table */
+}
+.slide .slide-content.estimation .details-table details.calc-formula summary {
+  margin-bottom: 0.5rem;      /* tighten summary spacing */
 }
 
 /* ─── 6) Right-column “highlight-table” ─── */
@@ -126,14 +176,9 @@
 
 /* ─── 7) Footer button ─── */
 .slide .slide-content.estimation .highlight-footer {
-  position: absolute;
-  bottom: 1rem;               /* distance from the bottom edge */
-  left: 50%;                  /* start at horizontal midpoint */
-  transform: translateX(-50%);/* shift back by half its width */
-  margin-top: 0;              /* remove the old top margin */
-  width: auto;                /* let it size itself */
-  z-index: 10;
-  pointer-events: auto;
+  margin-top: auto;       /* pushes footer to the bottom of its flex container */
+  text-align: center;     /* center the button */
+  pointer-events: auto;   /* ensure clicks register */
 }
 
 /* ─── 8) Responsive: stack on mobile ─── */
@@ -174,7 +219,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -355,6 +400,7 @@
   <div class="slide-content estimation">
     <div class="est-grid">
 
+
       <!-- LEFT CARD: details + formulas -->
       <div class="est-card details-table">
         <h1>Estimate: Follow-Up</h1>
@@ -363,43 +409,47 @@
           <thead>
             <tr><th>Metric</th><th>Value</th></tr>
           </thead>
-          <tbody id="estValues"><!-- JS injects rows here --></tbody>
+          <tbody id="estValues">
+            <!-- JS injects rows here -->
+          </tbody>
         </table>
         <details class="calc-formula">
           <summary>How these numbers are calculated</summary>
           <pre>
 Quotes / mo          = Q (total quotes per month)
-Chiirp wins (low)    = max(Q × 0.10, W₃)
-Chiirp wins (high)   = max(Q × 0.20, W₃)
+Chiirp wins (low)    = max(Q × 0.10, W₃)    // flat 10% or current wins, whichever is higher
+Chiirp wins (high)   = max(Q × 0.20, W₃)    // flat 20% or current wins, whichever is higher
 Incremental wins     = Chiirp wins − W₃
 Monthly revenue      = Incremental wins × AR
           </pre>
         </details>
       </div>
 
-      <!-- RIGHT CARD: highlight numbers -->
+
+      <!-- RIGHT CARD: monthly & annual highlight + button -->
       <div class="est-card highlight-table">
         <h3>Additional Revenue</h3>
+
         <div class="highlight-grid">
           <div class="highlight-pair">
             <p id="estGainMonthly" class="highlight-number">—</p>
             <p class="subtext">per month</p>
           </div>
           <div class="highlight-pair">
-            <p id="estGainAnnual"  class="highlight-number">—</p>
+            <p id="estGainAnnual" class="highlight-number">—</p>
             <p class="subtext">per year</p>
           </div>
         </div>
-      </div><!-- end .highlight-table -->
 
-      <!-- FOOTER BUTTON: now aligned to bottom of the grey panel -->
-      <div class="highlight-footer">
-        <button id="toS2L">Next ➔</button>
+        <!-- Footer container for bottom-aligned button -->
+        <div class="highlight-footer">
+          <button id="toS2L">Next ➔</button>
+        </div>
       </div>
 
-    </div><!-- end .est-grid -->
-  </div><!-- end .slide-content.estimation -->
-</section><!-- end .slide -->
+    </div>
+  </div>
+</section>
 
 
 
