@@ -351,8 +351,14 @@
     display: none;
   }
 
-#sumGainMonthly { display: none; }
-#slideSum .subtext:first-of-type { display: none; }
+/* SUMMARY slide — remove the monthly row entirely */
+#sumMonthlyPair { display: none; }
+
+/* Re-flow the remaining two rows */
+#slideSum .highlight-grid {
+  grid-template-rows: auto auto;  /* annual + ROI */
+}
+
 
 </style>
 
@@ -596,17 +602,19 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 <div class="est-card highlight-table">
   <h3>Total Additional Revenue</h3>
 
-  <!-- monthly & annual in a grid -->
+  <!-- annual + ROI only (monthly row is present but will be hidden by CSS) -->
   <div class="highlight-grid">
-   <div class="highlight-pair">
+    <!-- monthly row: keep it in the DOM for JS, hide with CSS -->
+    <div class="highlight-pair" id="sumMonthlyPair">
       <p id="sumGainMonthly" class="highlight-number">—</p>
       <p class="subtext">per month</p>
     </div>
+
     <div class="highlight-pair">
       <p id="sumGainAnnual" class="highlight-number">—</p>
       <p class="subtext">per year</p>
     </div>
-    <!-- NEW: ROI big and yellow -->
+
     <div class="highlight-pair">
       <p id="sumROI" class="highlight-number">—×</p>
       <p class="subtext">ROI</p>
@@ -618,6 +626,7 @@ ROI (high)         = High monthly gain ÷ Monthly cost
     <button onclick="location.reload()">Restart ↻</button>
   </div>
 </div>
+
 
 <script>
   (function(){
