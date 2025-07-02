@@ -50,15 +50,15 @@
   font-weight: 500;
   color: #fff;
   border-radius: 6px;
-  transition: color 0.2s;
+  transition: background 0.2s, font-weight 0.2s, text-decoration 0.2s;
 }
 
-/* remove the big semi-opaque box entirely */
+/* remove the semi-opaque highlight box */
 .slide-content.inputs .plan-selector label::before {
   display: none;
 }
 
-/* on hover, just lightly tint background */
+/* hover tint only */
 .slide-content.inputs .plan-selector label:hover {
   background: rgba(255,255,255,0.2);
 }
@@ -68,6 +68,7 @@
   font-weight: 700;
   text-decoration: underline;
 }
+
 
 
 /* ────────── ESTIMATION SLIDE LAYOUT ────────── */
