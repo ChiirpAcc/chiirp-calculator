@@ -225,7 +225,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -852,14 +852,12 @@ g('toMissed').onclick = () => {
     g('sumGainAnnual').textContent  =
       `$${Math.round(lowTotal * 12).toLocaleString()} – $${Math.round(highTotal * 12).toLocaleString()}`;
 
-    // 6) Show the ROI number in yellow (ID matches HTML)
-    g('sumROI').textContent =
-      `${roiLow}× – ${roiHigh}×`;
+   // 6) Show the ROI number in yellow
+  g('sumROI').textContent = `${roiLow}× – ${roiHigh}×`;
 
-    // 7) Reveal the Summary slide
-    revealSlide('slideSum');
-  };
-})();
+  // 7) Reveal the Summary slide
+  revealSlide('slideSum');
+};              // ← closes the toSum onclick
 
 /* ── helper to fade-in slide and animate items ── */
 function revealSlide(id){
@@ -874,7 +872,8 @@ function revealSlide(id){
   , 400);
 }
 
-})();          // ← closes the IIFE
+})();  // ← closes the IIFE
+
   </script>
 </body>
 </html>
