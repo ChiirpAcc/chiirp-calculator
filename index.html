@@ -176,7 +176,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -315,26 +315,41 @@
     <h1>CHIIRP DEMO</h1>
     <h2>SEE YOUR SAVINGS WITH CHIIRP</h2>
 
-      <div class="input-row">
-        <!-- Form submissions -->
-        <input id="leads"       type="number" step="1"    placeholder="Monthly form submissions (F)">
-        <input id="formWins"    type="number" step="1"    placeholder="Closed-from-forms wins (W₁)">
-      
-        <!-- Missed calls -->
-        <input id="missedCalls" type="number" step="1"    placeholder="Monthly missed calls (M)">
-        <input id="missedWins"  type="number" step="1"    placeholder="Closed-from-missed calls wins (W₂)">
-      
-        <!-- Estimates / quotes -->
-        <input id="quotes"      type="number" step="1"    placeholder="Monthly quotes sent (Q)">
-        <input id="quoteWins"   type="number" step="1"    placeholder="Closed-from-quotes wins (W₃)">
-      
-        <!-- Revenue -->
-        <input id="avgRev"      type="number" step="0.01" placeholder="Avg revenue per sale ($)">
-      </div>
+    <div class="input-row">
+      <!-- Form submissions -->
+      <input id="leads"       type="number" step="1"    placeholder="Monthly form submissions (F)">
+      <input id="formWins"    type="number" step="1"    placeholder="Closed-from-forms wins (W₁)">
 
+      <!-- Missed calls -->
+      <input id="missedCalls" type="number" step="1"    placeholder="Monthly missed calls (M)">
+      <input id="missedWins"  type="number" step="1"    placeholder="Closed-from-missed calls wins (W₂)">
 
+      <!-- Estimates / quotes -->
+      <input id="quotes"      type="number" step="1"    placeholder="Monthly quotes sent (Q)">
+      <input id="quoteWins"   type="number" step="1"    placeholder="Closed-from-quotes wins (W₃)">
 
-      <button id="calcBtn">Next ➔</button>
+      <!-- Revenue -->
+      <input id="avgRev"      type="number" step="0.01" placeholder="Avg revenue per sale ($)">
+    </div>
+
+    <!-- ─── Plan selector ─── -->
+    <fieldset style="margin:1.5rem 0; text-align:left;">
+      <legend>Select your plan:</legend>
+      <label style="margin-right:1rem;">
+        <input type="radio" name="plan" value="1600"> Enterprise ($1,600/mo)
+      </label>
+      <label style="margin-right:1rem;">
+        <input type="radio" name="plan" value="900"> Growth ($900/mo)
+      </label>
+      <label>
+        <input type="radio" name="plan" value="500" checked> Lite ($500/mo)
+      </label>
+    </fieldset>
+
+    <button id="calcBtn" disabled>Next ➔</button>
+  </div>
+</section>
+
 
 </section>
   
@@ -568,32 +583,38 @@ ROI (high)         = High monthly gain ÷ Monthly cost
 
   
 (() => {
-  // ── CONSTANTS ─────────────────────────────────────────
-  const UPLIFT = {
-    estLow: 1.5, estHigh: 2.0,
-    s2lLow: 2.0, s2lHigh: 5.0,
-    missLow: 3.0, missHigh: 5.0
-  };
-  const MONTHLY_COST = 500
+// ── CONSTANTS ─────────────────────────────────────────
+const UPLIFT = {
+  estLow:   1.5, estHigh:  2.0,
+  s2lLow:   2.0, s2lHigh:  5.0,
+  missLow:  3.0, missHigh: 5.0
+};
 
-  // ── MODULE REVENUE STORAGE ─────────────────────────────
-  let revLowEst   = 0, revHighEst   = 0;
-  let revLowS2L   = 0, revHighS2L   = 0;
-  let revLowMiss  = 0, revHighMiss  = 0;
+// ── MODULE REVENUE STORAGE ─────────────────────────────
+let revLowEst   = 0, revHighEst   = 0;
+let revLowS2L   = 0, revHighS2L   = 0;
+let revLowMiss  = 0, revHighMiss  = 0;
 
-  // ── DOM SHORTCUTS & INPUTS ─────────────────────────────
-  const g = id => document.getElementById(id);
-  const inputs = [
-    'leads','formWins','missedCalls','missedWins','quotes','quoteWins','avgRev'
-  ].map(g);
+// ── DOM SHORTCUTS & INPUTS ─────────────────────────────
+const g = id => document.getElementById(id);
 
-  // enable “Next” button once all fields are non-empty
-  const calcBtn = g('calcBtn');
-  inputs.forEach(i =>
-    i.addEventListener('input', () =>
-      calcBtn.disabled = inputs.some(e => !e.value.trim())
-    )
-  );
+// helper to read the currently selected plan cost
+function getMonthlyCost() {
+  return +document.querySelector('input[name="plan"]:checked').value;
+}
+
+const inputs = [
+  'leads','formWins','missedCalls','missedWins',
+  'quotes','quoteWins','avgRev'
+].map(g);
+
+// enable “Next” button once all fields are non-empty
+const calcBtn = g('calcBtn');
+inputs.forEach(i =>
+  i.addEventListener('input', () =>
+    calcBtn.disabled = inputs.some(e => !e.value.trim())
+  )
+);
 
   // ── MAIN CALCULATION ────────────────────────────────────
   calcBtn.addEventListener('click', () => {
