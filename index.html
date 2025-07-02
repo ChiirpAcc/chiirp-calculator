@@ -383,10 +383,6 @@
           <input type="radio" name="plan" value="900">
           <span>Growth</span>
         </label>
-        <label>
-          <input type="radio" name="plan" value="500" checked>
-          <span>Lite</span>
-        </label>
       </fieldset>
 
 
@@ -712,15 +708,22 @@ ROI (high)         = High monthly gain ÷ Monthly cost
   .map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`)
   .join('');
 
-  // 9) Update highlights
-  g('estGainMonthly').textContent =
-    `$${Math.round(revLowEst).toLocaleString()} – $${Math.round(revHighEst).toLocaleString()}`;
-  g('estGainAnnual').textContent =
-    `$${Math.round(revLowEst*12).toLocaleString()} – $${Math.round(revHighEst*12).toLocaleString()}`;
+  const lowM  = Math.round(revLowEst);
+  const highM = Math.round(revHighEst);
 
-  // 10) Reveal the slide
+  // if the low estimate is zero, show “Up to $X” instead of “$0 – $X”
+  if (lowM === 0) {
+    g('estGainMonthly').textContent = `Up to $${highM.toLocaleString()}`;
+    g('estGainAnnual').textContent  = `Up to $${(highM * 12).toLocaleString()}`;
+  } else {
+    g('estGainMonthly').textContent = `$${lowM.toLocaleString()} – $${highM.toLocaleString()}`;
+    g('estGainAnnual').textContent  = `$${(lowM * 12).toLocaleString()} – $${(highM * 12).toLocaleString()}`;
+  }
+
+  // finally, show the slide
   revealSlide('slideEst');
 }
+
 
 
 
