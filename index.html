@@ -156,7 +156,7 @@
   display: flex;              /* replaces 2-row grid  */
   flex-direction: column;
   align-items: center;
-  gap: 3rem;                  /* space between Monthly ↔ Annual */
+  gap: 4rem;                  /* space between Monthly ↔ Annual */
   width: 100%;
   flex: 1 0 auto;             /* still pushes footer down */
 }
@@ -183,10 +183,11 @@
 
 /* uppercase labels */
 .slide .slide-content.estimation .subtext {
-  font-size: 1rem;
+  font-size: 0.85rem;
   letter-spacing: .05rem;
   text-transform: uppercase;
   color: #fff;
+  opacity: 0.75;
 }
 
 /* hide ROI block on non-summary slides (keep it on #slideSum) */
@@ -310,7 +311,7 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    background: #ffb703;
+    background: #fcb900;
     color: #002844;
     font-weight: 700;
     transition: opacity .25s;
