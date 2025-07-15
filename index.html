@@ -204,7 +204,14 @@
   pointer-events: auto;
   margin-top: 0;                  /* remove the old flex push */
 }
-  
+
+  /* ─── Flush-left alignment for right-hand “highlight” card ─── */
+.slide .slide-content.estimation .highlight-table,
+.slide .slide-content.estimation .highlight-grid {
+  align-items: flex-start;
+  text-align: left;
+}
+
 /* ─── 8) Responsive: stack on mobile ─── */
 @media (max-width: 640px) {
   .slide .slide-content.estimation .est-grid {
@@ -242,7 +249,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #000000 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
