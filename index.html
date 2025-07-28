@@ -91,6 +91,10 @@
   padding-bottom: 6rem;
 }
 
+/* tighten the bottom edge on the Summary slide only */
+#slideSum .slide-content.estimation {
+  padding-bottom: 2rem;   /* or any value you prefer */
+}
 
 /* 3) Two-column inner grid with generous gutter */
 .slide .slide-content.estimation .est-grid {
@@ -156,7 +160,7 @@
   display: flex;              /* replaces 2-row grid  */
   flex-direction: column;
   align-items: center;
-  gap: 4rem;                  /* space between Monthly ↔ Annual */
+  gap: 3rem;                  /* space between Monthly ↔ Annual */
   width: 100%;
   flex: 1 0 auto;             /* still pushes footer down */
 }
@@ -183,45 +187,32 @@
 
 /* uppercase labels */
 .slide .slide-content.estimation .subtext {
-  font-size: 0.85rem;
+  font-size: 1rem;
   letter-spacing: .05rem;
   text-transform: uppercase;
   color: #fff;
-  opacity: 0.75;
 }
 
 /* hide ROI block on non-summary slides (keep it on #slideSum) */
 .slide:not(#slideSum) #sumROIPair,
 .slide:not(#slideSum) #sumROI { display: none; }
-
-/* 7) Footer button ─── make it absolute again */
+  
+/* 7) Footer buttons – absolute, two-button row */
 .slide .slide-content.estimation .highlight-footer {
   position: absolute;
-  bottom: 1.5rem;                 /* tweak as you like */
+  bottom: 1.5rem;          /* adjust if you prefer */
   left: 50%;
   transform: translateX(-50%);
+  display: flex;           /* row layout */
+  gap: 1rem;               /* space between Back and Next */
+  justify-content: center; /* keep centred as a group */
   width: auto;
-  text-align: center;
   pointer-events: auto;
-  margin-top: 0;                  /* remove the old flex push */
+  margin-top: 0;
+  text-align: center;      /* harmless with flex */
 }
 
-  /* ─── Flush-left alignment for right-hand “highlight” card ─── */
-.slide .slide-content.estimation .highlight-table,
-.slide .slide-content.estimation .highlight-grid {
-  align-items: flex-start;
-  text-align: left;
-}
-
-  .slide .slide-content.estimation .highlight-table h3 {
-  align-self: flex-start;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 0.03rem;
-}
-
-/* ─── 8) Responsive: stack on mobile ─── */
+/* 8) Responsive: stack content, give each button 50 % width */
 @media (max-width: 640px) {
   .slide .slide-content.estimation .est-grid {
     grid-template-columns: 1fr;
@@ -230,9 +221,10 @@
     margin-bottom: 2rem;
   }
   .slide .slide-content.estimation .highlight-footer button {
-    width: 100%;
+    flex: 1 1 50%;         /* each button fills half the row */
   }
 }
+
 
 
   
@@ -258,7 +250,7 @@
     /* make it exactly big enough so its diagonal ≥ viewport diagonal */
     width:  calc(100vw + 100vh);
     height: calc(100vw + 100vh);
-    background: linear-gradient(130deg, #fcb900 0%, #0693e3 100%); /*0693e3                                                                  */
+    background: linear-gradient(130deg, #fcb900 0%, #fcb900 100%); /*0693e3              fcb900                                                    */
     transform: translate(-50%, -50%) rotate(0deg);
     transform-origin: center center;
     z-index: -1;
@@ -272,7 +264,7 @@
      SLIDE WRAPPER
   ───────────────────────────────────────────────────────────────────────────── */
   .slide {
-    width: min(94vw, 900px);
+    width: min(94vw, 1300vw);
     text-align: center;
     padding: 2rem;
   }
@@ -290,6 +282,11 @@
     font-size: clamp(1.1rem, 2.4vw, 1.4rem);
     font-weight: 400;
     letter-spacing: .2rem;
+  }
+  h5{
+    font-size:clamp(4.4rem,10vw,7.2rem); /* 2x each original bound */
+    letter-spacing:2px;
+    text-shadow:0 2px 6px #0006;
   }
 
   /* ─────────────────────────────────────────────────────────────────────────────
@@ -319,7 +316,7 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    background: #fcb900;
+    background: #ffb703;
     color: #002844;
     font-weight: 700;
     transition: opacity .25s;
@@ -428,8 +425,60 @@
   padding-left:.25rem;               /* tiny indent so it clears the “$”  */
 }
 
-</style>
+/* slideSum is positioning context */
+#slideSum{ position:relative; }
 
+/* Back button row */
+#slideSum .sum-footer{
+  margin-top:2.5rem;
+  display:flex;
+  justify-content:center;
+}
+
+/* tighter padding only for this Back button */
+#slideSum .backBtn{
+  padding-left:1.2rem;
+  padding-right:1.2rem;
+}
+
+/* Restart button fixed bottom-right */
+.restartBtn{
+  position:fixed;
+  bottom:2rem;
+  right:2rem;
+  z-index:1000;
+}
+
+/* mobile tweaks */
+@media(max-width:640px){
+  #slideSum .sum-footer button{ flex:1 1 50%; }
+  .restartBtn{
+    bottom:1.2rem;
+    right:1.2rem;
+    padding:.7rem 1.4rem;
+  }
+}
+
+/* LAST rule in the stylesheet ─ tighten the Back button on slide 5 only */
+#slideSum .sum-footer #backToMissed{
+  padding-left:1rem;     /* was 1.8rem */
+  padding-right:1rem;
+}
+
+/* summary Back button spacing + tighter width */
+#slideSum .sum-footer{
+  margin-top:1rem;              /* was 2.5rem */
+  display:flex;
+  justify-content:center;
+}
+
+#slideSum .sum-footer .backBtn{
+  margin-top:0;                 /* kill global 2rem margin-top */
+  padding:.9rem 1.2rem;         /* narrower than global 1.8rem */
+}
+
+
+</style>
 
 </head>
 <body>
@@ -437,30 +486,49 @@
 <section class="slide" id="slideInputs">
   <div class="slide-content inputs">
     <h1>CHIIRP DEMO</h1>
-    <h2>SEE YOUR SAVINGS WITH CHIIRP</h2>
+    <h2>SEE THE VALUE OF CHIIRP</h2>
 
     <div class="input-row">
-      <!-- Form submissions -->
-      <input id="leads"       type="number" step="1"    placeholder="Monthly form submissions">
-      <input id="formWins"    type="number" step="1"    placeholder="# Closed-from-forms wins ">
+      <!-- Follow-Up (quotes) -->
+      <input id="quotes"    type="number" step="1"    min="0"
+             placeholder="Estimates sent per month"
+             aria-label="Estimates sent per month">
     
-      <!-- Missed calls -->
-      <input id="missedCalls" type="number" step="1"    placeholder="Monthly missed calls">
-      <input id="missedWins"  type="number" step="1"    placeholder="# Closed-from-missed calls wins">
+      <input id="quoteWins" type="number" step="1"    min="0"
+             placeholder="Estimates Accepted"
+             aria-label="Estimates Accepted">
     
-      <!-- Estimates / quotes -->
-      <input id="quotes"      type="number" step="1"    placeholder="Monthly quotes sent">
-      <input id="quoteWins"   type="number" step="1"    placeholder="# Closed-from-quotes wins">
+      <!-- Speed-to-Lead (forms) -->
+      <input id="leads"     type="number" step="1"    min="0"
+             placeholder="Lead form submissions per month"
+             aria-label="Lead from submissions per month">
     
-      <!-- Revenue -->
-      <input id="avgRev"      type="number" step="0.01" placeholder="Avg revenue per sale ($)">
+      <input id="formWins"  type="number" step="1"    min="0"
+             placeholder="Jobs scheduled from forms"
+             aria-label="Jobs scheduled from forms">
+    
+      <!-- Call Recovery (missed calls) -->
+      <input id="missedCalls" type="number" step="1" min="0"
+             placeholder="Missed calls per month"
+             aria-label="Monthly number of missed or abandoned calls">
+    
+      <input id="missedWins"  type="number" step="1" min="0"
+             placeholder="Jobs scheduled from missed calls"
+             aria-label="Closed deals that started as missed calls per month">
+    
+      <!-- Revenue (shared) -->
+      <input id="avgRev"    type="number" step="0.01" min="0"
+             placeholder="Avg revenue per job ($)"
+             aria-label="Average revenue per closed sale in dollars">
     </div>
 
+      
+
     <!-- Fixed plan cost for ROI -->
-    <input type="hidden" name="plan" value="1250">
+    <input type="hidden" name="plan" value="1050">
 
 
-    <button id="calcBtn">Next ➔</button>
+    <button id="calcBtn">Next ➡</button>
   </div>
 </section>
 
@@ -499,9 +567,12 @@
       </div><!-- end .highlight-table -->
 
       <!-- FOOTER BUTTON -->
+      <!-- slideEst footer -->
       <div class="highlight-footer">
-        <button id="toS2L">Next ➔</button>
+        <button id="backToInputs" class="backBtn">⬅ Back</button>
+        <button id="toS2L"        class="nextBtn">Next ➡</button>
       </div>
+
 
     </div><!-- end .est-grid -->
   </div><!-- end .slide-content.estimation -->
@@ -542,8 +613,10 @@
             <p class="subtext">per year</p>
           </div>
         </div>
+        <!-- slideS2L  (Speed-to-Lead) -->
         <div class="highlight-footer">
-          <button id="toMissed">Next ➔</button>
+          <button id="backToEst"  class="backBtn">⬅ Back</button>
+          <button id="toMissed"   class="nextBtn">Next ➡</button>
         </div>
       </div>
 
@@ -584,8 +657,10 @@
             <p class="subtext">per year</p>
           </div>
         </div>
+        <!-- slideMissed  (Call Recovery) -->
         <div class="highlight-footer">
-          <button id="toSum">Next ➔</button>
+          <button id="backToS2L" class="backBtn">⬅ Back</button>
+          <button id="toSum"     class="nextBtn">Next ➡</button>
         </div>
       </div>
 
@@ -593,188 +668,218 @@
   </div>
 </section>
 
-
 <!-- ────────────────  SLIDE 5 – SUMMARY ──────────────── -->
 <section class="slide" id="slideSum" style="display:none; opacity:0; transition:opacity .6s">
   <div class="slide-content estimation">
-    <div class="est-grid">
 
-      <!-- LEFT CARD: individual ranges -->
+    <div class="est-grid">
+      <!-- LEFT CARD – monthly breakdown -->
       <div class="est-card details-table">
-        <h1>Breakdown by Module</h1>
+        <h1>Breakdown by Campaign</h1>
         <table>
-          <thead>
-            <tr><th>Module</th><th>Monthly Gain</th></tr>
-          </thead>
-          <tbody id="sumValues">
-            <!-- JS injects rows:
-              <tr><td>Estimation</td><td>$x – $y</td></tr>
-              etc. -->
-          </tbody>
+          <thead><tr><th>Campaign</th><th>Monthly Gain</th></tr></thead>
+          <tbody id="sumValues"></tbody>
         </table>
       </div>
 
-<!-- RIGHT CARD: totals & ROI highlight + footer -->
-<div class="est-card highlight-table">
-  <h3>Total Additional Revenue:</h3>
+      <!-- RIGHT CARD – totals -->
+      <div class="est-card highlight-table">
+        <h3>Total Additional Revenue:</h3>
+        <div class="highlight-grid">
+          <div class="highlight-pair" id="sumMonthlyPair">
+            <p id="sumGainMonthly" class="highlight-number">—</p>
+            <p class="subtext">per month</p>
+          </div>
+          <div class="highlight-pair">
+            <p id="sumGainAnnual" class="highlight-number">—</p>
+            <p class="subtext">per year</p>
+          </div>
+          <div class="highlight-pair">
+            <p id="sumROI" class="highlight-number">—×</p>
+            <p class="subtext">ROI</p>
+          </div>
+        </div>
+      </div><!-- /.highlight-table -->
+    </div><!-- /.est-grid -->
 
-  <!-- annual + ROI only (monthly row is present but will be hidden by CSS) -->
-  <div class="highlight-grid">
-    <!-- monthly row: keep it in the DOM for JS, hide with CSS -->
-    <div class="highlight-pair" id="sumMonthlyPair">
-      <p id="sumGainMonthly" class="highlight-number">—</p>
-      <p class="subtext">per month</p>
+    <!-- Back button sits below the cards -->
+    <div class="sum-footer">
+      <button id="backToMissed" class="backBtn">⬅ Back</button>
     </div>
 
-    <div class="highlight-pair">
-      <p id="sumGainAnnual" class="highlight-number">—</p>
-      <p class="subtext">per year</p>
-    </div>
 
-    <div class="highlight-pair">
-      <p id="sumROI" class="highlight-number">—×</p>
-      <p class="subtext">ROI</p>
-    </div>
-  </div>
 
-  <!-- footer: just the restart button -->
-  <div class="highlight-footer">
-    <button onclick="location.reload()">Restart ↻</button>
-  </div>
-</div>
+  </div><!-- /.slide-content.estimation -->
+
+  <!-- Restart button fixed bottom-right -->
+  <button class="restartBtn" onclick="location.reload()">Restart ↻</button>
+</section>
+
+
 
 
 <script>
-  (function(){
-    const g = id => document.getElementById(id);
-    let revLowEst = 0, revHighEst = 0;
-    let revLowS2L = 0, revHighS2L = 0;
-    let revLowMiss = 0, revHighMiss = 0;
+(function () {
+  const g = id => document.getElementById(id);
 
-    
-    function revealSlide(id) {
-      document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
-      const el = g(id);
-      el.style.display = 'block';
-      requestAnimationFrame(() => el.style.opacity = 1);
-    }
-    
-/* helpers -------------------------------------------------------------- */
-function fmtMoney(n) {
-  // 19000  ->  19,000
-  return n.toLocaleString('en-US', { maximumFractionDigits: 0 });
-}
-// “$lo – $hi”  unless low ≤ 0  →  “Up to $hi”
-function fmtRange(lo, hi) {
-  const low  = Math.round(lo);
-  const high = Math.round(hi);
-  return low <= 0
-    ? `Up to $${fmtMoney(high)}`
-    : `$${fmtMoney(low)} – $${fmtMoney(high)}`;
-}
-/* --------------------------------------------------------------------- */
+  // revenue buckets per campaign
+  let revLowEst = 0, revHighEst = 0;
+  let revLowS2L = 0, revHighS2L = 0;
+  let revLowMiss = 0, revHighMiss = 0;
 
+  /* UI helpers */
+  function revealSlide(id) {
+    document.querySelectorAll('.slide').forEach(s => s.style.display = 'none');
+    const el = g(id);
+    el.style.display = 'block';
+    requestAnimationFrame(() => el.style.opacity = 1);
+  }
 
-/* ────────── 1) Inputs → Estimation ────────── */
-g('calcBtn').addEventListener('click', () => {
-  const Q  = +g('quotes').value;
-  const W3 = +g('quoteWins').value;
-  const AR = +g('avgRev').value;
+  function fmtMoney(n) {
+    return n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+  function fmtRange(lo, hi) {
+    const low = Math.round(lo);
+    const high = Math.round(hi);
+    return low <= 0
+      ? `Up to $${fmtMoney(high)}`
+      : `$${fmtMoney(low)} – $${fmtMoney(high)}`;
+  }
+  function fmtROI(lo, hi) {
+    const l = Number(lo) || 0;
+    const h = Number(hi) || 0;
+    const f = x => Number(x).toFixed(1);
+    return l <= 1
+      ? `Up to ${f(h)}×`
+      : `${f(l)}× – ${f(h)}×`;
+  }
 
-  const lowWins  = Math.max(Q * 0.10, W3);
-  const highWins = Math.max(Q * 0.20, W3);
+  /* core calculator */
+  function calcRange({ current, pool, lowPct, highPct, avgRev }) {
+    const baselineLow = pool * lowPct;
+    const baselineHigh = pool * highPct;
 
-  revLowEst  = (lowWins  - W3) * AR;
-  revHighEst = (highWins - W3) * AR;
+    const lowWins = Math.max(baselineLow, current);
 
-  g('estValues').innerHTML = [
-    ['Quotes / mo',            Q],
-    ['Chiirp wins (low)',      lowWins.toFixed(1)],
-    ['Chiirp wins (high)',     highWins.toFixed(1)],
-    ['Monthly gain',           fmtRange(revLowEst, revHighEst)]
-  ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+    // if user is already beating our high case, bump by 5.298 %
+    let highWins = current > baselineHigh ? current * 1.05298 : baselineHigh;
+    if (highWins < lowWins) highWins = lowWins;      // guard
 
-  g('estGainMonthly').textContent = fmtRange(revLowEst, revHighEst);
-  g('estGainAnnual').textContent  = fmtRange(revLowEst * 12, revHighEst * 12);
+    return {
+      lowWins,
+      highWins,
+      revLow:  (lowWins  - current) * avgRev,
+      revHigh: (highWins - current) * avgRev
+    };
+  }
 
-  revealSlide('slideEst');
-});
+  /* 1) Inputs → Estimate Follow-Up */
+  g('calcBtn').addEventListener('click', () => {
+    const Q = +g('quotes').value;
+    const W3 = +g('quoteWins').value;
+    const AR = +g('avgRev').value;
 
-/* ────────── 2) Estimation → Speed-to-Lead ────────── */
-g('toS2L').addEventListener('click', () => {
-  const F  = +g('leads').value;
-  const W1 = +g('formWins').value;
-  const AR = +g('avgRev').value;
+    const { lowWins, highWins, revLow, revHigh } = calcRange({
+      current: W3, pool: Q, lowPct: 0.10, highPct: 0.20, avgRev: AR
+    });
+    revLowEst = revLow;
+    revHighEst = revHigh;
 
-  const lowWins  = Math.max(F * 0.15, W1);
-  const highWins = Math.max(F * 0.35, W1);
+    g('estValues').innerHTML = [
+      ['Quotes / mo',        Q],
+      ['Chiirp wins (low)',  lowWins.toFixed(1)],
+      ['Chiirp wins (high)', highWins.toFixed(1)],
+      ['Monthly gain',       fmtRange(revLowEst, revHighEst)]
+    ].map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-  revLowS2L  = (lowWins  - W1) * AR;
-  revHighS2L = (highWins - W1) * AR;
+    g('estGainMonthly').textContent = fmtRange(revLowEst, revHighEst);
+    g('estGainAnnual').textContent  = fmtRange(revLowEst * 12, revHighEst * 12);
 
-  g('s2lValues').innerHTML = [
-    ['Form submissions / mo',  F],
-    ['With Chiirp (low)',      lowWins.toFixed(1)],
-    ['With Chiirp (high)',     highWins.toFixed(1)],
-    ['Monthly gain',           fmtRange(revLowS2L, revHighS2L)]
-  ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+    revealSlide('slideEst');
+  });
 
-  g('s2lGainMonthly').textContent = fmtRange(revLowS2L, revHighS2L);
-  g('s2lGainAnnual').textContent  = fmtRange(revLowS2L * 12, revHighS2L * 12);
+  /* 2) Estimate → Speed-to-Lead */
+  g('toS2L').addEventListener('click', () => {
+    const F = +g('leads').value;
+    const W1 = +g('formWins').value;
+    const AR = +g('avgRev').value;
 
-  revealSlide('slideS2L');
-});
+    const { lowWins, highWins, revLow, revHigh } = calcRange({
+      current: W1, pool: F, lowPct: 0.15, highPct: 0.35, avgRev: AR
+    });
+    revLowS2L = revLow;
+    revHighS2L = revHigh;
 
-/* ────────── 3) Speed-to-Lead → Abandoned-Call ────────── */
-g('toMissed').addEventListener('click', () => {
-  const M  = +g('missedCalls').value;
-  const W2 = +g('missedWins').value || 0;
-  const AR = +g('avgRev').value;
+    g('s2lValues').innerHTML = [
+      ['Form submissions / mo', F],
+      ['With Chiirp (low)',     lowWins.toFixed(1)],
+      ['With Chiirp (high)',    highWins.toFixed(1)],
+      ['Monthly gain',          fmtRange(revLowS2L, revHighS2L)]
+    ].map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-  const lowWins  = Math.max(M * 0.20, W2);
-  const highWins = Math.max(M * 0.40, W2);
+    g('s2lGainMonthly').textContent = fmtRange(revLowS2L, revHighS2L);
+    g('s2lGainAnnual').textContent  = fmtRange(revLowS2L * 12, revHighS2L * 12);
 
-  revLowMiss  = (lowWins  - W2) * AR;
-  revHighMiss = (highWins - W2) * AR;
+    revealSlide('slideS2L');
+  });
 
-  g('missValues').innerHTML = [
-    ['Abandoned calls / mo',   M],
-    ['With Chiirp (low)',      lowWins.toFixed(1)],
-    ['With Chiirp (high)',     highWins.toFixed(1)],
-    ['Monthly gain',           fmtRange(revLowMiss, revHighMiss)]
-  ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+  /* 3) Speed-to-Lead → Abandoned-Call Recovery */
+  g('toMissed').addEventListener('click', () => {
+    const M = +g('missedCalls').value;
+    const W2 = +g('missedWins').value || 0;
+    const AR = +g('avgRev').value;
 
-  g('missGainMonthly').textContent = fmtRange(revLowMiss, revHighMiss);
-  g('missGainAnnual').textContent  = fmtRange(revLowMiss * 12, revHighMiss * 12);
+    const { lowWins, highWins, revLow, revHigh } = calcRange({
+      current: W2, pool: M, lowPct: 0.20, highPct: 0.35, avgRev: AR
+    });
+    revLowMiss = revLow;
+    revHighMiss = revHigh;
 
-  revealSlide('slideMissed');
-});
+    g('missValues').innerHTML = [
+      ['Abandoned calls / mo', M],
+      ['With Chiirp (low)',    lowWins.toFixed(1)],
+      ['With Chiirp (high)',   highWins.toFixed(1)],
+      ['Monthly gain',         fmtRange(revLowMiss, revHighMiss)]
+    ].map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-/* ────────── 4) Abandoned-Call → Summary ────────── */
-g('toSum').addEventListener('click', () => {
-  const monthlyCost = +document.querySelector('input[name="plan"]').value;
+    g('missGainMonthly').textContent = fmtRange(revLowMiss, revHighMiss);
+    g('missGainAnnual').textContent  = fmtRange(revLowMiss * 12, revHighMiss * 12);
 
-  const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
-  const highTotal = revHighEst + revHighS2L + revHighMiss;
+    revealSlide('slideMissed');
+  });
 
-  const roiLow  = (lowTotal  / monthlyCost).toFixed(1);
-  const roiHigh = (highTotal / monthlyCost).toFixed(1);
+  /* 4) Abandoned-Call → Summary */
+  g('toSum').addEventListener('click', () => {
+    const monthlyCost = +document.querySelector('input[name="plan"]').value || 0;
 
-  g('sumValues').innerHTML = [
-    ['Estimation Follow-Up', fmtRange(revLowEst,  revHighEst)],
-    ['Speed-to-Lead',        fmtRange(revLowS2L, revHighS2L)],
-    ['Call Recovery',        fmtRange(revLowMiss,revHighMiss)]
-  ].map(([l,v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
+    const lowTotal  = revLowEst  + revLowS2L  + revLowMiss;
+    const highTotal = revHighEst + revHighS2L + revHighMiss;
 
-  g('sumGainMonthly').textContent = fmtRange(lowTotal,   highTotal);
-  g('sumGainAnnual').textContent  = fmtRange(lowTotal*12, highTotal*12);
-  g('sumROI').textContent         = `${roiLow}× – ${roiHigh}×`;
+    const roiLow  = monthlyCost > 0 ? lowTotal  / monthlyCost : 0;
+    const roiHigh = monthlyCost > 0 ? highTotal / monthlyCost : 0;
 
-  revealSlide('slideSum');
-});
+    g('sumValues').innerHTML = [
+      ['Estimation Follow-Up', fmtRange(revLowEst,  revHighEst)],
+      ['Speed-to-Lead',        fmtRange(revLowS2L,  revHighS2L)],
+      ['Call Recovery',        fmtRange(revLowMiss, revHighMiss)]
+    ].map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join('');
 
-  })();
+    g('sumGainMonthly').textContent = fmtRange(lowTotal, highTotal);
+    g('sumGainAnnual').textContent  = fmtRange(lowTotal * 12, highTotal * 12);
+    g('sumROI').textContent         = fmtROI(roiLow, roiHigh);
+
+    revealSlide('slideSum');
+  });
+
+  /* back navigation */
+  g('backToInputs').addEventListener('click', () => revealSlide('slideInputs'));
+  g('backToEst').addEventListener('click',    () => revealSlide('slideEst'));
+  g('backToS2L').addEventListener('click',    () => revealSlide('slideS2L'));
+  g('backToMissed').addEventListener('click', () => revealSlide('slideMissed'));
+})();
 </script>
+
+
 
 </body>
 </html>
